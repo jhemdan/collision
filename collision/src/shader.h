@@ -46,6 +46,9 @@ namespace jaw
 		bool create(const std::string& vert_path, const std::string& frag_path, const ShaderAttribLocs& attribs);
 		void destroy();
 
+		int get_uniform(const std::string& name) const;
+		int get_attribute(const std::string& name) const;
+
 		unsigned id;
 		ShaderAttribLocs attribs;
 		ShaderUniformLocs uniforms;

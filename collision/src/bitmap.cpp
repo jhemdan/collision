@@ -85,7 +85,7 @@ namespace jaw
 
 		for (int i = 0; i < this->h; ++i)
 		{
-			memcpy(&this->data[i * this->pitch], &surf_data[(this->h - i - 1) * surface->pitch], least_pitch);
+			memcpy(&this->data[i * this->pitch], &surf_data[/*(this->h - i - 1)*/i * surface->pitch], least_pitch);
 		}
 
 		SDL_FreeSurface(surface);

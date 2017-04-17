@@ -152,4 +152,26 @@ namespace jaw
 		this->id = 0;
 		this->attribs = this->uniforms = {};
 	}
+
+	int Shader::get_uniform(const std::string& name) const
+	{
+		for (const auto& u : uniforms.locs)
+		{
+			if (u.first == name)
+				return u.second;
+		}
+
+		return -1;
+	}
+
+	int Shader::get_attribute(const std::string& name) const
+	{
+		for (const auto& a : attribs.locs)
+		{
+			if (a.first == name)
+				return a.second;
+		}
+
+		return -1;
+	}
 }

@@ -126,28 +126,39 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bitmap.cpp" />
-    <ClCompile Include="src\box.cpp" />
+    <ClCompile Include="src\entity.cpp" />
+    <ClCompile Include="src\game.cpp" />
+    <ClCompile Include="src\graphic.cpp" />
+    <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\load_file.cpp" />
     <ClCompile Include="src\log.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\mesh_buffers.cpp" />
+    <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
-    <ClCompile Include="src\sprite.cpp" />
+    <ClCompile Include="src\sprite_graphic.cpp" />
     <ClCompile Include="src\texture_2d.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\bitmap.h" />
-    <ClInclude Include="src\box.h" />
+    <ClInclude Include="src\entity.h" />
+    <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\graphic.h" />
+    <ClInclude Include="src\input.h" />
     <ClInclude Include="src\load_file.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\mesh_buffers.h" />
     <ClInclude Include="src\model.h" />
+    <ClInclude Include="src\point.h" />
+    <ClInclude Include="src\renderer.h" />
     <ClInclude Include="src\shader.h" />
-    <ClInclude Include="src\sprite.h" />
+    <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />
     <ClInclude Include="src\types.h" />
+    <ClInclude Include="src\world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

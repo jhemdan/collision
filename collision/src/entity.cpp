@@ -11,6 +11,8 @@ namespace jaw
 		graphic = nullptr;
 
 		_layer = 0;
+
+		solid = false;
 	}
 
 	Entity::~Entity()
@@ -30,7 +32,8 @@ namespace jaw
 
 	void Entity::update(float dt)
 	{
-
+		if (graphic)
+			graphic->update(dt);
 	}
 
 	void Entity::render(Renderer* renderer)
@@ -66,12 +69,12 @@ namespace jaw
 
 	bool Entity::check_collision(const Point& pos) const
 	{
-		if (!world)
+		if (!world || !solid)
 			return false;
 
 		for (auto other : world->entities)
 		{
-			if (other == this)
+			if (other == this || !other->solid)
 				continue;
 
 			if (check_collision(pos, other))

@@ -28,7 +28,7 @@ namespace jaw
 		int get_layer() const { return _layer; }
 
 		World* world;
-
+		
 		Point position;
 		Point size; //for collision
 		Point origin; //for collision
@@ -37,5 +37,7 @@ namespace jaw
 		int _layer;
 
 		vcm::vec2 _move_accum;
+
+		bool solid;
 	};
 }

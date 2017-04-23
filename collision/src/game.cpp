@@ -67,6 +67,27 @@ namespace jaw
 				tree_bmp.create("../assets/oak_tree.png");
 				tree_tex->create(tree_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_REPEAT);
 				tree_g.create(tree_tex);
+
+				sprite_g.set_clip_rect(Rect(0, 0, 64, 64));
+
+				solid = true;
+
+				sprite_g.frame_size = { 64, 64 };
+
+				SpriteAnim anim = { "idle", { 0, 4, 8, 12 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "down", { 0 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "left", { 12, 13 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "right", { 8, 9 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "up", { 4, 5 }, 8, true };
+				sprite_g.add_anim(anim);
 			}
 
 			~Player()
@@ -88,6 +109,7 @@ namespace jaw
 					e->origin = { -104, -47 };
 					e->position = Point{ i % 2, i / 2 } *250 - Point{ 64, 64 };
 					e->set_layer(e->position.y + e->size.y - e->origin.y - 11);
+					e->solid = true;
 
 					world->add_entity(e);
 
@@ -95,6 +117,7 @@ namespace jaw
 
 					box1->position = e->position + Point{ 64, 47 };
 					box1->size = { 124, 133 };
+					box1->solid = true;
 
 					world->add_entity(box1);
 
@@ -102,6 +125,7 @@ namespace jaw
 
 					box2->position = e->position + Point{ 44, 71 };
 					box2->size = { 164, 109 };
+					box2->solid = true;
 
 					world->add_entity(box2);
 
@@ -109,6 +133,7 @@ namespace jaw
 
 					box3->position = e->position + Point{29, 90};
 					box3->size = {200, 90};
+					box3->solid = true;
 
 					world->add_entity(box3);
 				}
@@ -118,27 +143,35 @@ namespace jaw
 			{
 				Entity::update(dt);
 
+				sprite_g.play_anim("idle");
+
 				dir = Point(0, 0);
 				if (game.input.key_is_down(SDL_SCANCODE_RIGHT))
 				{
 					dir.x = 1;
+					sprite_g.play_anim("right");
 				}
 				else if (game.input.key_is_down(SDL_SCANCODE_LEFT))
 				{
 					dir.x = -1;
+					sprite_g.play_anim("left");
 				}
 				if (game.input.key_is_down(SDL_SCANCODE_DOWN))
 				{
 					dir.y = 1;
+					sprite_g.play_anim("down");
 				}
 				else if (game.input.key_is_down(SDL_SCANCODE_UP))
 				{
 					dir.y = -1;
+					sprite_g.play_anim("up");
 				}
 
 				move(vcm::normalize((vcm::vec2)dir) * SPEED * dt);
 
 				set_layer(position.y + size.y - origin.y);
+			
+				std::cout << sprite_g._cur_frame << std::endl;
 			}
 		};
 

@@ -49,7 +49,7 @@ namespace jaw
 		glUniformMatrix4fv(sprite_shader.get_uniform("mvp"), 1, GL_FALSE, &temp_mvp[0][0]);
 
 		glUniform1i(sprite_shader.get_uniform("tex"), 0);
-		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)sprite->texture->w, (float)sprite->texture->h);
+		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)sprite->get_clip_rect().w, (float)sprite->get_clip_rect().h);
 
 		glBindBuffer(GL_ARRAY_BUFFER, sprite->model.mbuffers.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->model.mbuffers.ibo);

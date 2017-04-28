@@ -2,6 +2,7 @@
 #include "renderer.h"
 #include "entity.h"
 #include "world.h"
+#include "exception.h"
 
 #include <assert.h>
 
@@ -40,7 +41,10 @@ namespace jaw
 			{ 2, 3, 0 }
 		};
 
-		this->model.mbuffers.create(this->model.mesh);
+		if (!this->model.mbuffers.create(this->model.mesh))
+		{
+			throw Exception("Could not create mesh buffers for sprite graphic.");
+		}
 
 		set_clip_rect(Rect(tex->w, tex->h));
 
@@ -140,7 +144,10 @@ namespace jaw
 		verts[2].tex_coords = { uv_rect.x + uv_rect.z, uv_rect.y + uv_rect.w };
 		verts[3].tex_coords = { uv_rect.x + uv_rect.z, uv_rect.y };
 
-		this->model.mbuffers.recreate(this->model.mesh);
+		if (!this->model.mbuffers.recreate(this->model.mesh))
+		{
+			throw Exception("Could not recreate mesh buffers for sprite graphic.");
+		}
 	}
 
 	int SpriteGraphic::get_anim(const std::string& name) const

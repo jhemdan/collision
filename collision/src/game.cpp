@@ -1,10 +1,12 @@
 #include "game.h"
 #include "log.h"
 #include "entity.h"
+#include "wav_file.h"
 
 #include <iostream>
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
+#include <al.h>
 
 namespace jaw
 {
@@ -42,6 +44,18 @@ namespace jaw
 		sprite_texture.create(test_rgba, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_REPEAT);
 
 		sprite_graphic.create(&sprite_texture);
+
+		WavFile test_wav;
+		test_wav.create("../assets/video_game1.wav");
+
+		ALuint al_buffer;
+		alGenBuffers(1, &al_buffer);
+		alBufferData(al_buffer, AL_FORMAT_STEREO16, test_wav.data.data(), test_wav.data.size(), test_wav.sample_rate);
+
+		ALuint al_source;
+		alGenSources(1, &al_source);
+		alSourceQueueBuffers(al_source, 1, &al_buffer);
+		alSourcePlay(al_source);
 
 		struct Player : Entity
 		{

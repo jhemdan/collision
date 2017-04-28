@@ -1,4 +1,5 @@
 #include "mesh_buffers.h"
+#include "log.h"
 
 #include <GL/glew.h>
 
@@ -37,7 +38,7 @@ namespace jaw
 		}
 	}
 
-	void MeshBuffers::create(const Mesh& mesh, bool streaming)
+	bool MeshBuffers::create(const Mesh& mesh, bool streaming)
 	{
 		vsize = mesh.vertices.size() * 8;
 		isize = mesh.triangles.size() * 3;
@@ -55,9 +56,23 @@ namespace jaw
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		glBufferData(GL_ARRAY_BUFFER, vsize * sizeof(float), vdata.data(), streaming ? GL_STREAM_DRAW : GL_STATIC_DRAW);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, isize * sizeof(unsigned), idata.data(), streaming ? GL_STREAM_DRAW : GL_STATIC_DRAW);
+
+		int gl_error = glGetError();
+		if (gl_error)
+		{
+			log_write("Failed to create mesh buffers. OpenGL error: ");
+			log_write(gl_error);
+			log_write("\n");
+
+			destroy();
+
+			return false;
+		}
+
+		return true;
 	}
 
-	void MeshBuffers::recreate(const Mesh& mesh)
+	bool MeshBuffers::recreate(const Mesh& mesh)
 	{
 		vsize = mesh.vertices.size() * 8;
 		isize = mesh.triangles.size() * 3;
@@ -98,17 +113,27 @@ namespace jaw
 		{
 			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, isize * sizeof(unsigned), idata.data());
 		}
+
+		int gl_error = glGetError();
+		if (gl_error)
+		{
+			log_write("Failed to recreate mesh buffers. OpenGL error: ");
+			log_write(gl_error);
+			log_write("\n");
+
+			destroy();
+
+			return false;
+		}
+
+		return true;
 	}
 
 	void MeshBuffers::destroy()
 	{
-		if (vbo)
-		{
-			glDeleteBuffers(1, &vbo);
-			glDeleteBuffers(1, &ibo);
-			vbo = ibo = 0;
-		}
-
+		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &ibo);
+		vbo = ibo = 0;
 		vdata.clear();
 		idata.clear();
 		vsize = isize = 0;

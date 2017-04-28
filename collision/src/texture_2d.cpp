@@ -1,4 +1,5 @@
 #include "texture_2d.h"
+#include "log.h"
 
 #include <GL/glew.h>
 #include <assert.h>
@@ -14,7 +15,7 @@ namespace jaw
 		format = TEX_2D_FORMAT_UNDEFINED;
 	}
 
-	void Texture2d::create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap)
+	bool Texture2d::create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap)
 	{
 		GLenum min_gl, mag_gl, wrap_gl;
 		GLenum format_gl;
@@ -71,6 +72,12 @@ namespace jaw
 		this->wrap = wrap;
 
 		glGenTextures(1, &this->id);
+		if (!this->id)
+		{
+			*this = {};
+			log_line("Could not create a texture.");
+			return false;
+		}
 
 		glBindTexture(GL_TEXTURE_2D, this->id);
 
@@ -80,16 +87,26 @@ namespace jaw
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_gl);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, format_gl, this->w, this->h, 0, format_gl, GL_UNSIGNED_BYTE, bitmap.data.data());
+
+		int error = glGetError();
+		if (error)
+		{
+			log_write("Failed to create texture. OpenGL error: ");
+			log_write(error);
+			log_write("\n");
+
+			destroy();
+
+			return false;
+		}
+
+		return true;
 	}
 
 	void Texture2d::destroy()
 	{
-		if (id)
-		{
-			glDeleteTextures(1, &id);
-			id = 0;
-		}
-
+		glDeleteTextures(1, &id);
+		id = 0;
 		w = h = 0;
 		format = TEX_2D_FORMAT_UNDEFINED;
 		filter = TEX_2D_FILTER_UNDEFINED;

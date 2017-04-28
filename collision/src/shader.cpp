@@ -28,6 +28,12 @@ namespace jaw
 
 		const char* c_src = src_code.c_str();
 		unsigned shader = glCreateShader(gl_type);
+		if (!shader)
+		{
+			log_line("Could not create a shader part for file \"" + file_name + "\"");
+			return false;
+		}
+
 		glShaderSource(shader, 1, &c_src, nullptr);
 		glCompileShader(shader);
 
@@ -46,6 +52,18 @@ namespace jaw
 		this->id = shader;
 		this->type = type;
 		this->file_name = file_name;
+
+		int gl_error = glGetError();
+		if (gl_error)
+		{
+			log_write("Failed to create shader part \"" + file_name + "\". OpenGL error: ");
+			log_write(gl_error);
+			log_write("\n");
+
+			destroy();
+
+			return false;
+		};
 
 		return true;
 	}
@@ -66,6 +84,12 @@ namespace jaw
 	bool Shader::create(const ShaderPart& vert, const ShaderPart& frag, const ShaderAttribLocs& attribs)
 	{
 		unsigned program = glCreateProgram();
+		if (!program)
+		{
+			log_line("Could not create a program for \"" + vert.file_name + "\" and \"" + frag.file_name + "\"");
+			return false;
+		}
+
 		glAttachShader(program, vert.id);
 		glAttachShader(program, frag.id);
 		
@@ -121,6 +145,18 @@ namespace jaw
 			uniform_name = uniform_name.substr(0, uniform_name.find('['));
 
 			this->uniforms.locs.push_back(std::make_pair(uniform_name, glGetUniformLocation(program, name_buff)));
+		}
+
+		int gl_error = glGetError();
+		if (gl_error)
+		{
+			log_write("Failed to create shader program. OpenGL error: ");
+			log_write(gl_error);
+			log_write("\n");
+
+			destroy();
+
+			return false;
 		}
 
 		return true;

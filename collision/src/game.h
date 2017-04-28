@@ -12,6 +12,11 @@ struct SDL_Window;
 
 namespace jaw
 {
+	enum GameError
+	{
+
+	};
+
 	struct Game
 	{
 		Game();
@@ -22,7 +27,7 @@ namespace jaw
 
 		void update(float dt);
 		void render();
-
+		
 		SDL_Window* window;
 		bool running;
 

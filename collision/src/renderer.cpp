@@ -10,17 +10,11 @@ namespace jaw
 
 	}
 
-	bool Renderer::init()
+	void Renderer::init()
 	{
-		bool b = sprite_shader.create("../assets/sprite.vert", "../assets/sprite.frag", { {"position", 0}, {"tex_coords", 1}, {"color", 2} });
-		if (!b)
-		{
-			return false;
-		}
+		sprite_shader.create("../assets/sprite.vert", "../assets/sprite.frag", { { "position", 0 },{ "tex_coords", 1 },{ "color", 2 } });
 
 		proj_mat = vcm::orthographic(0, 800, 600, 0, -1, 1);
-
-		return true;
 	}
 
 	void Renderer::clean()

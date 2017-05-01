@@ -41,10 +41,7 @@ namespace jaw
 			{ 2, 3, 0 }
 		};
 
-		if (!this->model.mbuffers.create(this->model.mesh))
-		{
-			throw Exception("Could not create mesh buffers for sprite graphic.");
-		}
+		this->model.mbuffers.create(this->model.mesh);
 
 		set_clip_rect(Rect(tex->w, tex->h));
 
@@ -144,10 +141,7 @@ namespace jaw
 		verts[2].tex_coords = { uv_rect.x + uv_rect.z, uv_rect.y + uv_rect.w };
 		verts[3].tex_coords = { uv_rect.x + uv_rect.z, uv_rect.y };
 
-		if (!this->model.mbuffers.recreate(this->model.mesh))
-		{
-			throw Exception("Could not recreate mesh buffers for sprite graphic.");
-		}
+		this->model.mbuffers.recreate(this->model.mesh);
 	}
 
 	int SpriteGraphic::get_anim(const std::string& name) const

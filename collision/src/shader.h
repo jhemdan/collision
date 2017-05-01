@@ -17,7 +17,8 @@ namespace jaw
 		ShaderPart();
 
 		//remember: doesn't destroy so don't call create() multiple times without calling destroy() first
-		bool create(const std::string& file_name, ShaderType type);
+		//throws exception on failure
+		void create(const std::string& file_name, ShaderType type);
 		void destroy();
 
 		unsigned id;
@@ -42,8 +43,11 @@ namespace jaw
 	{
 		Shader();
 
-		bool create(const ShaderPart& vert, const ShaderPart& frag, const ShaderAttribLocs& attribs);
-		bool create(const std::string& vert_path, const std::string& frag_path, const ShaderAttribLocs& attribs);
+		//throws exception on failure
+		void create(const ShaderPart& vert, const ShaderPart& frag, const ShaderAttribLocs& attribs);
+		//throws exception on failure
+		void create(const std::string& vert_path, const std::string& frag_path, const ShaderAttribLocs& attribs);
+		
 		void destroy();
 
 		int get_uniform(const std::string& name) const;

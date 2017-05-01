@@ -22,7 +22,9 @@ namespace jaw
 		Game();
 
 		void set_initial_vars(SDL_Window* window, bool running);
-		bool init();
+
+		//throws exception on failure
+		void init();
 		void clean();
 
 		void update(float dt);

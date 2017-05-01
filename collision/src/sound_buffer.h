@@ -8,6 +8,7 @@ namespace jaw
 	{
 		SoundBuffer();
 
+		//throws exception on failure
 		void create(const WavFile& wav_file);
 		void destroy();
 

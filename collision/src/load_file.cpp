@@ -1,18 +1,20 @@
 #include "load_file.h"
 #include "log.h"
+#include "exception.h"
 
 #include <fstream>
 
 namespace jaw
 {
-	bool load_file(const std::string& path, std::string& out_content)
+	void load_file(const std::string& path, std::string& out_content)
 	{
 		std::ifstream file;
 		file.open(path, std::ios::in | std::ios::binary | std::ios::ate);
 		if (!file)
 		{
 			log_line("Couldn't open file \"" + path + "\"");
-			return false;
+
+			throw Exception("Couldn't open file for load_file()");
 		}
 
 		unsigned size = (unsigned)file.tellg();
@@ -25,10 +27,10 @@ namespace jaw
 		if (file.bad())
 		{
 			log_line("Failed to read file \"" + path + "\"");
-			return false;
+
+			throw Exception("Failed to read file for load_file()");
 		}
 
 		out_content = buff;
-		return true;
 	}
 }

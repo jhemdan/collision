@@ -12,7 +12,8 @@ namespace jaw
 	{
 		Renderer();
 
-		bool init();
+		//throws exception on failure
+		void init();
 		void clean();
 
 		void render(SpriteGraphic* sprite, const vcm::mat4& transform);

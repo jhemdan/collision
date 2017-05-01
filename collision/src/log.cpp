@@ -1,4 +1,5 @@
 #include "log.h"
+#include "exception.h"
 
 #include <fstream>
 
@@ -6,10 +7,12 @@ namespace jaw
 {
 	static std::ofstream file;
 
-	bool init_log(const std::string& name)
+	void init_log(const std::string& name)
 	{
 		file.open(name, std::ios::out | std::ios::binary);
-		return !file.bad();
+
+		if (file.bad())
+			throw Exception("Failed to init log.");
 	}
 
 	void log_write(const std::string& msg)

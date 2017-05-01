@@ -1,5 +1,6 @@
 #include "texture_2d.h"
 #include "log.h"
+#include "exception.h"
 
 #include <GL/glew.h>
 #include <assert.h>
@@ -15,7 +16,7 @@ namespace jaw
 		format = TEX_2D_FORMAT_UNDEFINED;
 	}
 
-	bool Texture2d::create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap)
+	void Texture2d::create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap)
 	{
 		GLenum min_gl, mag_gl, wrap_gl;
 		GLenum format_gl;
@@ -72,12 +73,6 @@ namespace jaw
 		this->wrap = wrap;
 
 		glGenTextures(1, &this->id);
-		if (!this->id)
-		{
-			*this = {};
-			log_line("Could not create a texture.");
-			return false;
-		}
 
 		glBindTexture(GL_TEXTURE_2D, this->id);
 
@@ -88,19 +83,17 @@ namespace jaw
 
 		glTexImage2D(GL_TEXTURE_2D, 0, format_gl, this->w, this->h, 0, format_gl, GL_UNSIGNED_BYTE, bitmap.data.data());
 
-		int error = glGetError();
-		if (error)
+		int gl_error = glGetError();
+		if (gl_error || !this->id)
 		{
 			log_write("Failed to create texture. OpenGL error: ");
-			log_write(error);
+			log_write(gl_error);
 			log_write("\n");
 
 			destroy();
 
-			return false;
+			throw Exception("Could not create texture.");
 		}
-
-		return true;
 	}
 
 	void Texture2d::destroy()

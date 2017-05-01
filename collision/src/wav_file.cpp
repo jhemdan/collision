@@ -1,6 +1,7 @@
 #include "wav_file.h"
 #include "load_file.h"
 #include "log.h"
+#include "exception.h"
 
 namespace jaw
 {
@@ -11,13 +12,12 @@ namespace jaw
 		bits_per_sample = 0;
 	}
 
-	bool WavFile::create(const std::string& file_name)
+	void WavFile::create(const std::string& file_name)
 	{
+		this->file_name = file_name;
+
 		std::string file_content;
-		if (!load_file(file_name, file_content))
-		{
-			return false;
-		}
+		load_file(file_name, file_content);
 
 		const char* cstr = file_content.data();
 		uint32 ubuff32;
@@ -95,7 +95,7 @@ namespace jaw
 
 									memcpy(data.data(), cstr, data_size);
 
-									return true;
+									return;
 								}
 							}
 						}
@@ -106,8 +106,8 @@ namespace jaw
 
 		*this = {};
 		
-		log_write("Bad WAV file \"" + file_name + "\"");
+		log_line("Bad WAV file \"" + file_name + "\"");
 
-		return false;
+		throw Exception("Bad WAV file.");
 	}
 }

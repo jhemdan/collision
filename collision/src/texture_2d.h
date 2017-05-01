@@ -30,7 +30,8 @@ namespace jaw
 	{
 		Texture2d();
 
-		bool create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap);
+		//throws exception on failure
+		void create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap);
 		void destroy();
 
 		unsigned id;

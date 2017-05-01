@@ -5,5 +5,6 @@
 namespace jaw
 {
 	//uses log on errors
-	bool load_file(const std::string& path, std::string& out_content);
+	//throws exception on failure
+	void load_file(const std::string& path, std::string& out_content);
 }

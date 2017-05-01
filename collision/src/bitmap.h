@@ -18,7 +18,8 @@ namespace jaw
 	{
 		Bitmap();
 
-		bool create(const std::string& file_name);
+		//throws exception on failure
+		void create(const std::string& file_name);
 		void destroy();
 
 		int w, h;

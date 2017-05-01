@@ -1,5 +1,6 @@
 #include "bitmap.h"
 #include "log.h"
+#include "exception.h"
 
 #include <SDL2/SDL_image.h>
 #include <assert.h>
@@ -40,13 +41,14 @@ namespace jaw
 		format = BITMAP_UNDEFINED;
 	}
 
-	bool Bitmap::create(const std::string& file_name)
+	void Bitmap::create(const std::string& file_name)
 	{
 		auto surface = IMG_Load(file_name.c_str());
 		if (!surface)
 		{
 			log_line("Error loading image file \"" + file_name + "\": " + IMG_GetError());
-			return false;
+			
+			throw Exception("Failed to load image for bitmap.");
 		}
 
 		BitmapFormat format = BITMAP_UNDEFINED;
@@ -67,7 +69,9 @@ namespace jaw
 			log_write(")\n");
 
 			SDL_FreeSurface(surface);
-			return false;
+
+			throw Exception("Failed to create Bitmap.");
+			break;
 		}
 
 		this->w = surface->w;
@@ -89,8 +93,6 @@ namespace jaw
 		}
 
 		SDL_FreeSurface(surface);
-
-		return true;
 	}
 
 	void Bitmap::destroy()

@@ -12,16 +12,20 @@
 #include <al.h>
 #include <alc.h>
 
+static const char* LOG_FILE_NAME = "log.txt";
+
 int main(int argc, char** argv)
 {
-	int status = (int)jaw::init_log("log.txt");
-	assert(status);
+	try
+	{
+		jaw::init_log(LOG_FILE_NAME);
+	}
+	catch (const jaw::Exception&)
+	{
+		assert(false);
+	}
 
-	std::string test_file;
-	status = jaw::load_file("../assets/test_file.txt", test_file);
-	assert(status);
-
-	status = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
+	int status = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
 	assert(!status);
 
 	status = IMG_Init(IMG_INIT_PNG);
@@ -56,8 +60,7 @@ int main(int argc, char** argv)
 
 	try
 	{
-		bool b = jaw::game.init();
-		assert(b);
+		jaw::game.init();
 
 		auto start_time = std::chrono::system_clock::now();
 		auto end_time = std::chrono::system_clock::now();
@@ -97,7 +100,8 @@ int main(int argc, char** argv)
 	}
 	catch (const jaw::Exception& e)
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", e.msg.c_str(), nullptr);
+		std::string msg = e.msg + "\n" + "See log file \"" + LOG_FILE_NAME + "\" for details.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error!", msg.c_str(), nullptr);
 	}
 
 	jaw::game.clean();

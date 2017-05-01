@@ -2,11 +2,12 @@
 #include "log.h"
 #include "entity.h"
 #include "wav_file.h"
+#include "sound_buffer.h"
+#include "sound_source.h"
 
 #include <iostream>
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
-#include <al.h>
 
 namespace jaw
 {
@@ -28,15 +29,14 @@ namespace jaw
 		this->running = running;
 	}
 
-	bool Game::init()
+	void Game::init()
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		cam_proj = vcm::orthographic(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
 
-		if (!renderer.init())
-			return false;
+		renderer.init();
 
 		Bitmap test_rgba;
 		test_rgba.create("../assets/main_character.png");
@@ -45,17 +45,18 @@ namespace jaw
 
 		sprite_graphic.create(&sprite_texture);
 
+		/*
 		WavFile test_wav;
 		test_wav.create("../assets/video_game1.wav");
 
-		ALuint al_buffer;
-		alGenBuffers(1, &al_buffer);
-		alBufferData(al_buffer, AL_FORMAT_STEREO16, test_wav.data.data(), test_wav.data.size(), test_wav.sample_rate);
+		SoundBuffer sound_buffer;
+		sound_buffer.create(test_wav);
 
-		ALuint al_source;
-		alGenSources(1, &al_source);
-		alSourceQueueBuffers(al_source, 1, &al_buffer);
-		alSourcePlay(al_source);
+		SoundSource sound_source;
+		sound_source.create();
+		sound_source.queue_buffer(sound_buffer.id);
+		sound_source.play();
+		*/
 
 		struct Player : Entity
 		{
@@ -94,13 +95,13 @@ namespace jaw
 				anim = { "down", { 0 }, 8, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "left", { 12, 13 }, 8, true };
+				anim = { "left", { 12 }, 8, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "right", { 8, 9 }, 8, true };
+				anim = { "right", { 8 }, 8, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "up", { 4, 5 }, 8, true };
+				anim = { "up", { 4 }, 8, true };
 				sprite_g.add_anim(anim);
 			}
 
@@ -199,8 +200,6 @@ namespace jaw
 			{ 0, 0, 0.5f, 0 },
 			{ 0, 0, 0, 1 }
 		};
-
-		return true;
 	}
 
 	void Game::clean()

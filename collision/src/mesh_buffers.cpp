@@ -1,5 +1,6 @@
 #include "mesh_buffers.h"
 #include "log.h"
+#include "exception.h"
 
 #include <GL/glew.h>
 
@@ -38,7 +39,7 @@ namespace jaw
 		}
 	}
 
-	bool MeshBuffers::create(const Mesh& mesh, bool streaming)
+	void MeshBuffers::create(const Mesh& mesh, bool streaming)
 	{
 		vsize = mesh.vertices.size() * 8;
 		isize = mesh.triangles.size() * 3;
@@ -58,7 +59,7 @@ namespace jaw
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, isize * sizeof(unsigned), idata.data(), streaming ? GL_STREAM_DRAW : GL_STATIC_DRAW);
 
 		int gl_error = glGetError();
-		if (gl_error)
+		if (gl_error || !vbo || !ibo)
 		{
 			log_write("Failed to create mesh buffers. OpenGL error: ");
 			log_write(gl_error);
@@ -66,13 +67,11 @@ namespace jaw
 
 			destroy();
 
-			return false;
+			throw Exception("Failed to create mesh buffers.");
 		}
-
-		return true;
 	}
 
-	bool MeshBuffers::recreate(const Mesh& mesh)
+	void MeshBuffers::recreate(const Mesh& mesh)
 	{
 		vsize = mesh.vertices.size() * 8;
 		isize = mesh.triangles.size() * 3;
@@ -123,10 +122,8 @@ namespace jaw
 
 			destroy();
 
-			return false;
+			throw Exception("Failed to recreate mesh buffers.");
 		}
-
-		return true;
 	}
 
 	void MeshBuffers::destroy()

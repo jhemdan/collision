@@ -50,9 +50,9 @@ namespace jaw
 
 	void SpriteGraphic::destroy()
 	{
-		this->texture = nullptr;
-		this->model.mesh = {};
 		this->model.mbuffers.destroy();
+
+		*this = {};
 	}
 
 	void SpriteGraphic::update(float dt)

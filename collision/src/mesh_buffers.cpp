@@ -130,10 +130,7 @@ namespace jaw
 	{
 		glDeleteBuffers(1, &vbo);
 		glDeleteBuffers(1, &ibo);
-		vbo = ibo = 0;
-		vdata.clear();
-		idata.clear();
-		vsize = isize = 0;
-		streaming = false;
+		
+		*this = {};
 	}
 }

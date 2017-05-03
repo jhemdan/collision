@@ -4,6 +4,7 @@
 #include "wav_file.h"
 #include "sound_buffer.h"
 #include "sound_source.h"
+#include "tilemap_graphic.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -118,7 +119,17 @@ namespace jaw
 				{
 					auto e = new Entity();
 					
-					e->graphic = &tree_g;
+					auto tiles_g = new TilemapGraphic();
+					Bitmap tiles_bmp;
+					tiles_bmp.create("../assets/grass_tiles1.png");
+					auto tiles_tex = new Texture2d();
+					tiles_tex->create(tiles_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+					tiles_g->create(tiles_tex, 6, 6, 32, 32);
+
+					for (int j = 0; j < 6 * 6; ++j)
+						tiles_g->set_tile(j % 6, j / 6, rand() % 28);
+
+					e->graphic = tiles_g;
 
 					e->size = { 49, 209 };
 					e->origin = { -104, -47 };
@@ -185,8 +196,6 @@ namespace jaw
 				move(vcm::normalize((vcm::vec2)dir) * SPEED * dt);
 
 				set_layer(position.y + size.y - origin.y);
-			
-				std::cout << sprite_g._cur_frame << std::endl;
 			}
 		};
 

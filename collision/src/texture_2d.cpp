@@ -99,10 +99,7 @@ namespace jaw
 	void Texture2d::destroy()
 	{
 		glDeleteTextures(1, &id);
-		id = 0;
-		w = h = 0;
-		format = TEX_2D_FORMAT_UNDEFINED;
-		filter = TEX_2D_FILTER_UNDEFINED;
-		wrap = TEX_2D_WRAP_UNDEFINED;
+		
+		*this = {};
 	}
 }

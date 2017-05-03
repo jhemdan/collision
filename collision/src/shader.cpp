@@ -63,9 +63,8 @@ namespace jaw
 	void ShaderPart::destroy()
 	{
 		glDeleteShader(id);
-		id = 0;
-		type = SHADER_UNDEFINED;
-		file_name = "";
+		
+		*this = {};
 	}
 
 	Shader::Shader()
@@ -180,8 +179,8 @@ namespace jaw
 	void Shader::destroy()
 	{
 		glDeleteProgram(id);
-		this->id = 0;
-		this->attribs = this->uniforms = {};
+		
+		*this = {};
 	}
 
 	int Shader::get_uniform(const std::string& name) const

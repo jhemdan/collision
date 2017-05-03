@@ -31,7 +31,8 @@ namespace jaw
 	void SoundSource::destroy()
 	{
 		alDeleteSources(1, &id);
-		id = 0;
+		
+		*this = {};
 	}
 
 	void SoundSource::queue_buffer(unsigned buff_id)

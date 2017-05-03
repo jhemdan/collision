@@ -97,9 +97,6 @@ namespace jaw
 
 	void Bitmap::destroy()
 	{
-		w = h = 0;
-		pitch = 0;
-		format = BITMAP_UNDEFINED;
-		data.clear();
+		*this = {};
 	}
 }

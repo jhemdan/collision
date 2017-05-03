@@ -51,6 +51,11 @@ namespace jaw
 			i[2] = c;
 		}
 
+		MeshTriangle operator+(unsigned offset) const
+		{
+			return { i[0] + offset, i[1] + offset, i[2] + offset };
+		}
+
 		unsigned i[3];
 	};
 

@@ -57,6 +57,7 @@ namespace jaw
 	void SoundBuffer::destroy()
 	{
 		alDeleteBuffers(1, &id);
-		id = 0;
+		
+		*this = {};
 	}
 }

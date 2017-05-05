@@ -46,24 +46,14 @@ namespace jaw
 
 		sprite_graphic.create(&sprite_texture);
 
-		/*
-		WavFile test_wav;
-		test_wav.create("../assets/video_game1.wav");
-
-		SoundBuffer sound_buffer;
-		sound_buffer.create(test_wav);
-
-		SoundSource sound_source;
-		sound_source.create();
-		sound_source.queue_buffer(sound_buffer.id);
-		sound_source.play();
-		*/
-
 		struct Player : Entity
 		{
 			Point dir;
 			SpriteGraphic sprite_g;
 			SpriteGraphic tree_g;
+
+			SoundBuffer* sound_buffer;
+			SoundSource* sound_source;
 
 			const float SPEED = 100.0f;
 
@@ -104,6 +94,16 @@ namespace jaw
 
 				anim = { "up", { 4 }, 8, true };
 				sprite_g.add_anim(anim);
+
+				WavFile test_wav;
+				test_wav.create("../assets/test_song1.wav");
+
+				sound_buffer = new SoundBuffer();
+				sound_buffer->create(test_wav);
+
+				sound_source = new SoundSource();
+				sound_source->create();
+				sound_source->queue_buffer(sound_buffer->id);
 			}
 
 			~Player()
@@ -196,6 +196,11 @@ namespace jaw
 				move(vcm::normalize((vcm::vec2)dir) * SPEED * dt);
 
 				set_layer(position.y + size.y - origin.y);
+
+				if (game.input.key_pressed(SDL_SCANCODE_SPACE))
+				{
+					sound_source->play();
+				}
 			}
 		};
 

@@ -20,6 +20,8 @@ namespace jaw
 		load_file(file_name, file_content);
 
 		const char* cstr = file_content.data();
+		const char* end_cstr = cstr + file_content.size();
+
 		uint32 ubuff32;
 		uint16 ubuff16;
 
@@ -80,6 +82,21 @@ namespace jaw
 								bits_per_sample = (int)ubuff16;
 
 								cstr += 2;
+
+								//skip LIST chunk
+								if (strncmp(cstr, "LIST", 4) == 0)
+								{
+									for (;;)
+									{
+										if (cstr == end_cstr)
+											break;
+
+										if (strncmp(cstr, "data", 4) == 0)
+											break;
+
+										++cstr;
+									}
+								}
 
 								if (strncmp(cstr, "data", 4) == 0)
 								{

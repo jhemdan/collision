@@ -96,6 +96,63 @@ namespace jaw
 		}
 	}
 
+	void Texture2d::recreate(const Bitmap& bitmap)
+	{
+		assert(id);
+
+		GLenum format_gl;
+
+		Tex2dFormat tex_fmt = TEX_2D_FORMAT_UNDEFINED;
+		switch (bitmap.format)
+		{
+		case BITMAP_GRAY:
+			format_gl = GL_RED;
+			tex_fmt = TEX_2D_FORMAT_R;
+			break;
+		case BITMAP_RGB:
+			format_gl = GL_RGB;
+			tex_fmt = TEX_2D_FORMAT_RGB;
+			break;
+		default:
+			assert(false);
+		case BITMAP_RGBA:
+			format_gl = GL_RGBA;
+			tex_fmt = TEX_2D_FORMAT_RGBA;
+			break;
+		}
+
+		Tex2dFormat old_fmt = this->format;
+		int old_w = this->w;
+		int old_h = this->h;
+
+		this->w = bitmap.w;
+		this->h = bitmap.h;
+		this->format = tex_fmt;
+
+		glBindTexture(GL_TEXTURE_2D, this->id);
+
+		if (old_fmt != this->format || old_w != this->w || old_h != this->h)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, format_gl, this->w, this->h, 0, format_gl, GL_UNSIGNED_BYTE, bitmap.data.data());
+		}
+		else
+		{
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->w, this->h, format_gl, GL_UNSIGNED_BYTE, bitmap.data.data());
+		}
+
+		int gl_error = glGetError();
+		if (gl_error || !this->id)
+		{
+			log_write("Failed to recreate texture. OpenGL error: ");
+			log_write(gl_error);
+			log_write("\n");
+
+			destroy();
+
+			throw Exception("Could not recreate texture.");
+		}
+	}
+
 	void Texture2d::destroy()
 	{
 		glDeleteTextures(1, &id);

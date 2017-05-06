@@ -49,6 +49,8 @@ namespace jaw
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		SDL_GL_SetSwapInterval(0);
+
 		cam_proj = vcm::orthographic(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
 
 		renderer.init();
@@ -69,6 +71,9 @@ namespace jaw
 			SoundBuffer* sound_buffer;
 			SoundSource* sound_source;
 
+			WavFile test_wav;
+			Bitmap kick_bmp;
+			Texture2d* kick_tex;
 			SpriteGraphic kick_tex_graphic;
 
 			const float SPEED = 100.0f;
@@ -111,12 +116,9 @@ namespace jaw
 				anim = { "up", { 4 }, 8, true };
 				sprite_g.add_anim(anim);
 
-				WavFile test_wav;
 				test_wav.create("../assets/kick.wav");
 
-				Bitmap kick_bmp;
-
-				auto gen_kick = [&test_wav, &kick_bmp]()
+				auto gen_kick = [](WavFile& test_wav, Bitmap& kick_bmp)
 				{
 					test_wav.num_channels = 1;
 					test_wav.bits_per_sample = 16;
@@ -171,139 +173,12 @@ namespace jaw
 
 						data16[i] = value16;
 					}
-
-					kick_bmp.h = 100;
-					kick_bmp.w = 400;
-					kick_bmp.format = BITMAP_RGBA;
-					kick_bmp.calc_pitch();
-					kick_bmp.data.resize(kick_bmp.pitch * kick_bmp.h);
-
-					auto set_pixel = [&kick_bmp](int x, int y, unsigned value)
-					{
-						if (x < 0 || y < 0)
-							return;
-						if (x >= kick_bmp.w || y >= kick_bmp.h)
-							return;
-
-						int i = y * kick_bmp.pitch + x * 4;
-
-						kick_bmp.data[i] = value & 0x000000ff; //r
-						kick_bmp.data[i + 1] = (value & 0x0000ff00) >> 8; //g
-						kick_bmp.data[i + 2] = (value & 0x00ff0000) >> 16; //b
-						kick_bmp.data[i + 3] = (value & 0xff000000) >> 24; //a
-					};
-
-					auto draw_line = [set_pixel](int x1, int y1, int x2, int y2, unsigned value)
-					{
-						int diffx = x2 - x1;
-
-						if (diffx != 0)
-						{
-							float slope = (float)(y2 - y1) / diffx;							
-							int sign = diffx > 0 ? 1 : (diffx < 0 ? -1 : 0);
-							int x = x1;
-							
-							bool has_last_y = false;
-							int last_y;
-
-							for (;;)
-							{
-								int y = y1 + (int)round((x - x1) * slope);
-
-								if (has_last_y && y - last_y != 0)
-								{
-									int last_y_sign = y - last_y;
-									last_y_sign = last_y_sign < 0 ? -1 : (last_y_sign > 0 ? 1 : 0);
-
-									int z = last_y + last_y_sign;
-									for (;;)
-									{
-										set_pixel(x, z, value);
-
-										if (z == y)
-											break;
-
-										z += last_y_sign;
-									}
-								}
-								else
-								{
-									set_pixel(x, y, value);
-								}
-
-								if (x == x2)
-									break;
-
-								x += sign;
-
-								last_y = y;
-								has_last_y = true;
-							}
-						}
-						else
-						{
-							int diffy = y2 - y1;
-							int sign = diffy > 0 ? 1 : (diffy < 0 ? -1 : 0);
-							int y = y1;
-							for (;;)
-							{
-								int x = x1;
-								set_pixel(x, y, value);
-								if (y == y2)
-									break;
-								y += sign;
-							}
-						}
-					};
-
-					for (int x = 0; x < kick_bmp.w; ++x)
-					{
-						for (int y = 0; y < kick_bmp.h; ++y)
-						{
-							set_pixel(x, y, 0xaaffffff);
-						}
-					}
-
-					int sample_scalar = (int)(num_samples / 400.0f);
-					int16* wav_data16 = (int16*)test_wav.data.data();
-					bool has_prev_val = false;
-					int prev_val;
-					for (int x = 0; x < 400; ++x)
-					{
-						int i = x * sample_scalar;
-
-						float value = (float)wav_data16[i] / SHRT_MAX;
-						int valuei = (int)round(value * 50) + 50;
-
-						if (valuei >= 100)
-							valuei = 99;
-
-						if (has_prev_val)
-						{
-							draw_line(x - 1, prev_val, x, valuei, 0xff0000ff);
-						}
-
-						set_pixel(x, valuei, 0xffff00ff);
-
-						prev_val = valuei;
-						has_prev_val = true;
-					}
-
-					int limit = 100;
-					for (int i = 0; i < limit; ++i)
-					{
-						float angle = 360.0f / limit * i;
-						float x1 = 200;
-						float y1 = 50;
-						float x2 = x1 + cos(angle * vcm::RAD) * 100;
-						float y2 = y1 + sin(angle * vcm::RAD) * 100;
-						draw_line((int)round(x1), (int)round(y1), (int)round(x2), (int)round(y2), 0xffff00ff);
-					}
 				};
 
-				gen_kick();
+				gen_kick(test_wav, kick_bmp);
+				gen_kick_bmp();
 
-				auto kick_tex = new Texture2d();
+				kick_tex = new Texture2d();
 				kick_tex->create(kick_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 				kick_tex_graphic.create(kick_tex);
 
@@ -313,6 +188,62 @@ namespace jaw
 				sound_source = new SoundSource();
 				sound_source->create();
 				sound_source->queue_buffer(sound_buffer->id);
+			}
+
+			void gen_kick_bmp(float variable = 0)
+			{
+				int num_samples = (int)(test_wav.data.size() / 2);
+
+				kick_bmp.h = 100;
+				kick_bmp.w = 400;
+				kick_bmp.format = BITMAP_RGBA;
+				kick_bmp.calc_pitch();
+				kick_bmp.data.resize(kick_bmp.pitch * kick_bmp.h);
+
+				for (int x = 0; x < kick_bmp.w; ++x)
+				{
+					for (int y = 0; y < kick_bmp.h; ++y)
+					{
+						kick_bmp.set_pixel(x, y, 0xaaffffff);
+					}
+				}
+
+				int sample_scalar = (int)(num_samples / 400.0f);
+				int16* wav_data16 = (int16*)test_wav.data.data();
+				bool has_prev_val = false;
+				int prev_val;
+				for (int x = 0; x < 400; ++x)
+				{
+					int i = x * sample_scalar;
+
+					float value = (float)wav_data16[i] / SHRT_MAX;
+					int valuei = (int)round(value * 50) + 50;
+
+					if (valuei >= 100)
+						valuei = 99;
+
+					if (has_prev_val)
+					{
+						kick_bmp.draw_line(x - 1, prev_val, x, valuei, 0xff0000ff);
+						kick_bmp.set_pixel(x - 1, prev_val, 0xffff00ff);
+					}
+
+					kick_bmp.set_pixel(x, valuei, 0xffff00ff);
+
+					prev_val = valuei;
+					has_prev_val = true;
+				}
+
+				int limit = 100;
+				for (int i = 0; i < limit; ++i)
+				{
+					float angle = 360.0f / limit * i + variable;
+					float x1 = 200;
+					float y1 = 50;
+					float x2 = x1 + cos(angle * vcm::RAD) * 100;
+					float y2 = y1 + sin(angle * vcm::RAD) * 100;
+					kick_bmp.draw_line((int)round(x1), (int)round(y1), (int)round(x2), (int)round(y2), 0xff00ffff);
+				}
 			}
 
 			~Player()
@@ -415,6 +346,12 @@ namespace jaw
 				{
 					sound_source->play();
 				}
+
+				static float variable = 0.0f;
+				variable += dt;
+				gen_kick_bmp(variable);
+
+				kick_tex->recreate(kick_bmp);
 			}
 		};
 

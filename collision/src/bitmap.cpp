@@ -104,4 +104,91 @@ namespace jaw
 	{
 		this->pitch = multiple_of_four(this->w * bytes_per_pixel(this->format));
 	}
+
+	void Bitmap::set_pixel(int x, int y, unsigned value)
+	{
+		assert(!data.empty());
+
+		if (x < 0 || y < 0)
+			return;
+		if (x >= w || y >= h)
+			return;
+
+		int bpp = bytes_per_pixel(format);
+		int i = y * pitch + x * bpp;
+
+		data[i] = value & 0x000000ff; //gray/r
+		if (bpp >= 3)
+		{
+			data[i + 1] = (value & 0x0000ff00) >> 8; //g
+			data[i + 2] = (value & 0x00ff0000) >> 16; //b
+			if (bpp == 4)
+			{
+				data[i + 3] = (value & 0xff000000) >> 24; //a
+			}
+		}
+	};
+
+	void Bitmap::draw_line(int x1, int y1, int x2, int y2, unsigned value)
+	{
+		int diffx = x2 - x1;
+
+		if (diffx != 0)
+		{
+			float slope = (float)(y2 - y1) / diffx;
+			int sign = diffx > 0 ? 1 : (diffx < 0 ? -1 : 0);
+			int x = x1;
+
+			bool has_last_y = false;
+			int last_y;
+
+			for (;;)
+			{
+				int y = y1 + (int)round((x - x1) * slope);
+
+				if (has_last_y && y - last_y != 0)
+				{
+					int last_y_sign = y - last_y;
+					last_y_sign = last_y_sign < 0 ? -1 : (last_y_sign > 0 ? 1 : 0);
+
+					int z = last_y + last_y_sign;
+					for (;;)
+					{
+						set_pixel(x, z, value);
+
+						if (z == y)
+							break;
+
+						z += last_y_sign;
+					}
+				}
+				else
+				{
+					set_pixel(x, y, value);
+				}
+
+				if (x == x2)
+					break;
+
+				x += sign;
+
+				last_y = y;
+				has_last_y = true;
+			}
+		}
+		else
+		{
+			int diffy = y2 - y1;
+			int sign = diffy > 0 ? 1 : (diffy < 0 ? -1 : 0);
+			int y = y1;
+			for (;;)
+			{
+				int x = x1;
+				set_pixel(x, y, value);
+				if (y == y2)
+					break;
+				y += sign;
+			}
+		}
+	};
 }

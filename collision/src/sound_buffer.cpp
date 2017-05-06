@@ -3,6 +3,7 @@
 #include "exception.h"
 
 #include <al.h>
+#include <assert.h>
 
 namespace jaw
 {
@@ -11,14 +12,17 @@ namespace jaw
 		id = 0;
 	}
 
-	void SoundBuffer::create(const WavFile& wav_file)
+	void SoundBuffer::create(int num_channels, int sample_rate, int bits_per_sample, const ubyte* data, unsigned data_size)
 	{
+		assert(num_channels == 1 || num_channels == 2);
+		assert(bits_per_sample == 8 || bits_per_sample == 16);
+
 		alGenBuffers(1, &this->id);
 
 		ALenum al_format;
-		if (wav_file.num_channels == 2)
+		if (num_channels == 2)
 		{
-			if (wav_file.bits_per_sample == 8)
+			if (bits_per_sample == 8)
 			{
 				al_format = AL_FORMAT_STEREO8;
 			}
@@ -29,7 +33,7 @@ namespace jaw
 		}
 		else
 		{
-			if (wav_file.bits_per_sample == 8)
+			if (bits_per_sample == 8)
 			{
 				al_format = AL_FORMAT_MONO8;
 			}
@@ -39,18 +43,32 @@ namespace jaw
 			}
 		}
 
-		alBufferData(this->id, al_format, wav_file.data.data(), wav_file.data.size(), wav_file.sample_rate);
+		alBufferData(this->id, al_format, data, data_size, sample_rate);
 
 		int al_error = alGetError();
 		if (al_error)
 		{
-			log_write("Could not create AL buffer for WAV file \"" + wav_file.file_name + "\". OpenAL error: ");
+			log_write("Could not create AL buffer. OpenAL error: ");
 			log_write(al_error);
 			log_write("\n");
 
 			destroy();
 
 			throw Exception("Could not create sound buffer.");
+		}
+	}
+
+	void SoundBuffer::create(const WavFile& wav_file)
+	{
+		try
+		{
+			create(wav_file.num_channels, wav_file.sample_rate, wav_file.bits_per_sample, wav_file.data.data(), wav_file.data.size());
+		}
+		catch (const Exception& e)
+		{
+			log_line("Failed to create sound buffer for WAV file \"" + wav_file.file_name + "\"");
+
+			throw e;
 		}
 	}
 

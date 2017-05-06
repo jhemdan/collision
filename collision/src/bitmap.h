@@ -22,6 +22,9 @@ namespace jaw
 		void create(const std::string& file_name);
 		void destroy();
 
+		//calcs the pitch from w and format
+		void calc_pitch();
+
 		int w, h;
 		int pitch;
 		BitmapFormat format;

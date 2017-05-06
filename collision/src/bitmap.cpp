@@ -77,7 +77,7 @@ namespace jaw
 		this->w = surface->w;
 		this->h = surface->h;
 		this->format = format;
-		this->pitch = multiple_of_four(this->w * bytes_per_pixel(this->format));
+		calc_pitch();
 
 		this->data.resize(this->pitch * this->h);
 
@@ -98,5 +98,10 @@ namespace jaw
 	void Bitmap::destroy()
 	{
 		*this = {};
+	}
+
+	void Bitmap::calc_pitch()
+	{
+		this->pitch = multiple_of_four(this->w * bytes_per_pixel(this->format));
 	}
 }

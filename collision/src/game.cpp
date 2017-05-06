@@ -9,6 +9,8 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
+#include <vecmath/pi.hpp>
+#include <assert.h>
 
 namespace jaw
 {
@@ -28,6 +30,18 @@ namespace jaw
 	{
 		this->window = window;
 		this->running = running;
+	}
+
+	float square_wave(float x)
+	{
+		float val = sin(x);
+		int sign = val < 0 ? -1 : (val > 0 ? 1 : 0);
+		return (float)sign;
+	}
+
+	float mix_wave(float val_a, float val_b, float amount)
+	{
+		return val_a + (val_b - val_a) * amount;
 	}
 
 	void Game::init()
@@ -54,6 +68,8 @@ namespace jaw
 
 			SoundBuffer* sound_buffer;
 			SoundSource* sound_source;
+
+			SpriteGraphic kick_tex_graphic;
 
 			const float SPEED = 100.0f;
 
@@ -96,7 +112,200 @@ namespace jaw
 				sprite_g.add_anim(anim);
 
 				WavFile test_wav;
-				test_wav.create("../assets/test_song1.wav");
+				test_wav.create("../assets/kick.wav");
+
+				Bitmap kick_bmp;
+
+				auto gen_kick = [&test_wav, &kick_bmp]()
+				{
+					test_wav.num_channels = 1;
+					test_wav.bits_per_sample = 16;
+					test_wav.data = {};
+
+					float len = 1.0f;
+					int num_samples = (int)(test_wav.sample_rate * len);
+					test_wav.data.resize(num_samples * 2);
+
+					float tscalar = 1.0f / test_wav.sample_rate;
+					const int16 MAX_16 = SHRT_MAX;
+
+					int16* data16 = (int16*)test_wav.data.data();
+
+					float freqs[] =
+					{
+						200.0f, 100.0f, 80.0f
+					};
+
+					float times[] =
+					{
+						0.05f, 0.5f, 0.45f
+					};
+
+					float start_freq = 66.66666667f;
+					float end_freq = 60;
+
+					float start_amp = 0.9f;
+					float end_amp = 0.05f;
+
+					for (int i = 0; i < num_samples; ++i)
+					{
+						float t = i * tscalar;
+
+						float freq = start_freq + (end_freq - start_freq) * (t / len);
+						float ampl = start_amp + (end_amp - start_amp) * (t / len);
+
+						float x = (t * freq) * (2 * vcm::PI);
+
+						float value_sin = sin(x);
+						float value_square = square_wave(x);
+						float value_total = mix_wave(value_sin, value_square, 0.0f);
+						
+						float value = value_total;
+
+						value *= ampl;
+
+						float volume = 0.3f;
+						value *= volume;
+
+						int16 value16 = (int16)(value * MAX_16);
+
+						data16[i] = value16;
+					}
+
+					kick_bmp.h = 100;
+					kick_bmp.w = 400;
+					kick_bmp.format = BITMAP_RGBA;
+					kick_bmp.calc_pitch();
+					kick_bmp.data.resize(kick_bmp.pitch * kick_bmp.h);
+
+					auto set_pixel = [&kick_bmp](int x, int y, unsigned value)
+					{
+						if (x < 0 || y < 0)
+							return;
+						if (x >= kick_bmp.w || y >= kick_bmp.h)
+							return;
+
+						int i = y * kick_bmp.pitch + x * 4;
+
+						kick_bmp.data[i] = value & 0x000000ff; //r
+						kick_bmp.data[i + 1] = (value & 0x0000ff00) >> 8; //g
+						kick_bmp.data[i + 2] = (value & 0x00ff0000) >> 16; //b
+						kick_bmp.data[i + 3] = (value & 0xff000000) >> 24; //a
+					};
+
+					auto draw_line = [set_pixel](int x1, int y1, int x2, int y2, unsigned value)
+					{
+						int diffx = x2 - x1;
+
+						if (diffx != 0)
+						{
+							float slope = (float)(y2 - y1) / diffx;							
+							int sign = diffx > 0 ? 1 : (diffx < 0 ? -1 : 0);
+							int x = x1;
+							
+							bool has_last_y = false;
+							int last_y;
+
+							for (;;)
+							{
+								int y = y1 + (int)round((x - x1) * slope);
+
+								if (has_last_y && y - last_y != 0)
+								{
+									int last_y_sign = y - last_y;
+									last_y_sign = last_y_sign < 0 ? -1 : (last_y_sign > 0 ? 1 : 0);
+
+									int z = last_y + last_y_sign;
+									for (;;)
+									{
+										set_pixel(x, z, value);
+
+										if (z == y)
+											break;
+
+										z += last_y_sign;
+									}
+								}
+								else
+								{
+									set_pixel(x, y, value);
+								}
+
+								if (x == x2)
+									break;
+
+								x += sign;
+
+								last_y = y;
+								has_last_y = true;
+							}
+						}
+						else
+						{
+							int diffy = y2 - y1;
+							int sign = diffy > 0 ? 1 : (diffy < 0 ? -1 : 0);
+							int y = y1;
+							for (;;)
+							{
+								int x = x1;
+								set_pixel(x, y, value);
+								if (y == y2)
+									break;
+								y += sign;
+							}
+						}
+					};
+
+					for (int x = 0; x < kick_bmp.w; ++x)
+					{
+						for (int y = 0; y < kick_bmp.h; ++y)
+						{
+							set_pixel(x, y, 0xaaffffff);
+						}
+					}
+
+					int sample_scalar = (int)(num_samples / 400.0f);
+					int16* wav_data16 = (int16*)test_wav.data.data();
+					bool has_prev_val = false;
+					int prev_val;
+					for (int x = 0; x < 400; ++x)
+					{
+						int i = x * sample_scalar;
+
+						float value = (float)wav_data16[i] / SHRT_MAX;
+						int valuei = (int)round(value * 50) + 50;
+
+						if (valuei >= 100)
+							valuei = 99;
+
+						if (has_prev_val)
+						{
+							draw_line(x - 1, prev_val, x, valuei, 0xff0000ff);
+						}
+
+						set_pixel(x, valuei, 0xffff00ff);
+
+						prev_val = valuei;
+						has_prev_val = true;
+					}
+
+					int limit = 100;
+					for (int i = 0; i < limit; ++i)
+					{
+						float angle = 360.0f / limit * i;
+						float x1 = 200;
+						float y1 = 50;
+						float x2 = x1 + cos(angle * vcm::RAD) * 100;
+						float y2 = y1 + sin(angle * vcm::RAD) * 100;
+						draw_line((int)round(x1), (int)round(y1), (int)round(x2), (int)round(y2), 0xffff00ff);
+					}
+				};
+
+				gen_kick();
+
+				auto kick_tex = new Texture2d();
+				kick_tex->create(kick_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+				kick_tex_graphic.create(kick_tex);
 
 				sound_buffer = new SoundBuffer();
 				sound_buffer->create(test_wav);
@@ -163,6 +372,11 @@ namespace jaw
 
 					world->add_entity(box3);
 				}
+
+				auto kick_entity = new Entity();
+				kick_entity->graphic = &kick_tex_graphic;
+				kick_entity->set_layer(1000000000);
+				world->add_entity(kick_entity);
 			}
 
 			void update(float dt) override

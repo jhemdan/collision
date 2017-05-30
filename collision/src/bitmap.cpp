@@ -127,7 +127,7 @@ namespace jaw
 				data[i + 3] = (value & 0xff000000) >> 24; //a
 			}
 		}
-	};
+	}
 
 	void Bitmap::draw_line(int x1, int y1, int x2, int y2, unsigned value)
 	{
@@ -190,5 +190,5 @@ namespace jaw
 				y += sign;
 			}
 		}
-	};
+	}
 }

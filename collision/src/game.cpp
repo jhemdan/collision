@@ -5,12 +5,14 @@
 #include "sound_buffer.h"
 #include "sound_source.h"
 #include "tilemap_graphic.h"
+#include "kick_gen.h"
 
 #include <iostream>
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <vecmath/pi.hpp>
 #include <assert.h>
+#include <vector>
 
 namespace jaw
 {
@@ -30,18 +32,6 @@ namespace jaw
 	{
 		this->window = window;
 		this->running = running;
-	}
-
-	float square_wave(float x)
-	{
-		float val = sin(x);
-		int sign = val < 0 ? -1 : (val > 0 ? 1 : 0);
-		return (float)sign;
-	}
-
-	float mix_wave(float val_a, float val_b, float amount)
-	{
-		return val_a + (val_b - val_a) * amount;
 	}
 
 	void Game::init()
@@ -118,13 +108,17 @@ namespace jaw
 
 				test_wav.create("../assets/kick.wav");
 
-				auto gen_kick = [](WavFile& test_wav, Bitmap& kick_bmp)
+				float len = 0.25f;
+
+				KickWave kick_wave;
+				kick_wave.generate(len);
+
+				auto gen_kick = [len](const KickWave& kick_wave, WavFile& test_wav)
 				{
 					test_wav.num_channels = 1;
 					test_wav.bits_per_sample = 16;
 					test_wav.data = {};
 
-					float len = 1.0f;
 					int num_samples = (int)(test_wav.sample_rate * len);
 					test_wav.data.resize(num_samples * 2);
 
@@ -133,41 +127,11 @@ namespace jaw
 
 					int16* data16 = (int16*)test_wav.data.data();
 
-					float freqs[] =
-					{
-						200.0f, 100.0f, 80.0f
-					};
-
-					float times[] =
-					{
-						0.05f, 0.5f, 0.45f
-					};
-
-					float start_freq = 66.66666667f;
-					float end_freq = 60;
-
-					float start_amp = 0.9f;
-					float end_amp = 0.05f;
-
 					for (int i = 0; i < num_samples; ++i)
 					{
 						float t = i * tscalar;
 
-						float freq = start_freq + (end_freq - start_freq) * (t / len);
-						float ampl = start_amp + (end_amp - start_amp) * (t / len);
-
-						float x = (t * freq) * (2 * vcm::PI);
-
-						float value_sin = sin(x);
-						float value_square = square_wave(x);
-						float value_total = mix_wave(value_sin, value_square, 0.0f);
-						
-						float value = value_total;
-
-						value *= ampl;
-
-						float volume = 0.3f;
-						value *= volume;
+						float value = kick_wave.get_value(t);
 
 						int16 value16 = (int16)(value * MAX_16);
 
@@ -175,8 +139,9 @@ namespace jaw
 					}
 				};
 
-				gen_kick(test_wav, kick_bmp);
-				gen_kick_bmp();
+				gen_kick(kick_wave, test_wav);
+
+				kick_wave.gen_bmp(kick_bmp);
 
 				kick_tex = new Texture2d();
 				kick_tex->create(kick_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
@@ -188,62 +153,6 @@ namespace jaw
 				sound_source = new SoundSource();
 				sound_source->create();
 				sound_source->queue_buffer(sound_buffer->id);
-			}
-
-			void gen_kick_bmp(float variable = 0)
-			{
-				int num_samples = (int)(test_wav.data.size() / 2);
-
-				kick_bmp.h = 100;
-				kick_bmp.w = 400;
-				kick_bmp.format = BITMAP_RGBA;
-				kick_bmp.calc_pitch();
-				kick_bmp.data.resize(kick_bmp.pitch * kick_bmp.h);
-
-				for (int x = 0; x < kick_bmp.w; ++x)
-				{
-					for (int y = 0; y < kick_bmp.h; ++y)
-					{
-						kick_bmp.set_pixel(x, y, 0xaaffffff);
-					}
-				}
-
-				int sample_scalar = (int)(num_samples / 400.0f);
-				int16* wav_data16 = (int16*)test_wav.data.data();
-				bool has_prev_val = false;
-				int prev_val;
-				for (int x = 0; x < 400; ++x)
-				{
-					int i = x * sample_scalar;
-
-					float value = (float)wav_data16[i] / SHRT_MAX;
-					int valuei = (int)round(value * 50) + 50;
-
-					if (valuei >= 100)
-						valuei = 99;
-
-					if (has_prev_val)
-					{
-						kick_bmp.draw_line(x - 1, prev_val, x, valuei, 0xff0000ff);
-						kick_bmp.set_pixel(x - 1, prev_val, 0xffff00ff);
-					}
-
-					kick_bmp.set_pixel(x, valuei, 0xffff00ff);
-
-					prev_val = valuei;
-					has_prev_val = true;
-				}
-
-				int limit = 100;
-				for (int i = 0; i < limit; ++i)
-				{
-					float angle = 360.0f / limit * i + variable;
-					float x1 = 200;
-					float y1 = 50;
-					float x2 = x1 + cos(angle * vcm::RAD) * 100;
-					float y2 = y1 + sin(angle * vcm::RAD) * 100;
-					kick_bmp.draw_line((int)round(x1), (int)round(y1), (int)round(x2), (int)round(y2), 0xff00ffff);
-				}
 			}
 
 			~Player()
@@ -346,12 +255,6 @@ namespace jaw
 				{
 					sound_source->play();
 				}
-
-				static float variable = 0.0f;
-				variable += dt;
-				gen_kick_bmp(variable);
-
-				kick_tex->recreate(kick_bmp);
 			}
 		};
 

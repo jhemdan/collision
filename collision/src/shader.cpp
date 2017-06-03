@@ -2,9 +2,9 @@
 #include "load_file.h"
 #include "log.h"
 #include "exception.h"
+#include "jaw_macros.h"
 
 #include <GL/glew.h>
-#include <assert.h>
 
 namespace jaw
 {
@@ -19,7 +19,7 @@ namespace jaw
 		std::string src_code;
 		load_file(file_name, src_code);
 
-		assert(type != SHADER_UNDEFINED);
+		JAW_ASSERT_MSG(type != SHADER_UNDEFINED, "Bad type for ShaderPart::create()");
 		GLenum gl_type = GL_VERTEX_SHADER;
 		if (type == SHADER_FRAGMENT)
 			gl_type = GL_FRAGMENT_SHADER;

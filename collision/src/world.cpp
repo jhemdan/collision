@@ -1,7 +1,7 @@
 #include "world.h"
 #include "entity.h"
+#include "jaw_macros.h"
 
-#include <assert.h>
 #include <algorithm>
 
 namespace jaw
@@ -34,7 +34,7 @@ namespace jaw
 			{
 				auto e = _to_add[i];
 
-				assert(e->world == nullptr || e->world == this);
+				JAW_ASSERT_MSG(e->world == nullptr || e->world == this, "Bad entity world value for World::flush()");
 				if (!e->world)
 				{
 					entities.push_back(e);

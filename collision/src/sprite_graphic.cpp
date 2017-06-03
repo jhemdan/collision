@@ -3,8 +3,7 @@
 #include "entity.h"
 #include "world.h"
 #include "exception.h"
-
-#include <assert.h>
+#include "jaw_macros.h"
 
 namespace jaw
 {
@@ -23,7 +22,7 @@ namespace jaw
 
 	void SpriteGraphic::create(Texture2d* tex)
 	{
-		assert(tex);
+		JAW_ASSERT_MSG(tex, "No texture for SpriteGraphic::create()");
 
 		this->texture = tex;
 
@@ -157,7 +156,7 @@ namespace jaw
 
 	void SpriteGraphic::add_anim(const SpriteAnim& anim)
 	{
-		assert(anim.frames.size());
+		JAW_ASSERT_MSG(anim.frames.size(), "No frames for SpriteGraphic::add_anim()");
 
 		if (get_anim(anim.name) == -1)
 		{

@@ -20,6 +20,7 @@ namespace jaw
 
 		//throws exception on failure
 		void create(const std::string& file_name);
+		void create(int w, int h, BitmapFormat format);
 		void destroy();
 
 		//calcs the pitch from w and format

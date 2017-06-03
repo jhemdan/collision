@@ -8,5 +8,6 @@ namespace jaw
 	void init_log(const std::string& file_name);
 	void log_write(const std::string& msg);
 	void log_write(int i);
+	void log_write(float f);
 	void log_line(const std::string& line);
 }

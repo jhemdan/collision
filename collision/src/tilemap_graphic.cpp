@@ -3,8 +3,7 @@
 #include "renderer.h"
 #include "entity.h"
 #include "world.h"
-
-#include <assert.h>
+#include "jaw_macros.h"
 
 namespace jaw
 {
@@ -18,7 +17,7 @@ namespace jaw
 
 	void TilemapGraphic::create(Texture2d* tex, int w, int h, int tile_w, int tile_h)
 	{
-		assert(tex);
+		JAW_ASSERT_MSG(tex, "No texture for TilemapGraphic::create()");
 	
 		this->texture = tex;
 
@@ -44,8 +43,8 @@ namespace jaw
 
 	void TilemapGraphic::set_tile(int x, int y, int value)
 	{
-		assert(x >= 0 && x < w);
-		assert(y >= 0 && y < h);
+		JAW_ASSERT_MSG(x >= 0 && x < w, "Bad x value for TilemapGraphic::set_tile()");
+		JAW_ASSERT_MSG(y >= 0 && y < h, "Bad y value for TilemapGraphic::set_tile()");
 
 		tiles[y * w + x] = value;
 
@@ -54,8 +53,8 @@ namespace jaw
 
 	int TilemapGraphic::get_tile(int x, int y) const
 	{
-		assert(x >= 0 && x < w);
-		assert(y >= 0 && y < h);
+		JAW_ASSERT_MSG(x >= 0 && x < w, "Bad x value for TilemapGraphic::set_tile()");
+		JAW_ASSERT_MSG(y >= 0 && y < h, "Bad y value for TilemapGraphic::set_tile()");
 
 		return tiles[y * w + x];
 	}

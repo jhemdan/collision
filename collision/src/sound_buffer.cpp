@@ -1,9 +1,9 @@
 #include "sound_buffer.h"
 #include "log.h"
 #include "exception.h"
+#include "jaw_macros.h"
 
 #include <al.h>
-#include <assert.h>
 
 namespace jaw
 {
@@ -14,8 +14,8 @@ namespace jaw
 
 	void SoundBuffer::create(int num_channels, int sample_rate, int bits_per_sample, const ubyte* data, unsigned data_size)
 	{
-		assert(num_channels == 1 || num_channels == 2);
-		assert(bits_per_sample == 8 || bits_per_sample == 16);
+		JAW_ASSERT_MSG(num_channels == 1 || num_channels == 2, "Bad num_channels for SoundBuffer::create()");
+		JAW_ASSERT_MSG(bits_per_sample == 8 || bits_per_sample == 16, "Bad bits_per_sample for SoundBuffer::create()");
 
 		alGenBuffers(1, &this->id);
 

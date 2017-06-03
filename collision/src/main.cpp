@@ -2,11 +2,11 @@
 #include "log.h"
 #include "load_file.h"
 #include "exception.h"
+#include "jaw_macros.h"
 
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <assert.h>
 #include <chrono>
 
 #include <al.h>
@@ -22,14 +22,14 @@ int main(int argc, char** argv)
 	}
 	catch (const jaw::Exception&)
 	{
-		assert(false);
+		JAW_ASSERT_MSG(false, "Couldn't init log.");
 	}
 
 	int status = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
-	assert(!status);
+	JAW_ASSERT_MSG(!status, "Bad status for SDL_Init");
 
 	status = IMG_Init(IMG_INIT_PNG);
-	assert(status == IMG_INIT_PNG);
+	JAW_ASSERT_MSG(status == IMG_INIT_PNG, "Bad status for IMG_Init");
 
 	const char* title = "A Side Quest";
 	int x = SDL_WINDOWPOS_UNDEFINED;
@@ -40,19 +40,19 @@ int main(int argc, char** argv)
 
 	auto window = SDL_CreateWindow(title, x, y, w, h, flags);
 	auto context = SDL_GL_CreateContext(window);
-	assert(window && context);
+	JAW_ASSERT_MSG(window && context, "Couldn't create window/OpenGL context.");
 
 	status = glewInit();
-	assert(status == GLEW_OK);
+	JAW_ASSERT_MSG(status == GLEW_OK, "Bad status for glewInit()");
 
 	ALCdevice* al_device;
 	ALCcontext* al_context;
 
 	al_device = alcOpenDevice(nullptr);
-	assert(al_device);
+	JAW_ASSERT_MSG(al_device, "Couldn't create al_device");
 
 	al_context = alcCreateContext(al_device, nullptr);
-	assert(al_context);
+	JAW_ASSERT_MSG(al_context, "Couldn't create al_context");
 
 	alcMakeContextCurrent(al_context);
 

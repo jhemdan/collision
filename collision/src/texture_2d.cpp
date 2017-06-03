@@ -1,9 +1,9 @@
 #include "texture_2d.h"
 #include "log.h"
 #include "exception.h"
+#include "jaw_macros.h"
 
 #include <GL/glew.h>
-#include <assert.h>
 
 namespace jaw
 {
@@ -18,6 +18,10 @@ namespace jaw
 
 	void Texture2d::create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap)
 	{
+		JAW_ASSERT_MSG(bitmap.w > 0 && bitmap.h > 0, "Bad bitmap size for Texture2d::create()");
+		JAW_ASSERT_MSG(bitmap.data.size(), "Bad bitmap data for Texture2d::create()");
+		JAW_ASSERT_MSG(bitmap.pitch, "Bad bitmap pitch for Texture2d::create()");
+
 		GLenum min_gl, mag_gl, wrap_gl;
 		GLenum format_gl;
 
@@ -28,7 +32,7 @@ namespace jaw
 			mag_gl = GL_LINEAR;
 			break;
 		default:
-			assert(false);
+			JAW_ASSERT_MSG(false, "Bad filter for Texture2d::create()");
 		case TEX_2D_FILTER_NEAREST:
 			min_gl = GL_NEAREST;
 			mag_gl = GL_NEAREST;
@@ -41,7 +45,7 @@ namespace jaw
 			wrap_gl = GL_CLAMP_TO_EDGE;
 			break;
 		default:
-			assert(false);
+			JAW_ASSERT_MSG(false, "Bad wrap for Texture2d::create()");
 		case TEX_2D_WRAP_REPEAT:
 			wrap_gl = GL_REPEAT;
 			break;
@@ -59,7 +63,7 @@ namespace jaw
 			tex_fmt = TEX_2D_FORMAT_RGB;
 			break;
 		default:
-			assert(false);
+			JAW_ASSERT_MSG(false, "Bad bitmap format for Texture2d::create()");
 		case BITMAP_RGBA:
 			format_gl = GL_RGBA;
 			tex_fmt = TEX_2D_FORMAT_RGBA;
@@ -86,19 +90,19 @@ namespace jaw
 		int gl_error = glGetError();
 		if (gl_error || !this->id)
 		{
-			log_write("Failed to create texture. OpenGL error: ");
+			log_write("Failed to create texture2d. OpenGL error: ");
 			log_write(gl_error);
 			log_write("\n");
 
 			destroy();
 
-			throw Exception("Could not create texture.");
+			throw Exception("Could not create texture2d.");
 		}
 	}
 
 	void Texture2d::recreate(const Bitmap& bitmap)
 	{
-		assert(id);
+		JAW_ASSERT_MSG(id, "No id in Texture2d::recreate()");
 
 		GLenum format_gl;
 
@@ -114,7 +118,7 @@ namespace jaw
 			tex_fmt = TEX_2D_FORMAT_RGB;
 			break;
 		default:
-			assert(false);
+			JAW_ASSERT_MSG(false, "Bad bitmap format in Texture2d::recreate()");
 		case BITMAP_RGBA:
 			format_gl = GL_RGBA;
 			tex_fmt = TEX_2D_FORMAT_RGBA;
@@ -143,13 +147,13 @@ namespace jaw
 		int gl_error = glGetError();
 		if (gl_error || !this->id)
 		{
-			log_write("Failed to recreate texture. OpenGL error: ");
+			log_write("Failed to recreate texture2d. OpenGL error: ");
 			log_write(gl_error);
 			log_write("\n");
 
 			destroy();
 
-			throw Exception("Could not recreate texture.");
+			throw Exception("Could not recreate texture2d.");
 		}
 	}
 

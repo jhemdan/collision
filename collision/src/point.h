@@ -8,6 +8,7 @@ namespace jaw
 	{
 		Point() : x(0), y(0) {}
 		Point(int x, int y) : x(x), y(y) {}
+		Point(const vcm::vec2& v) : x((int)v.x), y((int)v.y) {}
 
 		Point operator+(const Point& other) const
 		{
@@ -32,6 +33,11 @@ namespace jaw
 		Point operator*(int i) const
 		{
 			return Point(x * i, y * i);
+		}
+
+		Point operator*(float f) const
+		{
+			return Point((int)(x * f), (int)(y * f));
 		}
 
 		explicit operator vcm::vec2() const

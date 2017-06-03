@@ -11,7 +11,6 @@
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <vecmath/pi.hpp>
-#include <assert.h>
 #include <vector>
 
 namespace jaw
@@ -52,12 +51,8 @@ namespace jaw
 
 		sprite_graphic.create(&sprite_texture);
 
-		struct Player : Entity
+		struct KickWaveEnt : Entity
 		{
-			Point dir;
-			SpriteGraphic sprite_g;
-			SpriteGraphic tree_g;
-
 			SoundBuffer* sound_buffer;
 			SoundSource* sound_source;
 
@@ -65,6 +60,89 @@ namespace jaw
 			Bitmap kick_bmp;
 			Texture2d* kick_tex;
 			SpriteGraphic kick_tex_graphic;
+
+			//float sin_offsets[3];
+
+			KickWaveEnt()
+			{
+				//for (int i = 0; i < 3; ++i)
+					//sin_offsets[i] = 0.0f;
+
+				gen();
+
+				kick_tex = new Texture2d();
+				kick_tex->create(kick_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+				kick_tex_graphic.create(kick_tex);
+
+				sound_buffer = new SoundBuffer();
+				sound_buffer->create(test_wav);
+
+				sound_source = new SoundSource();
+				sound_source->create();
+				sound_source->queue_buffer(sound_buffer->id);
+
+				graphic = &kick_tex_graphic;
+				set_layer(1000000000);
+			}
+
+			void gen()
+			{
+				test_wav.create("../assets/kick.wav");
+
+				float len = 0.25f;
+
+				KickWave kick_wave;
+				kick_wave.generate(len);
+
+				test_wav.num_channels = 1;
+				test_wav.bits_per_sample = 16;
+				test_wav.data = {};
+
+				int num_samples = (int)(test_wav.sample_rate * len);
+				test_wav.data.resize(num_samples * 2);
+
+				float tscalar = 1.0f / test_wav.sample_rate;
+				const int16 MAX_16 = SHRT_MAX;
+
+				int16* data16 = (int16*)test_wav.data.data();
+
+				for (int i = 0; i < num_samples; ++i)
+				{
+					float t = i * tscalar;
+
+					float value = kick_wave.get_value(t);
+
+					int16 value16 = (int16)(value * MAX_16);
+
+					data16[i] = value16;
+				}
+
+				kick_wave.gen_bmp(kick_bmp);
+			}
+
+			void update(float dt) override
+			{
+				Entity::update(dt);
+
+				if (game.input.key_pressed(SDL_SCANCODE_RETURN))
+				{
+					gen();
+
+					kick_tex->recreate(kick_bmp);
+				}
+
+				if (game.input.key_pressed(SDL_SCANCODE_SPACE))
+				{
+					sound_source->play();
+				}
+			}
+		};
+
+		struct Player : Entity
+		{
+			Point dir;
+			SpriteGraphic sprite_g;
+			SpriteGraphic tree_g;
 
 			const float SPEED = 100.0f;
 
@@ -105,54 +183,6 @@ namespace jaw
 
 				anim = { "up", { 4 }, 8, true };
 				sprite_g.add_anim(anim);
-
-				test_wav.create("../assets/kick.wav");
-
-				float len = 0.25f;
-
-				KickWave kick_wave;
-				kick_wave.generate(len);
-
-				auto gen_kick = [len](const KickWave& kick_wave, WavFile& test_wav)
-				{
-					test_wav.num_channels = 1;
-					test_wav.bits_per_sample = 16;
-					test_wav.data = {};
-
-					int num_samples = (int)(test_wav.sample_rate * len);
-					test_wav.data.resize(num_samples * 2);
-
-					float tscalar = 1.0f / test_wav.sample_rate;
-					const int16 MAX_16 = SHRT_MAX;
-
-					int16* data16 = (int16*)test_wav.data.data();
-
-					for (int i = 0; i < num_samples; ++i)
-					{
-						float t = i * tscalar;
-
-						float value = kick_wave.get_value(t);
-
-						int16 value16 = (int16)(value * MAX_16);
-
-						data16[i] = value16;
-					}
-				};
-
-				gen_kick(kick_wave, test_wav);
-
-				kick_wave.gen_bmp(kick_bmp);
-
-				kick_tex = new Texture2d();
-				kick_tex->create(kick_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
-				kick_tex_graphic.create(kick_tex);
-
-				sound_buffer = new SoundBuffer();
-				sound_buffer->create(test_wav);
-
-				sound_source = new SoundSource();
-				sound_source->create();
-				sound_source->queue_buffer(sound_buffer->id);
 			}
 
 			~Player()
@@ -213,9 +243,7 @@ namespace jaw
 					world->add_entity(box3);
 				}
 
-				auto kick_entity = new Entity();
-				kick_entity->graphic = &kick_tex_graphic;
-				kick_entity->set_layer(1000000000);
+				auto kick_entity = new KickWaveEnt();
 				world->add_entity(kick_entity);
 			}
 
@@ -250,11 +278,6 @@ namespace jaw
 				move(vcm::normalize((vcm::vec2)dir) * SPEED * dt);
 
 				set_layer(position.y + size.y - origin.y);
-
-				if (game.input.key_pressed(SDL_SCANCODE_SPACE))
-				{
-					sound_source->play();
-				}
 			}
 		};
 

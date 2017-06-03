@@ -1,9 +1,9 @@
 #include "bitmap.h"
 #include "log.h"
 #include "exception.h"
+#include "jaw_macros.h"
 
 #include <SDL2/SDL_image.h>
-#include <assert.h>
 
 namespace jaw
 {
@@ -29,7 +29,7 @@ namespace jaw
 		case BITMAP_RGBA:
 			return 4;
 		default:
-			assert(false);
+			JAW_ASSERT_MSG(false, "Bad format for bytes_per_pixel()");
 			return 0;
 		}
 	}
@@ -95,6 +95,15 @@ namespace jaw
 		SDL_FreeSurface(surface);
 	}
 
+	void Bitmap::create(int w, int h, BitmapFormat format)
+	{
+		this->w = w;
+		this->h = h;
+		this->format = format;
+		this->calc_pitch();
+		this->data.resize(this->pitch * this->h);
+	}
+
 	void Bitmap::destroy()
 	{
 		*this = {};
@@ -107,7 +116,7 @@ namespace jaw
 
 	void Bitmap::set_pixel(int x, int y, unsigned value)
 	{
-		assert(!data.empty());
+		JAW_ASSERT_MSG(!data.empty(), "No data for Bitmap::set_pixel()");
 
 		if (x < 0 || y < 0)
 			return;

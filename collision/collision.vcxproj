@@ -159,6 +159,7 @@
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\mesh_buffers.h" />
     <ClInclude Include="src\model.h" />
+    <ClInclude Include="src\jaw_macros.h" />
     <ClInclude Include="src\point.h" />
     <ClInclude Include="src\rect.h" />
     <ClInclude Include="src\renderer.h" />

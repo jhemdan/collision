@@ -149,5 +149,8 @@
     <ClInclude Include="src\kick_gen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\jaw_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

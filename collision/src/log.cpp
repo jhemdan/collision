@@ -25,6 +25,11 @@ namespace jaw
 		file << i;
 	}
 
+	void log_write(float f)
+	{
+		file << f;
+	}
+
 	void log_line(const std::string& line)
 	{
 		log_write(line);

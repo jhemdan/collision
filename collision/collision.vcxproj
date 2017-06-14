@@ -69,13 +69,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\dev\_lib15\sdl\include\;C:\dev\_lib15\glew\include\;C:\dev\_lib15\vecmath\include\;C:\dev\_lib15\openal\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev\_lib15\sdl\lib\;C:\dev\_lib15\glew\lib\;C:\dev\_lib15\vecmath\lib\$(Configuration)\;C:\dev\_lib15\openal\libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\dev\_lib15\sdl\include\;C:\dev\_lib15\glew\include\;C:\dev\_lib15\vecmath\include\;C:\dev\_lib15\openal\include\;C:\dev\_lib15\tinyxml2\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\_lib15\sdl\lib\;C:\dev\_lib15\glew\lib\;C:\dev\_lib15\vecmath\lib\$(Configuration)\;C:\dev\_lib15\openal\libs\;C:\dev\_lib15\tinyxml2\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\dev\_lib15\sdl\include\;C:\dev\_lib15\glew\include\;C:\dev\_lib15\vecmath\include\;C:\dev\_lib15\openal\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\dev\_lib15\sdl\lib\;C:\dev\_lib15\glew\lib\;C:\dev\_lib15\vecmath\lib\$(Configuration)\;C:\dev\_lib15\openal\libs\;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\dev\_lib15\sdl\include\;C:\dev\_lib15\glew\include\;C:\dev\_lib15\vecmath\include\;C:\dev\_lib15\openal\include\;C:\dev\_lib15\tinyxml2\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\dev\_lib15\sdl\lib\;C:\dev\_lib15\glew\lib\;C:\dev\_lib15\vecmath\lib\$(Configuration)\;C:\dev\_lib15\openal\libs\;C:\dev\_lib15\tinyxml2\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)\build\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -85,7 +85,7 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;vecmath.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;vecmath.lib;OpenAL32.lib;tinyxml2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -107,7 +107,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;vecmath.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glew32.lib;vecmath.lib;OpenAL32.lib;tinyxml2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>

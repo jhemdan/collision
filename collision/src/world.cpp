@@ -39,6 +39,8 @@ namespace jaw
 				{
 					entities.push_back(e);
 					e->world = this;
+					
+					layer_flag = true;
 
 					_buffer.push_back(e);
 				}

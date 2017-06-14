@@ -36,6 +36,8 @@ namespace jaw
 			float length;
 			float freq;
 
+			float amp_a, amp_b, amp_c;
+
 			virtual float get_value(float t) const;
 
 			virtual float get_min() const { return position; }

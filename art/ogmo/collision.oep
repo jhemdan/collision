@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <OgmoVersion>2.1.0.6</OgmoVersion>
+  <Name>A Side Quest</Name>
+  <BackgroundColor A="255" R="255" G="255" B="255" />
+  <GridColor A="255" R="0" G="0" B="0" />
+  <LevelDefaultSize>
+    <Width>512</Width>
+    <Height>512</Height>
+  </LevelDefaultSize>
+  <LevelMinimumSize>
+    <Width>512</Width>
+    <Height>512</Height>
+  </LevelMinimumSize>
+  <LevelMaximumSize>
+    <Width>2048</Width>
+    <Height>2048</Height>
+  </LevelMaximumSize>
+  <Filename>C:\dev\cpp\collision\art\ogmo\collision.oep</Filename>
+  <AngleMode>Radians</AngleMode>
+  <CameraEnabled>false</CameraEnabled>
+  <CameraSize>
+    <Width>640</Width>
+    <Height>480</Height>
+  </CameraSize>
+  <ExportCameraPosition>false</ExportCameraPosition>
+  <LevelValueDefinitions />
+  <LayerDefinitions>
+    <LayerDefinition xsi:type="TileLayerDefinition">
+      <Name>grass_dirt</Name>
+      <Grid>
+        <Width>32</Width>
+        <Height>32</Height>
+      </Grid>
+      <ScrollFactor>
+        <X>1</X>
+        <Y>1</Y>
+      </ScrollFactor>
+      <ExportMode>XML</ExportMode>
+    </LayerDefinition>
+  </LayerDefinitions>
+  <Tilesets>
+    <Tileset>
+      <Name>grass_dirt</Name>
+      <FilePath>..\..\build\assets\grass_tiles1.png</FilePath>
+      <TileSize>
+        <Width>32</Width>
+        <Height>32</Height>
+      </TileSize>
+      <TileSep>0</TileSep>
+    </Tileset>
+  </Tilesets>
+  <EntityDefinitions />
+</project>

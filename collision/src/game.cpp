@@ -5,13 +5,15 @@
 #include "sound_buffer.h"
 #include "sound_source.h"
 #include "tilemap_graphic.h"
-#include "kick_gen.h"
+#include "exception.h"
 
 #include <iostream>
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <vecmath/pi.hpp>
 #include <vector>
+
+#include <tinyxml2.h>
 
 namespace jaw
 {
@@ -51,92 +53,110 @@ namespace jaw
 
 		sprite_graphic.create(&sprite_texture);
 
-		struct KickWaveEnt : Entity
+		struct Level : Entity
 		{
-			SoundBuffer* sound_buffer;
-			SoundSource* sound_source;
+			Entity tilemap_ent;
+			TilemapGraphic tilemap_graphic;
+			Texture2d* tilemap_tex;
 
-			WavFile test_wav;
-			Bitmap kick_bmp;
-			Texture2d* kick_tex;
-			SpriteGraphic kick_tex_graphic;
-
-			//float sin_offsets[3];
-
-			KickWaveEnt()
+			void load()
 			{
-				//for (int i = 0; i < 3; ++i)
-					//sin_offsets[i] = 0.0f;
+				Bitmap tilemap_bmp;
+				tilemap_bmp.create("../assets/grass_tiles1.png");
+				tilemap_tex = new Texture2d();
+				tilemap_tex->create(tilemap_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
-				gen();
+				struct ErrException : Exception
+				{
+					ErrException(tinyxml2::XMLError err)
+					{
+						msg = "TinyXML2 error: " + std::to_string((int)err);
+					}
+				};
 
-				kick_tex = new Texture2d();
-				kick_tex->create(kick_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
-				kick_tex_graphic.create(kick_tex);
+				auto check_err = [](tinyxml2::XMLError err)
+				{
+					if (err)
+						throw ErrException(err);
+				};
 
-				sound_buffer = new SoundBuffer();
-				sound_buffer->create(test_wav);
+				struct Tile
+				{
+					int x, y;
+					int id;
+				};
 
-				sound_source = new SoundSource();
-				sound_source->create();
-				sound_source->queue_buffer(sound_buffer->id);
+				std::vector<Tile> tiles;
 
-				graphic = &kick_tex_graphic;
-				set_layer(1000000000);
+				tinyxml2::XMLDocument doc;
+
+				auto err = doc.LoadFile("../assets/test_level.oel");
+				check_err(err);
+
+				int width = 0, height = 0;
+
+				auto first_child = doc.FirstChild();
+				if (first_child)
+				{
+					auto first_elem = first_child->ToElement();
+					err = first_elem->QueryIntAttribute("width", &width);
+					check_err(err);
+
+					err = first_elem->QueryIntAttribute("height", &height);
+					check_err(err);
+
+					auto tileset_node = first_child->FirstChild();
+					if (tileset_node)
+					{
+						auto first_tile = tileset_node->FirstChild();
+						for (auto tile = first_tile; tile != nullptr; tile = tile->NextSibling())
+						{
+							auto tile_elem = tile->ToElement();
+
+							Tile t;
+							err = tile_elem->QueryIntAttribute("x", &t.x);
+							check_err(err);
+
+							err = tile_elem->QueryIntAttribute("y", &t.y);
+							check_err(err);
+
+							err = tile_elem->QueryIntAttribute("id", &t.id);
+							check_err(err);
+
+							tiles.push_back(t);
+						}
+					}
+				}
+
+				if (tiles.empty())
+					throw Exception("No tiles in level file.");
+
+				int cols = width / 32;
+				int rows = height / 32;
+
+				if (cols <= 0 || rows <= 0)
+					throw Exception("Bad level size.");
+
+				tilemap_graphic.create(tilemap_tex, cols, rows, 32, 32);
+				tilemap_ent.graphic = &tilemap_graphic;
+
+				for (const auto& tile : tiles)
+				{
+					tilemap_graphic.set_tile(tile.x, tile.y, tile.id);
+				}
 			}
 
-			void gen()
+			void on_added() override
 			{
-				test_wav.create("../assets/kick.wav");
+				Entity::on_added();
 
-				float len = 0.25f;
-
-				KickWave kick_wave;
-				kick_wave.generate(len);
-
-				test_wav.num_channels = 1;
-				test_wav.bits_per_sample = 16;
-				test_wav.data = {};
-
-				int num_samples = (int)(test_wav.sample_rate * len);
-				test_wav.data.resize(num_samples * 2);
-
-				float tscalar = 1.0f / test_wav.sample_rate;
-				const int16 MAX_16 = SHRT_MAX;
-
-				int16* data16 = (int16*)test_wav.data.data();
-
-				for (int i = 0; i < num_samples; ++i)
-				{
-					float t = i * tscalar;
-
-					float value = kick_wave.get_value(t);
-
-					int16 value16 = (int16)(value * MAX_16);
-
-					data16[i] = value16;
-				}
-
-				kick_wave.gen_bmp(kick_bmp);
-			}
-
-			void update(float dt) override
-			{
-				Entity::update(dt);
-
-				if (game.input.key_pressed(SDL_SCANCODE_RETURN))
-				{
-					gen();
-
-					kick_tex->recreate(kick_bmp);
-				}
-
-				if (game.input.key_pressed(SDL_SCANCODE_SPACE))
-				{
-					sound_source->play();
-				}
+				world->add_entity(&tilemap_ent);
 			}
 		};
+
+		auto level = new Level();
+		level->load();
+		world.add_entity(level);
 
 		struct Player : Entity
 		{
@@ -198,6 +218,7 @@ namespace jaw
 				{
 					auto e = new Entity();
 					
+					/*
 					auto tiles_g = new TilemapGraphic();
 					Bitmap tiles_bmp;
 					tiles_bmp.create("../assets/grass_tiles1.png");
@@ -207,8 +228,9 @@ namespace jaw
 
 					for (int j = 0; j < 6 * 6; ++j)
 						tiles_g->set_tile(j % 6, j / 6, rand() % 28);
-
-					e->graphic = tiles_g;
+					*/
+					//e->graphic = tiles_g;
+					e->graphic = &tree_g;
 
 					e->size = { 49, 209 };
 					e->origin = { -104, -47 };
@@ -242,9 +264,6 @@ namespace jaw
 
 					world->add_entity(box3);
 				}
-
-				auto kick_entity = new KickWaveEnt();
-				world->add_entity(kick_entity);
 			}
 
 			void update(float dt) override

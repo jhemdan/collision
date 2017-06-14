@@ -12,6 +12,9 @@ namespace jaw
 		: position(0.0f)
 		, length(0.0f)
 		, freq(0.0f)
+		, amp_a(1.0f)
+		, amp_b(1.0f)
+		, amp_c(1.0f)
 	{
 
 	}
@@ -49,16 +52,20 @@ namespace jaw
 		clips[0]->freq = 111.111111111f;
 		clips[0]->position = 0.0f;
 		clips[0]->length = 0.0275f;
+		clips[0]->amp_a = clips[0]->amp_b = clips[0]->amp_c = 0.5f;
 
 		clips[1] = new Clip();
 		clips[1]->freq = 66.6666666666f;
-		clips[1]->position = clips[0]->position + clips[0]->length - 0.01f;
+		clips[1]->position = clips[0]->position + clips[0]->length - 0.005f;
 		clips[1]->length = 0.1075f;
+		clips[1]->amp_a = clips[1]->amp_c = 0.35f;
+		clips[1]->amp_b = 0.8f;
 
 		clips[2] = new Clip();
 		clips[2]->freq = 51.28f;
-		clips[2]->position = clips[1]->position + clips[1]->length - 0.01f;
+		clips[2]->position = clips[1]->position + clips[1]->length - 0.005f;
 		clips[2]->length = 0.115f;
+		clips[2]->amp_a = clips[2]->amp_b = clips[2]->amp_c = 0.25f;
 
 		auto clip_sorter = [](Clip* a, Clip* b)
 		{
@@ -204,10 +211,38 @@ namespace jaw
 	{
 		if (t >= get_min() && t <= get_max())
 		{
-			float my_t = t - position;
+			float my_t = t - get_min();
 			float x = (my_t * freq) * (2 * vcm::PI);
 
-			return sin(x);
+			float s = sin(x);
+
+			float my_amp;
+			if (t < get_center())
+			{
+				float amp_t = my_t / (get_center() - get_min());
+				my_amp = amp_a + (amp_b - amp_a) * amp_t;
+			}
+			else if (t == get_center())
+			{
+				my_amp = amp_b;
+			}
+			else
+			{
+				float amp_t = (my_t - (get_center() - get_min())) / (get_max() - get_center());
+				my_amp = amp_b + (amp_c - amp_b) * amp_t;
+			}
+
+			float value = 0.0f;
+
+			float tri = triangle_wave(x - 0.2f);
+			float square = square_wave(x);
+			
+			float s_tri = mix_wave(s, tri, 0.5f);
+			float s_tri_square = mix_wave(s_tri, square, 0.1f);
+
+			value = s_tri_square * my_amp;
+
+			return value;
 		}
 
 		return 0.0f;
@@ -352,7 +387,7 @@ namespace jaw
 		//float random = _get_random_value(t) * 0.35f;
 		//value += (abs(value) / 1.0f) * random;
 
-		float volume = 0.7f;
+		float volume = 1.0f;
 		value *= volume;
 
 		return value;
@@ -441,11 +476,11 @@ namespace jaw
 		}
 
 		//DONT DELETE
-		auto mix_color = [](int r, int g, int b, int r2, int g2, int b2, float t)
+		auto mix_color_rgb = [](int r, int g, int b, int r2, int g2, int b2, float t)
 		{
-			int r_ = r + (r2 - r) * t;
-			int g_ = g + (g2 - g) * t;
-			int b_ = b + (b2 - b) * t;
+			int r_ = (int)(r + (r2 - r) * t);
+			int g_ = (int)(g + (g2 - g) * t);
+			int b_ = (int)(b + (b2 - b) * t);
 
 			r %= 256;
 			g %= 256;
@@ -455,18 +490,53 @@ namespace jaw
 			return color;
 		};
 
-		int pixels_per_second = 400 / length;
-		for (auto clip : clips)
+		//DONT DELETE
+		auto mix_color = [mix_color_rgb](unsigned color_a, unsigned color_b, float t)
 		{
-			int x = clip->get_min() * pixels_per_second;
-			int dest_x = clip->get_max() * pixels_per_second;
+			int r = (color_a & 0x000000ff);
+			int g = (color_a & 0x0000ff00) >> 8;
+			int b = (color_a & 0x00ff0000) >> 16;
+
+			int r2 = (color_b & 0x000000ff);
+			int g2 = (color_b & 0x0000ff00) >> 8;
+			int b2 = (color_b & 0x00ff0000) >> 16;
+
+			return mix_color_rgb(r, g, b, r2, g2, b2, t);
+		};
+
+		auto draw_box = [&out_bmp](int x, int y, int w, int h, unsigned color)
+		{
+			out_bmp.draw_line(x, y, x + w, y, color);
+			out_bmp.draw_line(x, y, x, y + h, color);
+			out_bmp.draw_line(x + w, y + h, x + w, y, color);
+			out_bmp.draw_line(x + w, y + h, x, y + h, color);
+		};
+
+		float pixels_per_second = 400 / length;
+		for (int i = 0; i < (int)clips.size(); ++i)
+		{
+			auto clip = clips[i];
+
+			int start_x = (int)round(clip->get_min() * pixels_per_second);
+			int dest_x = (int)round(clip->get_max() * pixels_per_second);
+
 			for (int y = 0; y < out_bmp.h; ++y)
 			{
-				for (int x = 0; x < dest_x; ++x)
+				for (int x = start_x; x <= dest_x; ++x)
 				{
 					out_bmp.set_pixel(x, y, 0xff00ffff);
 				}
 			}
+		}
+
+		for (int i = 0; i < (int)clips.size(); ++i)
+		{
+			auto clip = clips[i];
+
+			int start_x = (int)round(clip->get_min() * pixels_per_second);
+			int dest_x = (int)round(clip->get_max() * pixels_per_second);
+
+			draw_box(start_x, 0, dest_x - start_x, 100, 0xff00aaaa);
 		}
 		
 		bool has_prev_val = false;

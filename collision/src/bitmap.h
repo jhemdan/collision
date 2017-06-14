@@ -27,6 +27,7 @@ namespace jaw
 		void calc_pitch();
 
 		void set_pixel(int x, int y, unsigned value);
+		unsigned get_pixel(int x, int y) const;
 		void draw_line(int x1, int y1, int x2, int y2, unsigned value);
 
 		int w, h;

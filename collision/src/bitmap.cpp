@@ -138,6 +138,33 @@ namespace jaw
 		}
 	}
 
+	unsigned Bitmap::get_pixel(int x, int y) const
+	{
+		JAW_ASSERT_MSG(!data.empty(), "No data for Bitmap::set_pixel()");
+
+		if (x < 0 || y < 0)
+			return 0;
+		if (x >= w || y >= h)
+			return 0;
+
+		int bpp = bytes_per_pixel(format);
+		int i = y * pitch + x * bpp;
+
+		switch (bpp)
+		{
+		case 1:
+			return 0xff000000 | data[i];
+		case 3:
+			return (0xff << 24) | (data[i + 2] << 16) | (data[i + 1] << 8) | (data[i]);
+		case 4:
+			return (data[i + 3] << 24) | (data[i + 2] << 16) | (data[i + 1] << 8) | (data[i]);
+		}
+
+		JAW_ASSERT_MSG(false, "Badd bpp for Bitmap::get_pixel()");
+
+		return 0;
+	}
+
 	void Bitmap::draw_line(int x1, int y1, int x2, int y2, unsigned value)
 	{
 		int diffx = x2 - x1;

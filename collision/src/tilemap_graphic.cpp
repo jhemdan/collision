@@ -93,6 +93,8 @@ namespace jaw
 		verts.clear();
 		tris.clear();
 
+		int tex_cols = texture->w / tile_w;
+
 		for (int y = 0; y < h; ++y)
 		{
 			for (int x = 0; x < w; ++x)
@@ -102,8 +104,8 @@ namespace jaw
 				vcm::vec2 top_left = { (float)x * tile_w, (float)y * tile_h };
 				vcm::vec2 bottom_right = top_left + vcm::vec2{ (float)tile_w, (float)tile_h };
 				
-				int tex_x = tile % w * tile_w;
-				int tex_y = tile / w * tile_h;
+				int tex_x = tile % tex_cols * tile_w;
+				int tex_y = tile / tex_cols * tile_h;
 
 				float ws = 1.0f / texture->w;
 				float hs = 1.0f / texture->h;

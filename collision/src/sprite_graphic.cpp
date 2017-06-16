@@ -111,7 +111,7 @@ namespace jaw
 			{ 1, 0, 0, 0 },
 			{ 0, 1, 0, 0 },
 			{ 0, 0, 1, 0 },
-			{ (float)entity->position.x, (float)entity->position.y, 0, 1 }
+			{ (float)entity->position.x - (float)origin.x, (float)entity->position.y - (float)origin.y, 0, 1 }
 		};
 
 		renderer->render(this, vcm::inverse(entity->world->cam_tran) * tran_mat);

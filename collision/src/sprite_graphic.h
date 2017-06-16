@@ -68,5 +68,7 @@ namespace jaw
 		bool _playing_anim;
 
 		Point frame_size; //for clip_rect calc during animation
+
+		Point origin;
 	};
 }

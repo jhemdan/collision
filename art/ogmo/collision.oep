@@ -38,6 +38,17 @@
       </ScrollFactor>
       <ExportMode>XML</ExportMode>
     </LayerDefinition>
+    <LayerDefinition xsi:type="EntityLayerDefinition">
+      <Name>entities1</Name>
+      <Grid>
+        <Width>1</Width>
+        <Height>1</Height>
+      </Grid>
+      <ScrollFactor>
+        <X>1</X>
+        <Y>1</Y>
+      </ScrollFactor>
+    </LayerDefinition>
   </LayerDefinitions>
   <Tilesets>
     <Tileset>
@@ -50,5 +61,21 @@
       <TileSep>0</TileSep>
     </Tileset>
   </Tilesets>
-  <EntityDefinitions />
+  <EntityDefinitions>
+    <EntityDefinition Name="oak_tree" Limit="-1" ResizableX="false" ResizableY="false" Rotatable="false" RotateIncrement="15">
+      <Size>
+        <Width>220</Width>
+        <Height>220</Height>
+      </Size>
+      <Origin>
+        <X>107</X>
+        <Y>198</Y>
+      </Origin>
+      <ImageDefinition DrawMode="Image" ImagePath="..\..\build\assets\oak_tree.png" Tiled="false">
+        <RectColor A="255" R="255" G="0" B="0" />
+      </ImageDefinition>
+      <ValueDefinitions />
+      <NodesDefinition Enabled="false" Limit="-1" DrawMode="None" Ghost="false" />
+    </EntityDefinition>
+  </EntityDefinitions>
 </project>

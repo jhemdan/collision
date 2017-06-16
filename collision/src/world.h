@@ -7,6 +7,7 @@ namespace jaw
 {
 	struct Entity;
 	struct Renderer;
+	struct CamEnt;
 
 	struct World
 	{
@@ -29,5 +30,7 @@ namespace jaw
 		vcm::mat4 cam_tran;
 
 		bool layer_flag;
+
+		CamEnt* cam_ent;
 	};
 }

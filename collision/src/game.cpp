@@ -6,6 +6,7 @@
 #include "sound_source.h"
 #include "tilemap_graphic.h"
 #include "exception.h"
+#include "cam_ent.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -59,12 +60,24 @@ namespace jaw
 			TilemapGraphic tilemap_graphic;
 			Texture2d* tilemap_tex;
 
+			SpriteGraphic tree_g;
+			Texture2d* tree_tex;
+
+			std::vector<Entity*> ents;
+
 			void load()
 			{
 				Bitmap tilemap_bmp;
 				tilemap_bmp.create("../assets/grass_tiles1.png");
 				tilemap_tex = new Texture2d();
 				tilemap_tex->create(tilemap_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
+				Bitmap tree_bmp;
+				tree_bmp.create("../assets/oak_tree.png");
+				tree_tex = new Texture2d();
+				tree_tex->create(tree_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+				tree_g.create(tree_tex);
+				tree_g.origin = { 107, 198 };
 
 				struct ErrException : Exception
 				{
@@ -126,6 +139,30 @@ namespace jaw
 							tiles.push_back(t);
 						}
 					}
+
+					auto entities_node = tileset_node->NextSibling();
+					if (entities_node)
+					{
+						auto first_entity = entities_node->FirstChild();
+						for (auto entity = first_entity; entity != nullptr; entity = entity->NextSibling())
+						{
+							auto ent_elem = entity->ToElement();
+
+							int x, y;
+							err = ent_elem->QueryIntAttribute("x", &x);
+							check_err(err);
+							err = ent_elem->QueryIntAttribute("y", &y);
+							check_err(err);
+
+							auto e = new Entity();
+							e->position = { x, y };
+							e->graphic = &tree_g;
+
+							e->set_layer(e->position.y);
+
+							ents.push_back(e);
+						}
+					}
 				}
 
 				if (tiles.empty())
@@ -151,6 +188,9 @@ namespace jaw
 				Entity::on_added();
 
 				world->add_entity(&tilemap_ent);
+
+				for (auto e : ents)
+					world->add_entity(e);
 			}
 		};
 
@@ -165,6 +205,9 @@ namespace jaw
 			SpriteGraphic tree_g;
 
 			const float SPEED = 100.0f;
+			const float CAM_SPEED = 8.0f;
+
+			vcm::vec2 cam_posv;
 
 			Player(Texture2d* tex)
 			{
@@ -173,9 +216,9 @@ namespace jaw
 				graphic = &sprite_g;
 
 				size = { 14, 23 };
-				origin = { -25, -41 };
+				origin = { 25, 41 };
 
-				position = { 160, 160 };
+				position = { 0, 0 };
 
 				auto tree_tex = new Texture2d();
 				Bitmap tree_bmp;
@@ -205,6 +248,11 @@ namespace jaw
 				sprite_g.add_anim(anim);
 			}
 
+			Point get_cam_dest_pos() const
+			{
+				return position + Point(32, 32) - world->cam_ent->size * 0.5f;
+			}
+
 			~Player()
 			{
 				sprite_g.destroy();
@@ -214,6 +262,7 @@ namespace jaw
 			{
 				Entity::on_added();
 
+				/*
 				for (int i = 0; i < 4; ++i)
 				{
 					auto e = new Entity();
@@ -228,7 +277,7 @@ namespace jaw
 
 					for (int j = 0; j < 6 * 6; ++j)
 						tiles_g->set_tile(j % 6, j / 6, rand() % 28);
-					*/
+					
 					//e->graphic = tiles_g;
 					e->graphic = &tree_g;
 
@@ -264,6 +313,9 @@ namespace jaw
 
 					world->add_entity(box3);
 				}
+				*/
+
+				cam_posv = (vcm::vec2)get_cam_dest_pos();
 			}
 
 			void update(float dt) override
@@ -296,7 +348,12 @@ namespace jaw
 
 				move(vcm::normalize((vcm::vec2)dir) * SPEED * dt);
 
-				set_layer(position.y + size.y - origin.y);
+				set_layer(position.y + origin.y + size.y);
+
+				auto cam_dest_pos = get_cam_dest_pos();
+				cam_posv += (vcm::vec2)(cam_dest_pos - cam_posv) * CAM_SPEED * dt;
+
+				world->cam_ent->position = cam_posv;
 			}
 		};
 

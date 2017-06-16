@@ -44,22 +44,22 @@ namespace jaw
 
 	bool Entity::check_collision(const Point& pos, Entity* other) const
 	{
-		if (pos.x - origin.x >= other->position.x - other->origin.x + other->size.x)
+		if (pos.x + origin.x >= other->position.x + other->origin.x + other->size.x)
 		{
 			return false;
 		}
 
-		if (pos.y - origin.y >= other->position.y - other->origin.y + other->size.y)
+		if (pos.y + origin.y >= other->position.y + other->origin.y + other->size.y)
 		{
 			return false;
 		}
 
-		if (pos.x - origin.x + size.x <= other->position.x - other->origin.x)
+		if (pos.x + origin.x + size.x <= other->position.x + other->origin.x)
 		{
 			return false;
 		}
 
-		if (pos.y - origin.y + size.y <= other->position.y - other->origin.y)
+		if (pos.y + origin.y + size.y <= other->position.y + other->origin.y)
 		{
 			return false;
 		}

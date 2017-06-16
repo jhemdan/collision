@@ -126,6 +126,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\bitmap.cpp" />
+    <ClCompile Include="src\cam_ent.cpp" />
     <ClCompile Include="src\entity.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\graphic.cpp" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\bitmap.h" />
+    <ClInclude Include="src\cam_ent.h" />
     <ClInclude Include="src\entity.h" />
     <ClInclude Include="src\exception.h" />
     <ClInclude Include="src\game.h" />

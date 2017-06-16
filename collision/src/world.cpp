@@ -1,6 +1,7 @@
 #include "world.h"
 #include "entity.h"
 #include "jaw_macros.h"
+#include "cam_ent.h"
 
 #include <algorithm>
 
@@ -9,11 +10,17 @@ namespace jaw
 	World::World()
 	{
 		layer_flag = false;
+
+		cam_ent = new CamEnt();
+
+		cam_ent->size = { 400.0f, 300.0f };
+
+		add_entity(cam_ent);
 	}
 
 	World::~World()
 	{
-
+		delete cam_ent;
 	}
 
 	void World::add_entity(Entity* e)
@@ -102,6 +109,8 @@ namespace jaw
 
 			layer_flag = false;
 		}
+
+		cam_tran = cam_ent->get_cam_tran();
 	}
 
 	void World::render(Renderer* renderer)

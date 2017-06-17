@@ -232,7 +232,7 @@ namespace jaw
 
 				sprite_g.frame_size = { 64, 64 };
 
-				SpriteAnim anim = { "idle", { 0, 4, 8, 12 }, 8, true };
+				SpriteAnim anim = { "idle", { 0, 8, 4, 12 }, 8, true };
 				sprite_g.add_anim(anim);
 
 				anim = { "down", { 0 }, 8, true };

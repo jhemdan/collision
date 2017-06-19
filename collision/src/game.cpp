@@ -275,19 +275,19 @@ namespace jaw
 
 				sprite_g.frame_size = { 64, 64 };
 
-				SpriteAnim anim = { "idle", { 0, 8, 4, 12 }, 8, true };
+				SpriteAnim anim = { "idle", { 0 }, 8, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "down", { 0 }, 8, true };
+				anim = { "down", { 1, 2, 3, 4, 5, 6 }, 11.5f, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "left", { 12 }, 8, true };
+				anim = { "left", { 25, 26, 27, 28, 29, 30 }, 11.5f, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "right", { 8 }, 8, true };
+				anim = { "right", { 17, 18, 19, 20, 21, 22 }, 11.5f, true };
 				sprite_g.add_anim(anim);
 
-				anim = { "up", { 4 }, 8, true };
+				anim = { "up", { 9, 10, 11, 12, 13, 14 }, 11.5f, true };
 				sprite_g.add_anim(anim);
 
 				this->level = level;

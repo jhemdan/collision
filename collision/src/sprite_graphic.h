@@ -20,7 +20,7 @@ namespace jaw
 			loop = false;
 		}
 
-		SpriteAnim(const std::string& name, const std::vector<int>& frames, int fps, bool loop)
+		SpriteAnim(const std::string& name, const std::vector<int>& frames, float fps, bool loop)
 		{
 			this->name = name;
 			this->frames = frames;
@@ -30,7 +30,7 @@ namespace jaw
 
 		std::string name;
 		std::vector<int> frames;
-		int fps;
+		float fps;
 		bool loop;
 	};
 

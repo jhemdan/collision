@@ -62,8 +62,12 @@ namespace jaw
 
 			SpriteGraphic tree_g;
 			Texture2d* tree_tex;
+			SpriteGraphic weeds1_g;
+			Texture2d* weeds1_tex;
 
 			std::vector<Entity*> ents;
+
+			Point size;
 
 			void load()
 			{
@@ -78,6 +82,13 @@ namespace jaw
 				tree_tex->create(tree_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 				tree_g.create(tree_tex);
 				tree_g.origin = { 107, 198 };
+
+				Bitmap weeds1_bmp;
+				weeds1_bmp.create("../assets/weeds1.png");
+				weeds1_tex = new Texture2d();
+				weeds1_tex->create(weeds1_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+				weeds1_g.create(weeds1_tex);
+				weeds1_g.origin = { 16, 31 };
 
 				struct ErrException : Exception
 				{
@@ -118,6 +129,9 @@ namespace jaw
 					err = first_elem->QueryIntAttribute("height", &height);
 					check_err(err);
 
+					size.x = width;
+					size.y = height;
+
 					auto tileset_node = first_child->FirstChild();
 					if (tileset_node)
 					{
@@ -143,17 +157,8 @@ namespace jaw
 					auto entities_node = tileset_node->NextSibling();
 					if (entities_node)
 					{
-						auto first_entity = entities_node->FirstChild();
-						for (auto entity = first_entity; entity != nullptr; entity = entity->NextSibling())
+						auto add_oak_tree = [this](int x, int y)
 						{
-							auto ent_elem = entity->ToElement();
-
-							int x, y;
-							err = ent_elem->QueryIntAttribute("x", &x);
-							check_err(err);
-							err = ent_elem->QueryIntAttribute("y", &y);
-							check_err(err);
-
 							auto e = new Entity();
 							e->position = { x, y };
 							e->graphic = &tree_g;
@@ -161,6 +166,42 @@ namespace jaw
 							e->set_layer(e->position.y);
 
 							ents.push_back(e);
+						};
+
+						auto add_weeds1 = [this](int x, int y)
+						{
+							auto e = new Entity();
+							e->position = { x, y };
+							e->graphic = &weeds1_g;
+
+							e->set_layer(e->position.y);
+
+							ents.push_back(e);
+						};
+
+						auto first_entity = entities_node->FirstChild();
+						for (auto entity = first_entity; entity != nullptr; entity = entity->NextSibling())
+						{
+							auto ent_elem = entity->ToElement();
+
+							std::string name;
+
+							name = ent_elem->Name();
+
+							int x, y;
+							err = ent_elem->QueryIntAttribute("x", &x);
+							check_err(err);
+							err = ent_elem->QueryIntAttribute("y", &y);
+							check_err(err);
+
+							if (name == "oak_tree")
+							{
+								add_oak_tree(x, y);
+							}
+							else if (name == "weeds1")
+							{
+								add_weeds1(x, y);
+							}
 						}
 					}
 				}
@@ -209,7 +250,9 @@ namespace jaw
 
 			vcm::vec2 cam_posv;
 
-			Player(Texture2d* tex)
+			Level* level;
+
+			Player(Texture2d* tex, Level* level)
 			{
 				sprite_g.create(tex);
 
@@ -246,6 +289,8 @@ namespace jaw
 
 				anim = { "up", { 4 }, 8, true };
 				sprite_g.add_anim(anim);
+
+				this->level = level;
 			}
 
 			Point get_cam_dest_pos() const
@@ -351,13 +396,23 @@ namespace jaw
 				set_layer(position.y + origin.y + size.y);
 
 				auto cam_dest_pos = get_cam_dest_pos();
+
 				cam_posv += (vcm::vec2)(cam_dest_pos - cam_posv) * CAM_SPEED * dt;
+
+				if (cam_posv.x < 0)
+					cam_posv.x = 0;
+				if (cam_posv.y < 0)
+					cam_posv.y = 0;
+				if (cam_posv.x + world->cam_ent->size.x > level->size.x)
+					cam_posv.x = level->size.x - world->cam_ent->size.x;
+				if (cam_posv.y + world->cam_ent->size.y > level->size.y)
+					cam_posv.y = level->size.y - world->cam_ent->size.y;
 
 				world->cam_ent->position = cam_posv;
 			}
 		};
 
-		auto player = new Player(&sprite_texture);
+		auto player = new Player(&sprite_texture, level);
 		world.add_entity(player);
 
 		world.cam_tran = vcm::mat4

@@ -7,6 +7,8 @@
 #include "tilemap_graphic.h"
 #include "exception.h"
 #include "cam_ent.h"
+#include "font.h"
+#include "tinyxml2err.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -15,6 +17,7 @@
 #include <vector>
 
 #include <tinyxml2.h>
+#include <map>
 
 namespace jaw
 {
@@ -54,6 +57,9 @@ namespace jaw
 
 		sprite_graphic.create(&sprite_texture);
 
+		Font font;
+		font.create("../assets/main_font.fnt");
+
 		struct Level : Entity
 		{
 			Entity tilemap_ent;
@@ -71,6 +77,8 @@ namespace jaw
 
 			void load()
 			{
+				std::string path = "../assets/test_level.oel";
+
 				Bitmap tilemap_bmp;
 				tilemap_bmp.create("../assets/grass_tiles1.png");
 				tilemap_tex = new Texture2d();
@@ -90,20 +98,6 @@ namespace jaw
 				weeds1_g.create(weeds1_tex);
 				weeds1_g.origin = { 16, 31 };
 
-				struct ErrException : Exception
-				{
-					ErrException(tinyxml2::XMLError err)
-					{
-						msg = "TinyXML2 error: " + std::to_string((int)err);
-					}
-				};
-
-				auto check_err = [](tinyxml2::XMLError err)
-				{
-					if (err)
-						throw ErrException(err);
-				};
-
 				struct Tile
 				{
 					int x, y;
@@ -114,8 +108,8 @@ namespace jaw
 
 				tinyxml2::XMLDocument doc;
 
-				auto err = doc.LoadFile("../assets/test_level.oel");
-				check_err(err);
+				auto err = doc.LoadFile(path.c_str());
+				txml_check_err(err, path);
 
 				int width = 0, height = 0;
 
@@ -124,10 +118,10 @@ namespace jaw
 				{
 					auto first_elem = first_child->ToElement();
 					err = first_elem->QueryIntAttribute("width", &width);
-					check_err(err);
+					txml_check_err(err, path);
 
 					err = first_elem->QueryIntAttribute("height", &height);
-					check_err(err);
+					txml_check_err(err, path);
 
 					size.x = width;
 					size.y = height;
@@ -142,13 +136,13 @@ namespace jaw
 
 							Tile t;
 							err = tile_elem->QueryIntAttribute("x", &t.x);
-							check_err(err);
+							txml_check_err(err, path);
 
 							err = tile_elem->QueryIntAttribute("y", &t.y);
-							check_err(err);
+							txml_check_err(err, path);
 
 							err = tile_elem->QueryIntAttribute("id", &t.id);
-							check_err(err);
+							txml_check_err(err, path);
 
 							tiles.push_back(t);
 						}
@@ -190,9 +184,9 @@ namespace jaw
 
 							int x, y;
 							err = ent_elem->QueryIntAttribute("x", &x);
-							check_err(err);
+							txml_check_err(err, path);
 							err = ent_elem->QueryIntAttribute("y", &y);
-							check_err(err);
+							txml_check_err(err, path);
 
 							if (name == "oak_tree")
 							{
@@ -248,6 +242,13 @@ namespace jaw
 			const float SPEED = 100.0f;
 			const float CAM_SPEED = 8.0f;
 
+			enum CurDir
+			{
+				DOWN, UP, LEFT, RIGHT
+			};
+
+			CurDir cur_dir;
+
 			vcm::vec2 cam_posv;
 
 			Level* level;
@@ -275,7 +276,18 @@ namespace jaw
 
 				sprite_g.frame_size = { 64, 64 };
 
-				SpriteAnim anim = { "idle", { 0 }, 8, true };
+				cur_dir = DOWN;
+
+				SpriteAnim anim = { "idle_down", { 0 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "idle_up", { 8 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "idle_right", { 16 }, 8, true };
+				sprite_g.add_anim(anim);
+
+				anim = { "idle_left", { 24 }, 8, true };
 				sprite_g.add_anim(anim);
 
 				anim = { "down", { 1, 2, 3, 4, 5, 6 }, 11.5f, true };
@@ -367,28 +379,46 @@ namespace jaw
 			{
 				Entity::update(dt);
 
-				sprite_g.play_anim("idle");
+				switch (cur_dir)
+				{
+				case DOWN:
+					sprite_g.play_anim("idle_down");
+					break;
+				case UP:
+					sprite_g.play_anim("idle_up");
+					break;
+				case LEFT:
+					sprite_g.play_anim("idle_left");
+					break;
+				case RIGHT:
+					sprite_g.play_anim("idle_right");
+					break;
+				}
 
 				dir = Point(0, 0);
 				if (game.input.key_is_down(SDL_SCANCODE_RIGHT))
 				{
 					dir.x = 1;
 					sprite_g.play_anim("right");
+					cur_dir = RIGHT;
 				}
 				else if (game.input.key_is_down(SDL_SCANCODE_LEFT))
 				{
 					dir.x = -1;
 					sprite_g.play_anim("left");
+					cur_dir = LEFT;
 				}
 				if (game.input.key_is_down(SDL_SCANCODE_DOWN))
 				{
 					dir.y = 1;
 					sprite_g.play_anim("down");
+					cur_dir = DOWN;
 				}
 				else if (game.input.key_is_down(SDL_SCANCODE_UP))
 				{
 					dir.y = -1;
 					sprite_g.play_anim("up");
+					cur_dir = UP;
 				}
 
 				move(vcm::normalize((vcm::vec2)dir) * SPEED * dt);

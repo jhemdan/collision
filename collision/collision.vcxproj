@@ -144,6 +144,7 @@
     <ClCompile Include="src\sound_source.cpp" />
     <ClCompile Include="src\sprite_graphic.cpp" />
     <ClCompile Include="src\texture_2d.cpp" />
+    <ClCompile Include="src\text_graphic.cpp" />
     <ClCompile Include="src\tilemap_graphic.cpp" />
     <ClCompile Include="src\tinyxml2err.cpp" />
     <ClCompile Include="src\wav_file.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="src\sound_source.h" />
     <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />
+    <ClInclude Include="src\text_graphic.h" />
     <ClInclude Include="src\tilemap_graphic.h" />
     <ClInclude Include="src\tinyxml2err.h" />
     <ClInclude Include="src\types.h" />

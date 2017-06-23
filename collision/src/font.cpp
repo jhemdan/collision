@@ -7,6 +7,7 @@
 namespace jaw
 {
 	Font::Font()
+		: line_height(32)
 	{
 
 	}
@@ -30,6 +31,8 @@ namespace jaw
 				txml_check_err(err, path);
 				err = common_elem->QueryIntAttribute("pages", &num_pages);
 				txml_check_err(err, path);
+
+				this->line_height = line_height;
 
 				if (num_pages == 1)
 				{
@@ -122,6 +125,8 @@ namespace jaw
 
 		if (glyphs.empty())
 			throw Exception("Bad font file " + path);
+
+		texture.create(image, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 	}
 
 	void Font::destroy()

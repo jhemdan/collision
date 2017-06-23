@@ -9,6 +9,7 @@
 #include "cam_ent.h"
 #include "font.h"
 #include "tinyxml2err.h"
+#include "text_graphic.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -57,8 +58,57 @@ namespace jaw
 
 		sprite_graphic.create(&sprite_texture);
 
-		Font font;
-		font.create("../assets/main_font.fnt");
+		auto font = new Font();
+		font->create("../assets/main_font.fnt");
+
+		auto text = new TextGraphic();
+		text->create(font);
+		text->scale = 0.5f;
+		text->set_text(
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+			"The quick brown fox jumps over the lazy dog.\n"
+			"Why did the quick brown fox jump over the lazy dog?\n"
+			"Because the lazy dog was too lazy.\n\n"
+		);
+
+		auto text_ent = new Entity();
+		text_ent->graphic = text;
+
+		text_ent->set_layer(10000000);
+
+		world.add_entity(text_ent);
 
 		struct Level : Entity
 		{

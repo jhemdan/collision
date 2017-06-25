@@ -138,6 +138,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mesh.cpp" />
     <ClCompile Include="src\mesh_buffers.cpp" />
+    <ClCompile Include="src\particle_graphic.cpp" />
     <ClCompile Include="src\renderer.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\sound_buffer.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="src\mesh_buffers.h" />
     <ClInclude Include="src\model.h" />
     <ClInclude Include="src\jaw_macros.h" />
+    <ClInclude Include="src\particle_graphic.h" />
     <ClInclude Include="src\point.h" />
     <ClInclude Include="src\rect.h" />
     <ClInclude Include="src\renderer.h" />

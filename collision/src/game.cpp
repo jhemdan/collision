@@ -10,6 +10,7 @@
 #include "font.h"
 #include "tinyxml2err.h"
 #include "text_graphic.h"
+#include "particle_graphic.h"
 
 #include <iostream>
 #include <GL/glew.h>
@@ -68,39 +69,6 @@ namespace jaw
 			"The quick brown fox jumps over the lazy dog.\n"
 			"Why did the quick brown fox jump over the lazy dog?\n"
 			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
 		);
 
 		auto text_ent = new Entity();
@@ -109,6 +77,21 @@ namespace jaw
 		text_ent->set_layer(10000000);
 
 		world.add_entity(text_ent);
+
+		Bitmap particle_bmp;
+		particle_bmp.create("../assets/test_particles.png");
+		Texture2d* particle_tex = new Texture2d();
+		particle_tex->create(particle_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
+		auto test_particles = new ParticleGraphic();
+		test_particles->create(particle_tex);
+
+		auto test_particle_ent = new Entity();
+		test_particle_ent->graphic = test_particles;
+		test_particle_ent->set_layer(text_ent->get_layer() + 1);
+		test_particle_ent->position = { 75, 75 };
+
+		world.add_entity(test_particle_ent);
 
 		struct Level : Entity
 		{

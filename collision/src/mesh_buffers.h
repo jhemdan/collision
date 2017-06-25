@@ -21,7 +21,7 @@ namespace jaw
 		std::vector<float> vdata;
 		std::vector<unsigned> idata;
 		unsigned vsize;
-		unsigned isize;
+		unsigned isize; //use this when rendering because the buffer can be bigger than what should be drawn
 		bool streaming;
 	};
 }

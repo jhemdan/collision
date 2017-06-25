@@ -9,6 +9,7 @@ namespace jaw
 	struct SpriteGraphic;
 	struct TilemapGraphic;
 	struct TextGraphic;
+	struct ParticleGraphic;
 
 	struct Renderer
 	{
@@ -21,6 +22,7 @@ namespace jaw
 		void render(SpriteGraphic* sprite, const vcm::mat4& transform);
 		void render(TilemapGraphic* tilemap, const vcm::mat4& transform);
 		void render(TextGraphic* text, const vcm::mat4& transform);
+		void render(ParticleGraphic* particles, const vcm::mat4& transform);
 
 		Shader sprite_shader;
 		Shader text_shader;

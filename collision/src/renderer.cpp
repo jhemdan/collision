@@ -3,6 +3,7 @@
 #include "tilemap_graphic.h"
 #include "text_graphic.h"
 #include "font.h"
+#include "particle_graphic.h"
 
 #include <GL/glew.h>
 
@@ -61,7 +62,7 @@ namespace jaw
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(2 * sizeof(float)));
 		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(4 * sizeof(float)));
 
-		glDrawElements(GL_TRIANGLES, sprite->model.mbuffers.idata.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, sprite->model.mbuffers.isize, GL_UNSIGNED_INT, nullptr);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -93,7 +94,7 @@ namespace jaw
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(2 * sizeof(float)));
 		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(4 * sizeof(float)));
 
-		glDrawElements(GL_TRIANGLES, tilemap->model.mbuffers.idata.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, tilemap->model.mbuffers.isize, GL_UNSIGNED_INT, nullptr);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -125,7 +126,39 @@ namespace jaw
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(2 * sizeof(float)));
 		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(4 * sizeof(float)));
 
-		glDrawElements(GL_TRIANGLES, text->model.mbuffers.idata.size(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, text->model.mbuffers.isize, GL_UNSIGNED_INT, nullptr);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+	}
+
+	void Renderer::render(ParticleGraphic* particles, const vcm::mat4& transform)
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, particles->texture->id);
+
+		//using sprite_shader for now, might change later
+		glUseProgram(sprite_shader.id);
+
+		vcm::mat4 temp_mvp = proj_mat * transform;
+		glUniformMatrix4fv(sprite_shader.get_uniform("mvp"), 1, GL_FALSE, &temp_mvp[0][0]);
+
+		glUniform1i(sprite_shader.get_uniform("tex"), 0);
+		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)1, (float)1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, particles->model.mbuffers.vbo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particles->model.mbuffers.ibo);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(2 * sizeof(float)));
+		glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, (8 * sizeof(float)), (void*)(4 * sizeof(float)));
+
+		glDrawElements(GL_TRIANGLES, particles->model.mbuffers.isize, GL_UNSIGNED_INT, nullptr);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

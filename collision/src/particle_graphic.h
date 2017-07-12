@@ -3,9 +3,12 @@
 #include "graphic.h"
 #include "texture_2d.h"
 #include "model.h"
+#include "point.h"
+#include "rect.h"
 
 #include <vector>
 #include <random>
+#include <string>
 
 namespace jaw
 {
@@ -14,6 +17,7 @@ namespace jaw
 		Particle()
 		{
 			timer = 0.0f;
+			start_life = 0.0f;
 			life = 0.0f;
 			frame = 0;
 			color = vcm::vec4(1.0f);
@@ -22,8 +26,9 @@ namespace jaw
 		}
 
 		float timer;
+		float start_life;
 		float life;
-		int frame;
+		int frame; //absolute frame not relative to current anim
 		vcm::vec2 position;
 		vcm::vec4 color;
 		float angle; //degrees
@@ -55,6 +60,23 @@ namespace jaw
 		vcm::vec2 scale_min, scale_max;
 		float force_angle_min, force_angle_max; //degrees
 		float force_min, force_max; //pixels per second
+		std::string anim;
+	};
+
+	struct ParticleAnim
+	{
+		ParticleAnim()
+		{
+			//fps = 0;
+			//loop = false;
+			//life_mode = true;
+		}
+
+		std::string name;
+		std::vector<int> frames;
+		//float fps;
+		//bool loop;
+		//bool life_mode; //if in life mode, the frames are changed by the particle's life/death time, otherwise regular fps is used
 	};
 
 	struct ParticleGraphic : Graphic
@@ -71,6 +93,9 @@ namespace jaw
 
 		void _build_mesh();
 
+		int get_anim(const std::string& name) const;
+		void add_anim(const ParticleAnim& anim);
+
 		Model model;
 		Texture2d* texture;
 
@@ -83,5 +108,9 @@ namespace jaw
 		std::uniform_real_distribution<float> random_dist;
 
 		ParticleMethod method;
+
+		Point frame_size;
+
+		std::vector<ParticleAnim> _anims;
 	};
 }

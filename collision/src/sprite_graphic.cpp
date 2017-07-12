@@ -15,9 +15,12 @@ namespace jaw
 
 		_anim_timer = 0.0f;
 		_cur_anim = -1;
-		_dest_anim = -1;
 		_cur_frame = 0;
 		_playing_anim = false;
+
+		_reached_end = false;
+
+		scale = vcm::vec2{ 1.0f };
 	}
 
 	void SpriteGraphic::create(Texture2d* tex)
@@ -58,18 +61,6 @@ namespace jaw
 	{
 		Graphic::update(dt);
 
-		if (_dest_anim != -1)
-		{
-			if (_cur_anim != _dest_anim)
-			{
-				_cur_anim = _dest_anim;
-				_cur_frame = 0;
-				_anim_timer = 0.0f;
-			}
-
-			_dest_anim = -1;
-		}
-
 		if (_playing_anim)
 		{
 			_anim_timer += dt;
@@ -108,8 +99,8 @@ namespace jaw
 
 		vcm::mat4 tran_mat = vcm::mat4
 		{
-			{ 1, 0, 0, 0 },
-			{ 0, 1, 0, 0 },
+			{ scale.x, 0, 0, 0 },
+			{ 0, scale.y, 0, 0 },
 			{ 0, 0, 1, 0 },
 			{ (float)entity->position.x - (float)origin.x, (float)entity->position.y - (float)origin.y, 0, 1 }
 		};
@@ -166,13 +157,35 @@ namespace jaw
 
 	void SpriteGraphic::play_anim(const std::string& name)
 	{
-		_dest_anim = get_anim(name);
-		_playing_anim = true;
+		int dest_anim = get_anim(name);
+
+		if (_cur_anim != dest_anim)
+		{
+			_cur_anim = dest_anim;
+			_cur_frame = 0;
+			_anim_timer = 0.0f;
+
+			_reached_end = false;
+
+			_playing_anim = true;
+		}
+	}
+
+	void SpriteGraphic::stop_anim()
+	{
+		_cur_anim = -1;
+		_playing_anim = false;
+		_reached_end = false;
+		_cur_frame = 0;
+		_anim_timer = 0.0f;
+
+		set_clip_rect(Rect(texture->w, texture->h));
 	}
 
 	void SpriteGraphic::_next_frame()
 	{
 		_cur_frame++;
+
 		if (_cur_frame >= (int)_anims[_cur_anim].frames.size())
 		{
 			if (_anims[_cur_anim].loop)
@@ -182,6 +195,7 @@ namespace jaw
 			else
 			{
 				_cur_frame = (int)_anims[_cur_anim].frames.size() - 1;
+				_reached_end = true;
 			}
 		}
 	}

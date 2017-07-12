@@ -12,5 +12,7 @@ namespace jaw
 
 		virtual void update(float dt);
 		virtual void render(Renderer* renderer, Entity* entity);
+
+		bool visible;
 	};
 }

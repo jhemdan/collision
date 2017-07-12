@@ -1026,7 +1026,6 @@
     <tile x="31" y="31" id="25" />
   </grass_dirt>
   <entities1>
-    <oak_tree id="0" x="96" y="288" />
     <oak_tree id="1" x="256" y="128" />
     <oak_tree id="3" x="224" y="480" />
     <oak_tree id="4" x="419" y="476" />

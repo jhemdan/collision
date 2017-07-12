@@ -12,10 +12,7 @@ struct SDL_Window;
 
 namespace jaw
 {
-	enum GameError
-	{
-
-	};
+	struct Level;
 
 	struct Game
 	{
@@ -49,7 +46,7 @@ namespace jaw
 
 		World world;
 
-		SpriteGraphic sprite_graphic;
+		Level* level;
 	};
 	
 	extern Game game;

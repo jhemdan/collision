@@ -25,12 +25,14 @@ namespace jaw
 
 	void World::add_entity(Entity* e)
 	{
-		_to_add.push_back(e);
+		if(e)
+			_to_add.push_back(e);
 	}
 
 	void World::remove_entity(Entity* e)
 	{
-		_to_remove.push_back(e);
+		if(e)
+			_to_remove.push_back(e);
 	}
 
 	void World::flush()
@@ -83,7 +85,9 @@ namespace jaw
 
 			for (auto e : _buffer)
 			{
+				e->world = this;
 				e->on_removed();
+				e->world = nullptr;
 			}
 			_buffer.clear();
 		}
@@ -123,8 +127,14 @@ namespace jaw
 
 	void World::clear()
 	{
+		for (auto e : entities)
+		{
+			e->on_removed();
+		}
+
 		_to_add.clear();
 		_to_remove.clear();
+
 		entities.clear();
 	}
 }

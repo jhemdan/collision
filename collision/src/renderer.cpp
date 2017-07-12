@@ -30,6 +30,9 @@ namespace jaw
 
 	void Renderer::render(SpriteGraphic* sprite, const vcm::mat4& transform)
 	{
+		if (!sprite->visible)
+			return;
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, sprite->texture->id);
 
@@ -71,6 +74,9 @@ namespace jaw
 
 	void Renderer::render(TilemapGraphic* tilemap, const vcm::mat4& transform)
 	{
+		if (!tilemap->visible)
+			return;
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, tilemap->texture->id);
 
@@ -103,6 +109,9 @@ namespace jaw
 
 	void Renderer::render(TextGraphic* text, const vcm::mat4& transform)
 	{
+		if (!text->visible)
+			return;
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, text->font->texture.id);
 
@@ -135,6 +144,9 @@ namespace jaw
 
 	void Renderer::render(ParticleGraphic* particles, const vcm::mat4& transform)
 	{
+		if (!particles->visible)
+			return;
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, particles->texture->id);
 

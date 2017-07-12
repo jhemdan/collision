@@ -13,6 +13,8 @@ namespace jaw
 		_layer = 0;
 
 		solid = false;
+
+		parent = nullptr;
 	}
 
 	Entity::~Entity()
@@ -32,6 +34,11 @@ namespace jaw
 
 	void Entity::update(float dt)
 	{
+		if (parent)
+		{
+			position = parent->position + rel_position;
+		}
+
 		if (graphic)
 			graphic->update(dt);
 	}
@@ -42,7 +49,7 @@ namespace jaw
 			graphic->render(renderer, this);
 	}
 
-	bool Entity::check_collision(const Point& pos, Entity* other) const
+	bool Entity::check_intersection(const Point& pos, Entity* other) const
 	{
 		if (pos.x + origin.x >= other->position.x + other->origin.x + other->size.x)
 		{
@@ -67,6 +74,42 @@ namespace jaw
 		return true;
 	}
 
+	bool Entity::check_intersection(const Point& pos, const std::string& type, std::vector<Entity*>& out_results) const
+	{
+		if (!world)
+			return false;
+
+		bool ret = false;
+
+		for (auto other : world->entities)
+		{
+			if (other == this)
+				continue;
+
+			if (other->type == type)
+			{
+				if (check_intersection(pos, other))
+				{
+					ret = true;
+					out_results.push_back(other);
+				}
+			}
+		}
+
+		return ret;
+	}
+
+	bool Entity::check_collision(const Point& pos, Entity* other) const
+	{
+		if (solid && other->solid)
+		{
+			if (check_intersection(pos, other))
+				return true;
+		}
+
+		return false;
+	}
+
 	bool Entity::check_collision(const Point& pos) const
 	{
 		if (!world || !solid)
@@ -74,7 +117,7 @@ namespace jaw
 
 		for (auto other : world->entities)
 		{
-			if (other == this || !other->solid)
+			if (other == this)
 				continue;
 
 			if (check_collision(pos, other))

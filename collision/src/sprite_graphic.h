@@ -52,7 +52,11 @@ namespace jaw
 		int get_anim(const std::string& name) const;
 		void add_anim(const SpriteAnim& anim);
 		void play_anim(const std::string& name);
+		void stop_anim(); //resets the anim
 		void _next_frame();
+
+		//returns true if the current animation has reached its end
+		bool has_reached_end() const { return _reached_end; }
 
 		Model model;
 		Texture2d* texture;
@@ -63,12 +67,15 @@ namespace jaw
 		std::vector<SpriteAnim> _anims;
 		float _anim_timer;		
 		int _cur_anim;
-		int _dest_anim;
 		int _cur_frame;
 		bool _playing_anim;
 
 		Point frame_size; //for clip_rect calc during animation
 
 		Point origin;
+
+		bool _reached_end;
+
+		vcm::vec2 scale;
 	};
 }

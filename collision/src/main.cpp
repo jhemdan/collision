@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 	status = IMG_Init(IMG_INIT_PNG);
 	JAW_ASSERT_MSG(status == IMG_INIT_PNG, "Bad status for IMG_Init");
 
-	const char* title = "A Side Quest";
+	const char* title = "A Side Quest - Dedicated to Ibrahim Hemdan";
 	int x = SDL_WINDOWPOS_UNDEFINED;
 	int y = x;
 	int w = 800;

@@ -3,6 +3,7 @@
 namespace jaw
 {
 	Graphic::Graphic()
+		: visible(true)
 	{
 
 	}

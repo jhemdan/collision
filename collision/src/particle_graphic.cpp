@@ -27,6 +27,8 @@ namespace jaw
 		this->texture = texture;
 
 		this->model.mbuffers.create(this->model.mesh);
+
+		frame_size = Point(texture->w, texture->h);
 	}
 
 	void ParticleGraphic::destroy()
@@ -42,13 +44,15 @@ namespace jaw
 
 		_timer += dt;
 
-		const int eps = 10;
+		const int eps = 100;
 		
 		if (_timer >= 1.0f / eps)
 		{
 			_timer = 0.0f;
 			emit();
 		}
+
+		int cur_anim = get_anim(method.anim);
 
 		for (int i = 0; i < (int)particles.size(); )
 		{
@@ -64,8 +68,13 @@ namespace jaw
 			}
 
 			p.timer += dt;
-			
-			p.angle += 100 * dt;
+
+			float life_percent = (p.start_life - p.life) / p.start_life;
+
+			if (cur_anim != -1)
+			{
+				p.frame = _anims[cur_anim].frames[(int)(life_percent * _anims[cur_anim].frames.size())];
+			}
 
 			++i;
 		}
@@ -100,6 +109,7 @@ namespace jaw
 		auto rrange = [this, rnd](float min, float max) { return min + (max - min) * rnd(); };
 
 		p.life = rrange(method.life_min, method.life_max);
+		p.start_life = p.life;
 
 		float pos_angle = rrange(0, 2 * vcm::PI);
 		float pos_dist = rrange(method.spawn_radius_min, method.spawn_radius_max);
@@ -127,14 +137,22 @@ namespace jaw
 
 		for (const auto& p : particles)
 		{
+			int cols = texture->w / frame_size.x;
+
+			Rect cr;
+			cr.x = p.frame % cols * frame_size.x;
+			cr.y = p.frame / cols * frame_size.y;
+			cr.w = frame_size.x;
+			cr.h = frame_size.y;
+
 			vcm::mat2 rot_mat = vcm::from_angle(-p.angle * vcm::RAD);
 
-			vcm::vec2 tex_size = { (float)texture->w, (float)texture->h };
+			vcm::vec2 quad_size = vcm::vec2((float)cr.w, (float)cr.h);
 
-			vcm::vec2 tl = rot_mat * (vcm::vec2(-1.0f, -1.0f) * (tex_size * 0.5f) * p.scale);
-			vcm::vec2 bl = rot_mat * (vcm::vec2(-1.0f, 1.0f) * (tex_size * 0.5f) * p.scale);
-			vcm::vec2 br = rot_mat * (vcm::vec2(1.0f, 1.0f) * (tex_size * 0.5f) * p.scale);
-			vcm::vec2 tr = rot_mat * (vcm::vec2(1.0f, -1.0f) * (tex_size * 0.5f) * p.scale);
+			vcm::vec2 tl = rot_mat * (vcm::vec2(-1.0f, -1.0f) * (quad_size * 0.5f) * p.scale);
+			vcm::vec2 bl = rot_mat * (vcm::vec2(-1.0f, 1.0f) * (quad_size * 0.5f) * p.scale);
+			vcm::vec2 br = rot_mat * (vcm::vec2(1.0f, 1.0f) * (quad_size * 0.5f) * p.scale);
+			vcm::vec2 tr = rot_mat * (vcm::vec2(1.0f, -1.0f) * (quad_size * 0.5f) * p.scale);
 
 			vcm::vec2 top_left = p.position + tl;
 			vcm::vec2 bottom_left = p.position + bl;
@@ -147,9 +165,9 @@ namespace jaw
 			//float ws = 1.0f / texture->w;
 			//float hs = 1.0f / texture->h;
 			//vcm::vec2 tex_top_left = { (float)tex_x * ws, (float)tex_y * hs };
-			vcm::vec2 tex_top_left = { 0, 0 };
+			vcm::vec2 tex_top_left = { (float)cr.x / texture->w, (float)cr.y / texture->h };
 			//vcm::vec2 tex_bottom_right = tex_top_left + vcm::vec2{ tile_w * ws, tile_h * hs };
-			vcm::vec2 tex_bottom_right = { 1, 1 };
+			vcm::vec2 tex_bottom_right = tex_top_left + vcm::vec2{ (float)cr.w / texture->w, (float)cr.h / texture->h };
 
 			unsigned vc = (unsigned)verts.size();
 
@@ -163,5 +181,26 @@ namespace jaw
 		}
 
 		model.mbuffers.recreate(model.mesh);
+	}
+
+	int ParticleGraphic::get_anim(const std::string& name) const
+	{
+		for (int i = 0; i < (int)_anims.size(); ++i)
+		{
+			if (_anims[i].name == name)
+				return i;
+		}
+
+		return -1;
+	}
+
+	void ParticleGraphic::add_anim(const ParticleAnim& anim)
+	{
+		JAW_ASSERT_MSG(anim.frames.size(), "No frames for ParticleGraphic::add_anim()");
+
+		if (get_anim(anim.name) == -1)
+		{
+			_anims.push_back(anim);
+		}
 	}
 }

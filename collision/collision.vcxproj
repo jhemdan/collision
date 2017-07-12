@@ -143,6 +143,9 @@
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\sound_buffer.cpp" />
     <ClCompile Include="src\sound_source.cpp" />
+    <ClCompile Include="src\specific\level.cpp" />
+    <ClCompile Include="src\specific\oak_tree.cpp" />
+    <ClCompile Include="src\specific\player.cpp" />
     <ClCompile Include="src\sprite_graphic.cpp" />
     <ClCompile Include="src\texture_2d.cpp" />
     <ClCompile Include="src\text_graphic.cpp" />
@@ -174,6 +177,9 @@
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\sound_buffer.h" />
     <ClInclude Include="src\sound_source.h" />
+    <ClInclude Include="src\specific\level.h" />
+    <ClInclude Include="src\specific\oak_tree.h" />
+    <ClInclude Include="src\specific\player.h" />
     <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />
     <ClInclude Include="src\text_graphic.h" />

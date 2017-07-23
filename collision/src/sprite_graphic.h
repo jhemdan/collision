@@ -48,15 +48,27 @@ namespace jaw
 		Rect get_clip_rect() const { return _clip_rect; }
 
 		void _calc_clip_rect();
+		void _build_uvs();
 
 		int get_anim(const std::string& name) const;
+
+		int get_cur_anim_index() const { return _cur_anim; }
+		const SpriteAnim& get_anim(int index) const { return _anims[index]; }
+		int get_cur_anim_frame() const { return _cur_frame; }
+
+		float get_anim_timer() const { return _anim_timer; }
+		void set_anim_timer(float t) { _anim_timer = t; }
+
 		void add_anim(const SpriteAnim& anim);
 		void play_anim(const std::string& name);
+		//sets the frame of the currently playing anim
+		void set_anim_frame(int f);
 		void stop_anim(); //resets the anim
 		void _next_frame();
 
 		//returns true if the current animation has reached its end
 		bool has_reached_end() const { return _reached_end; }
+		bool is_playing_anim() const { return _playing_anim; }
 
 		Model model;
 		Texture2d* texture;

@@ -67,13 +67,17 @@ namespace jaw
 
 		sword_g.frame_size = { 64, 64 };
 
-		SpriteAnim sword_slash_r;
-		sword_slash_r.name = "slash_r";
-		sword_slash_r.frames = { 0, 1, 2, 3 };
-		sword_slash_r.fps = 14;
-		sword_slash_r.loop = false;
+		anim = { "slash_r", { 0, 1, 2, 3 }, 14, false };
+		sword_g.add_anim(anim);
 
-		sword_g.add_anim(sword_slash_r);
+		anim = { "slash_l",{ 4, 5, 6, 7 }, 14, false };
+		sword_g.add_anim(anim);
+
+		anim = { "slash_d",{ 8, 9, 10, 11 }, 14, false };
+		sword_g.add_anim(anim);
+
+		anim = { "slash_u",{ 12, 13, 14, 15 }, 14, false };
+		sword_g.add_anim(anim);
 
 		sword_ent.graphic = &sword_g;
 
@@ -86,13 +90,14 @@ namespace jaw
 		magenta_tex = new Texture2d();
 		magenta_tex->create(magenta_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 		magenta_g.create(magenta_tex);
-		magenta_g.scale.x = 0.8f;
+		magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
 		magenta_g.scale.y = 0.75f;
 
 		magenta_ent.graphic = &magenta_g;
 
 		sword_collider.parent = &magenta_ent;
-		sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+
+		magenta_g.visible = false;
 	}
 
 	Player::~Player()
@@ -131,6 +136,8 @@ namespace jaw
 	void Player::update(float dt)
 	{
 		Entity::update(dt);
+
+		std::string cur_anim;
 
 		switch (cur_dir)
 		{
@@ -195,16 +202,95 @@ namespace jaw
 
 		world->cam_ent->position = Point(cam_posv);
 
+		auto switch_sword_anim_mid_anim = [this](const std::string& anim_name)
+		{
+			if (swinging && sword_g.is_playing_anim())
+			{
+				const auto& anim = sword_g.get_anim(sword_g.get_cur_anim_index());
+
+				if (anim.name != anim_name)
+				{
+					int cur_anim_frame = sword_g.get_cur_anim_frame();
+					float anim_timer = sword_g.get_anim_timer();
+					sword_g.play_anim(anim_name);
+					sword_g.set_anim_frame(cur_anim_frame);
+					sword_g.set_anim_timer(anim_timer);
+				}
+			}
+		};
+
+		if (cur_dir == RIGHT)
+		{
+			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
+			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+
+			sword_ent.position = position + Point(10, 0);
+			magenta_ent.position = position + Point(43, 32);
+
+			switch_sword_anim_mid_anim("slash_r");
+		}
+		else if (cur_dir == LEFT)
+		{
+			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
+			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+
+			sword_ent.position = position + Point(-10, 0);
+			magenta_ent.position = position + Point(32 - sword_collider.size.x - 13, 32);
+
+			switch_sword_anim_mid_anim("slash_l");
+		}
+		else if (cur_dir == DOWN)
+		{
+			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_UD;
+			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+
+			sword_ent.position = position + Point(0, 26);
+			magenta_ent.position = position + Point(32 - (int)(sword_collider.size.x * 0.5f), 60);
+
+			switch_sword_anim_mid_anim("slash_d");
+		}
+		else if (cur_dir == UP)
+		{
+			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_UD;
+			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+
+			sword_ent.position = position + Point(0, -5);
+			magenta_ent.position = position + Point(32 - (int)(sword_collider.size.x * 0.5f), -3);
+
+			switch_sword_anim_mid_anim("slash_u");
+		}
+
+		sword_ent.set_layer(sword_ent.position.y + 64 + 1);
+		magenta_ent.set_layer(magenta_ent.position.y + (int)(magenta_g.texture->h * magenta_g.scale.y));
+
 		if (!swinging && game.input.key_is_down(SDL_SCANCODE_X))
 		{
+			std::string sword_anim;
+			if (cur_dir == RIGHT)
+			{
+				sword_anim = "slash_r";
+			}
+			else if (cur_dir == LEFT)
+			{
+				sword_anim = "slash_l";
+			}
+			else if (cur_dir == DOWN)
+			{
+				sword_anim = "slash_d";
+			}
+			else if (cur_dir == UP)
+			{
+				sword_anim = "slash_u"; 
+			}
+
 			swinging = true;
-			sword_g.play_anim("slash_r");
+			sword_g.play_anim(sword_anim);
 			sword_g.visible = true;
 		}
 
 		if (swinging)
 		{
-			if (sword_g.has_reached_end())
+			if (sword_g.has_reached_end() || !sword_g.is_playing_anim())
 			{
 				swinging = false;
 				sword_g.visible = false;
@@ -224,12 +310,6 @@ namespace jaw
 			has_attacked = true;
 			attack();
 		}
-
-		sword_ent.position = position + Point(10, 0);
-		sword_ent.set_layer(sword_ent.position.y + 64 + 1);
-
-		magenta_ent.position = position + Point(43, 32);
-		magenta_ent.set_layer(get_layer() + 1);
 	}
 
 	void Player::attack()

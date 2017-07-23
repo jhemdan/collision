@@ -67,24 +67,11 @@ namespace jaw
 
 			if (_anim_timer >= 1.0f / _anims[_cur_anim].fps)
 			{
-				_anim_timer = 0.0f;
 				_next_frame();
 			}
 		}
 
-		if (_cur_anim != -1)
-		{
-			int actual_frame = _anims[_cur_anim].frames[_cur_frame];
-
-			int cols = texture->w / frame_size.x;
-
-			Rect cr;
-			cr.x = actual_frame % cols * frame_size.x;
-			cr.y = actual_frame / cols * frame_size.y;
-			cr.w = frame_size.x;
-			cr.h = frame_size.y;
-			set_clip_rect(cr);
-		}
+		_calc_clip_rect();
 	}
 
 	void SpriteGraphic::render(Renderer* renderer, Entity* entity)
@@ -94,7 +81,7 @@ namespace jaw
 		if (_dirty_clip)
 		{
 			_dirty_clip = false;
-			_calc_clip_rect();
+			_build_uvs();
 		}
 
 		vcm::mat4 tran_mat = vcm::mat4
@@ -118,6 +105,28 @@ namespace jaw
 	}
 
 	void SpriteGraphic::_calc_clip_rect()
+	{
+		if (_cur_anim != -1)
+		{
+			int actual_frame = _anims[_cur_anim].frames[_cur_frame];
+
+			int cols = texture->w / frame_size.x;
+
+			Rect cr;
+			cr.x = actual_frame % cols * frame_size.x;
+			cr.y = actual_frame / cols * frame_size.y;
+			cr.w = frame_size.x;
+			cr.h = frame_size.y;
+			set_clip_rect(cr);
+		}
+		else
+		{
+			Rect cr(texture->w, texture->h);
+			set_clip_rect(cr);
+		}
+	}
+
+	void SpriteGraphic::_build_uvs()
 	{
 		vcm::vec4 uv_rect;
 		uv_rect.x = (float)_clip_rect.x / texture->w;
@@ -164,10 +173,39 @@ namespace jaw
 			_cur_anim = dest_anim;
 			_cur_frame = 0;
 			_anim_timer = 0.0f;
-
 			_reached_end = false;
 
-			_playing_anim = true;
+			_calc_clip_rect();
+
+			if (dest_anim != -1)
+			{
+				_playing_anim = true;
+			}
+		}
+	}
+
+	void SpriteGraphic::set_anim_frame(int f)
+	{
+		if (_cur_anim != -1 && _playing_anim)
+		{
+			_cur_frame = f;
+			_anim_timer = 0.0f;
+
+			if (_cur_frame < 0)
+				_cur_frame = 0;
+
+			if (_cur_frame >= (int)_anims[_cur_anim].frames.size())
+			{
+				if (_anims[_cur_anim].loop)
+				{
+					_cur_frame = 0;
+				}
+				else
+				{
+					_cur_frame = (int)_anims[_cur_anim].frames.size() - 1;
+					_reached_end = true;
+				}
+			}
 		}
 	}
 
@@ -184,19 +222,6 @@ namespace jaw
 
 	void SpriteGraphic::_next_frame()
 	{
-		_cur_frame++;
-
-		if (_cur_frame >= (int)_anims[_cur_anim].frames.size())
-		{
-			if (_anims[_cur_anim].loop)
-			{
-				_cur_frame = 0;
-			}
-			else
-			{
-				_cur_frame = (int)_anims[_cur_anim].frames.size() - 1;
-				_reached_end = true;
-			}
-		}
+		set_anim_frame(_cur_frame + 1);
 	}
 }

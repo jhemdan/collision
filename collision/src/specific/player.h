@@ -23,13 +23,15 @@ namespace jaw
 		const float SPEED = 100.0f;
 		const float CAM_SPEED = 8.0f;
 
+		const float SWORD_COLLIDER_SIZE_X_LR = 0.8f;
+		const float SWORD_COLLIDER_SIZE_X_UD = 0.2f;
+
 		enum CurDir
 		{
 			DOWN, UP, LEFT, RIGHT
 		};
 
 		CurDir cur_dir;
-		std::string cur_anim;
 
 		vcm::vec2 cam_posv;
 

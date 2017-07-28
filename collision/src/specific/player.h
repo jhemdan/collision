@@ -2,6 +2,7 @@
 
 #include "../entity.h"
 #include "../sprite_graphic.h"
+#include "cur_dir.h"
 
 namespace jaw
 {
@@ -26,10 +27,9 @@ namespace jaw
 		const float SWORD_COLLIDER_SIZE_X_LR = 0.8f;
 		const float SWORD_COLLIDER_SIZE_X_UD = 0.2f;
 
-		enum CurDir
-		{
-			DOWN, UP, LEFT, RIGHT
-		};
+		const float ATTACK_COOLDOWN = .69f;
+
+		float _cool_down;
 
 		CurDir cur_dir;
 

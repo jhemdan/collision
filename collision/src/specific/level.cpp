@@ -5,6 +5,7 @@
 #include "../world.h"
 #include "player.h"
 #include "oak_tree.h"
+#include "monster.h"
 
 namespace jaw
 {
@@ -165,6 +166,11 @@ namespace jaw
 
 		player = new Player(player_tex, this);
 		ents.push_back(player);
+
+		auto monster = new Monster(player_tex, this);
+		ents.push_back(monster);
+
+		monster->position = { 100, 100 };
 	}
 
 	void Level::clean()

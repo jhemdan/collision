@@ -14,6 +14,8 @@ namespace jaw
 		, attack_timer(0.0f)
 		, slash_moment(1 / 14.0f)
 		, has_attacked(false)
+
+		, _cool_down(0.0f)
 	{
 		sprite_g.create(tex);
 
@@ -30,7 +32,7 @@ namespace jaw
 
 		sprite_g.frame_size = { 64, 64 };
 
-		cur_dir = DOWN;
+		cur_dir = CUR_DIR_DOWN;
 
 		SpriteAnim anim = { "idle_down",{ 0 }, 8, true };
 		sprite_g.add_anim(anim);
@@ -141,16 +143,16 @@ namespace jaw
 
 		switch (cur_dir)
 		{
-		case DOWN:
+		case CUR_DIR_DOWN:
 			cur_anim = "idle_down";
 			break;
-		case UP:
+		case CUR_DIR_UP:
 			cur_anim = "idle_up";
 			break;
-		case LEFT:
+		case CUR_DIR_LEFT:
 			cur_anim = "idle_left";
 			break;
-		case RIGHT:
+		case CUR_DIR_RIGHT:
 			cur_anim = "idle_right";
 			break;
 		}
@@ -160,25 +162,25 @@ namespace jaw
 		{
 			dir.x = 1;
 			cur_anim = "right";
-			cur_dir = RIGHT;
+			cur_dir = CUR_DIR_RIGHT;
 		}
 		else if (game.input.key_is_down(SDL_SCANCODE_LEFT))
 		{
 			dir.x = -1;
 			cur_anim = "left";
-			cur_dir = LEFT;
+			cur_dir = CUR_DIR_LEFT;
 		}
 		if (game.input.key_is_down(SDL_SCANCODE_DOWN))
 		{
 			dir.y = 1;
 			cur_anim = "down";
-			cur_dir = DOWN;
+			cur_dir = CUR_DIR_DOWN;
 		}
 		else if (game.input.key_is_down(SDL_SCANCODE_UP))
 		{
 			dir.y = -1;
 			cur_anim = "up";
-			cur_dir = UP;
+			cur_dir = CUR_DIR_UP;
 		}
 
 		sprite_g.play_anim(cur_anim);
@@ -219,7 +221,7 @@ namespace jaw
 			}
 		};
 
-		if (cur_dir == RIGHT)
+		if (cur_dir == CUR_DIR_RIGHT)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
 			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
@@ -229,7 +231,7 @@ namespace jaw
 
 			switch_sword_anim_mid_anim("slash_r");
 		}
-		else if (cur_dir == LEFT)
+		else if (cur_dir == CUR_DIR_LEFT)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
 			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
@@ -239,7 +241,7 @@ namespace jaw
 
 			switch_sword_anim_mid_anim("slash_l");
 		}
-		else if (cur_dir == DOWN)
+		else if (cur_dir == CUR_DIR_DOWN)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_UD;
 			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
@@ -249,7 +251,7 @@ namespace jaw
 
 			switch_sword_anim_mid_anim("slash_d");
 		}
-		else if (cur_dir == UP)
+		else if (cur_dir == CUR_DIR_UP)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_UD;
 			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
@@ -263,22 +265,26 @@ namespace jaw
 		sword_ent.set_layer(sword_ent.position.y + 64 + 1);
 		magenta_ent.set_layer(magenta_ent.position.y + (int)(magenta_g.texture->h * magenta_g.scale.y));
 
-		if (!swinging && game.input.key_is_down(SDL_SCANCODE_X))
+		_cool_down -= dt;
+		if (_cool_down < 0.0f)
+			_cool_down = 0.0f;
+
+		if (!swinging && game.input.key_is_down(SDL_SCANCODE_X) && _cool_down == 0.0f)
 		{
 			std::string sword_anim;
-			if (cur_dir == RIGHT)
+			if (cur_dir == CUR_DIR_RIGHT)
 			{
 				sword_anim = "slash_r";
 			}
-			else if (cur_dir == LEFT)
+			else if (cur_dir == CUR_DIR_LEFT)
 			{
 				sword_anim = "slash_l";
 			}
-			else if (cur_dir == DOWN)
+			else if (cur_dir == CUR_DIR_DOWN)
 			{
 				sword_anim = "slash_d";
 			}
-			else if (cur_dir == UP)
+			else if (cur_dir == CUR_DIR_UP)
 			{
 				sword_anim = "slash_u"; 
 			}
@@ -286,6 +292,8 @@ namespace jaw
 			swinging = true;
 			sword_g.play_anim(sword_anim);
 			sword_g.visible = true;
+
+			_cool_down = ATTACK_COOLDOWN;
 		}
 
 		if (swinging)

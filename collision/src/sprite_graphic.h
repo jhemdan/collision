@@ -89,5 +89,7 @@ namespace jaw
 		bool _reached_end;
 
 		vcm::vec2 scale;
+
+		vcm::vec4 color;
 	};
 }

@@ -53,6 +53,7 @@ namespace jaw
 
 		glUniform1i(sprite_shader.get_uniform("tex"), 0);
 		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)sprite->get_clip_rect().w, (float)sprite->get_clip_rect().h);
+		glUniform4f(sprite_shader.get_uniform("my_color"), sprite->color.x, sprite->color.y, sprite->color.z, sprite->color.w);
 
 		glBindBuffer(GL_ARRAY_BUFFER, sprite->model.mbuffers.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite->model.mbuffers.ibo);
@@ -88,6 +89,7 @@ namespace jaw
 
 		glUniform1i(sprite_shader.get_uniform("tex"), 0);
 		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)1, (float)1);
+		glUniform4f(sprite_shader.get_uniform("my_color"), 1.0f, 1.0f, 1.0f, 1.0f);
 
 		glBindBuffer(GL_ARRAY_BUFFER, tilemap->model.mbuffers.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tilemap->model.mbuffers.ibo);
@@ -158,6 +160,7 @@ namespace jaw
 
 		glUniform1i(sprite_shader.get_uniform("tex"), 0);
 		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)1, (float)1);
+		glUniform4f(sprite_shader.get_uniform("my_color"), 1.0f, 1.0f, 1.0f, 1.0f);
 
 		glBindBuffer(GL_ARRAY_BUFFER, particles->model.mbuffers.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particles->model.mbuffers.ibo);

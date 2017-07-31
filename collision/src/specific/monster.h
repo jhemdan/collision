@@ -28,6 +28,7 @@ namespace jaw
 				: _moving(false)
 				, _move_timer(0.0f)
 				, _move_time(0.0f)
+				, _move_angle(0.0f)
 
 				, _stay_timer(0.0f)
 				, _stay_time(0.0f)
@@ -37,6 +38,7 @@ namespace jaw
 
 			bool _moving;
 			vcm::vec2 _move_dir;
+			float _move_angle;
 			float _move_timer;
 			float _move_time;
 			float _stay_timer;
@@ -50,6 +52,11 @@ namespace jaw
 
 		Level* level;
 
+		int health;
+
+		bool _flashing_red;
+		float _red_timer;
+
 		Monster(Texture2d* tex, Level* level);
 		~Monster();
 
@@ -57,5 +64,8 @@ namespace jaw
 		void _get_idle_move_stay_times();
 
 		void update(float dt) override;
+
+		void take_hit();
+		void die();
 	};
 }

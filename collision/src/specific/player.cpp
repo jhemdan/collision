@@ -4,6 +4,7 @@
 #include "../game.h"
 #include "level.h"
 #include "../cam_ent.h"
+#include "monster.h"
 
 namespace jaw
 {
@@ -100,6 +101,8 @@ namespace jaw
 		sword_collider.parent = &magenta_ent;
 
 		magenta_g.visible = false;
+
+		sprite_g.color = { 1.0f, 0.0f, 0.0f, 1.0f };
 	}
 
 	Player::~Player()
@@ -322,11 +325,21 @@ namespace jaw
 
 	void Player::attack()
 	{
-		std::vector<Entity*> tree_boxes;
-		if (sword_collider.check_intersection(sword_collider.position, "tree", tree_boxes))
+		std::vector<Entity*> es;
+		if (sword_collider.check_intersection(sword_collider.position, "tree", es))
 		{
-			auto tree = tree_boxes[0]->parent;
+			auto tree = es[0]->parent;
 			world->remove_entity(tree);
+		}
+
+		es.clear();
+		if (sword_collider.check_intersection(sword_collider.position, "monster", es))
+		{
+			for (auto e : es)
+			{
+				auto m = (Monster*)e;
+				m->take_hit();
+			}
 		}
 	}
 }

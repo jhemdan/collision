@@ -167,10 +167,16 @@ namespace jaw
 		player = new Player(player_tex, this);
 		ents.push_back(player);
 
-		auto monster = new Monster(player_tex, this);
-		ents.push_back(monster);
+		for (int i = 0; i < 3; ++i)
+		{
+			for (int j = 0; j < 3; ++j)
+			{
+				auto monster = new Monster(player_tex, this);
+				ents.push_back(monster);
 
-		monster->position = { 100, 100 };
+				monster->position = { i * 32, j * 32 };
+			}
+		}
 	}
 
 	void Level::clean()

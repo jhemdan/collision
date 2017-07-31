@@ -1,5 +1,6 @@
 #include "monster.h"
 #include "level.h"
+#include "../world.h"
 
 #include <vecmath/pi.hpp>
 
@@ -45,6 +46,13 @@ namespace jaw
 
 		anim = { "up",{ 9, 10, 11, 12, 13, 14 }, 11.5f, true };
 		sprite_g.add_anim(anim);
+
+		type = "monster";
+
+		health = 3;
+
+		_flashing_red = false;
+		_red_timer = 0.0f;
 	}
 
 	Monster::~Monster()
@@ -77,6 +85,34 @@ namespace jaw
 			position.y = level->size.y - (origin.y + size.y);
 
 		set_layer(position.y + origin.y + size.y);
+
+		sprite_g.color = vcm::vec4{ 1.0f };
+		if (_flashing_red)
+		{
+			_red_timer += dt;
+
+			int redi = (int)((_red_timer * 4.0f) * 1000);
+			int redi2 = redi % 1000;
+
+			if (redi <= 1000)
+			{
+				if (redi2 < 333)
+				{
+					sprite_g.color = { 1.0f, 0.0f, 0.0f, 1.0f };
+				}
+			}
+
+			if (redi2 >= 333 && redi2 < 500)
+			{
+				sprite_g.color = vcm::vec4{ 0.0f };
+			}
+
+			if (redi > 3000)
+			{
+				_flashing_red = false;
+				_red_timer = 0.0f;
+			}
+		}
 	}
 
 	void Monster::_do_idle(float dt)
@@ -97,6 +133,7 @@ namespace jaw
 				float angle = rand.get(0, 2 * vcm::PI);
 
 				_idle_stuff._move_dir = { cos(-angle), sin(-angle) };
+				_idle_stuff._move_angle = angle;
 			}
 			else
 			{
@@ -115,12 +152,75 @@ namespace jaw
 			}
 			else
 			{
-				cur_anim = "down";
-
 				move(_idle_stuff._move_dir * SPEED * dt);
 			}
 		}
 
+		float angle = _idle_stuff._move_angle;
+		if (angle <= (vcm::PI / 4) || angle >= (7 * vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_RIGHT;
+		}
+		else if (angle <= (3 * vcm::PI / 4) && angle >= (vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_UP;
+		}
+		else if (angle <= (5 * vcm::PI / 4) && angle >= (3 * vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_LEFT;
+		}
+		else if (angle <= (7 * vcm::PI / 4) && angle >= (5 * vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_DOWN;
+		}
+
+		switch (cur_dir)
+		{
+		case CUR_DIR_RIGHT:
+			if (_idle_stuff._moving)
+				cur_anim = "right";
+			else
+				cur_anim = "idle_right";
+			break;
+		case CUR_DIR_UP:
+			if (_idle_stuff._moving)
+				cur_anim = "up";
+			else
+				cur_anim = "idle_up";
+			break;
+		case CUR_DIR_LEFT:
+			if (_idle_stuff._moving)
+				cur_anim = "left";
+			else
+				cur_anim = "idle_left";
+			break;
+		case CUR_DIR_DOWN:
+			if (_idle_stuff._moving)
+				cur_anim = "down";
+			else
+				cur_anim = "idle_down";
+			break;
+		}
+
 		sprite_g.play_anim(cur_anim);
+	}
+
+	void Monster::take_hit()
+	{
+		health--;
+
+		_flashing_red = true;
+
+		if (health <= 0)
+		{
+			health = 0;
+
+			die();
+		}
+	}
+
+	void Monster::die()
+	{
+		world->remove_entity(this);
 	}
 }

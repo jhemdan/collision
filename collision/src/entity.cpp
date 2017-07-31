@@ -133,6 +133,12 @@ namespace jaw
 		Point d((int)std::round(_move_accum.x), (int)std::round(_move_accum.y));
 		_move_accum -= vcm::vec2{ (float)d.x, (float)d.y };
 
+		if (check_collision(position))
+		{
+			position += d;
+			return;
+		}
+
 		int sign = 0;
 		if (d.x != 0)
 		{

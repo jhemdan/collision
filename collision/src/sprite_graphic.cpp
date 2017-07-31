@@ -21,6 +21,8 @@ namespace jaw
 		_reached_end = false;
 
 		scale = vcm::vec2{ 1.0f };
+
+		color = vcm::vec4{ 1.0f };
 	}
 
 	void SpriteGraphic::create(Texture2d* tex)

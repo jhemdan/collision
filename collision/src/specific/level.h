@@ -5,6 +5,7 @@
 #include "../texture_2d.h"
 #include "../sprite_graphic.h"
 #include "player_hud.h"
+#include "../font.h"
 
 #include <vector>
 
@@ -22,6 +23,8 @@ namespace jaw
 		SpriteGraphic weeds1_g;
 		Texture2d weeds1_tex;
 		Texture2d player_tex;
+
+		Font font;
 
 		std::vector<Entity*> ents;
 

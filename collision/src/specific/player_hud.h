@@ -6,11 +6,12 @@
 
 namespace jaw
 {
+	struct Level;
 	struct World;
 
 	struct PlayerHud
 	{
-		const int LAYER_NUM = 1000000;
+		static const int LAYER_NUM;
 
 		Texture2d heart_tex;
 		SpriteGraphic hearts_g[3];
@@ -24,7 +25,7 @@ namespace jaw
 
 		PlayerHud();
 
-		void init();
+		void init(Level* level);
 		void clean();
 		void add(World* w);
 		void remove();

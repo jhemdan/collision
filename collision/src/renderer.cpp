@@ -121,10 +121,10 @@ namespace jaw
 		glUseProgram(text_shader.id);
 
 		vcm::mat4 temp_mvp = proj_mat * transform;
-		glUniformMatrix4fv(sprite_shader.get_uniform("mvp"), 1, GL_FALSE, &temp_mvp[0][0]);
+		glUniformMatrix4fv(text_shader.get_uniform("mvp"), 1, GL_FALSE, &temp_mvp[0][0]);
 
-		glUniform1i(sprite_shader.get_uniform("tex"), 0);
-		glUniform2f(sprite_shader.get_uniform("quad_size"), (float)1, (float)1);
+		glUniform1i(text_shader.get_uniform("tex"), 0);
+		glUniform2f(text_shader.get_uniform("quad_size"), (float)1, (float)1);
 
 		glBindBuffer(GL_ARRAY_BUFFER, text->model.mbuffers.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, text->model.mbuffers.ibo);

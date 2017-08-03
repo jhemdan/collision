@@ -36,9 +36,9 @@ namespace jaw
 
 		vcm::mat4 tran_mat = vcm::mat4
 		{
-			{ scale, 0, 0, 0 },
-			{ 0, scale, 0, 0 },
-			{ 0, 0, scale, 0 },
+			{ scale.x, 0, 0, 0 },
+			{ 0, scale.y, 0, 0 },
+			{ 0, 0, 1.0f, 0 },
 			{ (float)entity->position.x, (float)entity->position.y, 0, 1 }
 		};
 

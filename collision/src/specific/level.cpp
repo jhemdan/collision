@@ -37,6 +37,8 @@ namespace jaw
 		player_bmp.create("../assets/main_character.png");
 		player_tex.create(player_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
+		font.create("../assets/main_font.fnt");
+
 		struct Tile
 		{
 			int x, y;
@@ -169,7 +171,7 @@ namespace jaw
 			}
 		}
 
-		player_hud.init();
+		player_hud.init(this);
 	}
 
 	void Level::clean()
@@ -187,6 +189,8 @@ namespace jaw
 		weeds1_tex.destroy();
 		tree_tex.destroy();
 		player_tex.destroy();
+
+		font.destroy();
 
 		player = nullptr;
 	}

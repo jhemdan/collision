@@ -10,6 +10,14 @@ namespace jaw
 
 	struct Player : Entity
 	{
+		static const float SPEED;
+		static const float CAM_SPEED;
+
+		static const float SWORD_COLLIDER_SIZE_X_LR;
+		static const float SWORD_COLLIDER_SIZE_X_UD;
+
+		static const float ATTACK_COOLDOWN;
+
 		Point dir;
 		SpriteGraphic sprite_g;
 
@@ -20,14 +28,6 @@ namespace jaw
 		Entity magenta_ent;
 		Texture2d* magenta_tex;
 		SpriteGraphic magenta_g;
-
-		const float SPEED = 100.0f;
-		const float CAM_SPEED = 8.0f;
-
-		const float SWORD_COLLIDER_SIZE_X_LR = 0.8f;
-		const float SWORD_COLLIDER_SIZE_X_UD = 0.2f;
-
-		const float ATTACK_COOLDOWN = .69f;
 
 		float _cool_down;
 

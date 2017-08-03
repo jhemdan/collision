@@ -11,22 +11,25 @@ namespace jaw
 
 	struct Monster : Entity
 	{
+		static const float SPEED;
+
+		static const float MOVE_TIME_MIN;
+		static const float MOVE_TIME_MAX;
+		static const float STAY_TIME_MIN;
+		static const float STAY_TIME_MAX;
+
+		static const float CHASE_DIST;
+		static const float STOP_CHASE_DIST;
+		static const float ATTACK_DIST;
+
+		static const float CHASE_COOLDOWN;
+
+		static const float INITIAL_ATTACK_TIME;
+		static const float ATTACK_TIMER1_TIME;
+
 		SpriteGraphic sprite_g;
 
 		CurDir cur_dir;
-
-		const float SPEED = 80.0f;
-
-		const float MOVE_TIME_MIN = 0.2f;
-		const float MOVE_TIME_MAX = 2.0f;
-		const float STAY_TIME_MIN = 0.2f;
-		const float STAY_TIME_MAX = 2.0f;
-
-		const float CHASE_DIST = 150.0f;
-		const float STOP_CHASE_DIST = 200.0f;
-		const float ATTACK_DIST = 35.0f;
-
-		const float CHASE_COOLDOWN = 0.2f;
 
 		bool _in_idle;
 		bool _moving;
@@ -48,8 +51,6 @@ namespace jaw
 		float _red_timer;
 
 		float _attack_timer1;
-		const float INITIAL_ATTACK_TIME = 1.5f;
-		const float ATTACK_TIMER1_TIME = 2.5f;
 
 		Monster(Texture2d* tex, Level* level);
 		~Monster();

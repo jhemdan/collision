@@ -7,6 +7,22 @@
 
 namespace jaw
 {
+	const float Monster::SPEED = 80.0f;
+
+	const float Monster::MOVE_TIME_MIN = 0.2f;
+	const float Monster::MOVE_TIME_MAX = 2.0f;
+	const float Monster::STAY_TIME_MIN = 0.2f;
+	const float Monster::STAY_TIME_MAX = 2.0f;
+
+	const float Monster::CHASE_DIST = 150.0f;
+	const float Monster::STOP_CHASE_DIST = 200.0f;
+	const float Monster::ATTACK_DIST = 35.0f;
+
+	const float Monster::CHASE_COOLDOWN = 0.2f;
+
+	const float Monster::INITIAL_ATTACK_TIME = 1.5f;
+	const float Monster::ATTACK_TIMER1_TIME = 2.5f;
+
 	Monster::Monster(Texture2d* tex, Level* level)
 		: level(level)
 	{
@@ -296,6 +312,7 @@ namespace jaw
 		health--;
 
 		_flashing_red = true;
+		_red_timer = 0.0f;
 
 		if (health <= 0)
 		{

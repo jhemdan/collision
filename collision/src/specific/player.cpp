@@ -8,6 +8,14 @@
 
 namespace jaw
 {
+	const float Player::SPEED = 100.0f;
+	const float Player::CAM_SPEED = 8.0f;
+
+	const float Player::SWORD_COLLIDER_SIZE_X_LR = 0.8f;
+	const float Player::SWORD_COLLIDER_SIZE_X_UD = 0.2f;
+
+	const float Player::ATTACK_COOLDOWN = .69f;
+
 	Player::Player(Texture2d* tex, Level* level)
 		: sword_tex(nullptr)
 		, magenta_tex(nullptr)

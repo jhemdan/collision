@@ -4,6 +4,7 @@
 #include "model.h"
 
 #include <string>
+#include <vecmath/vector.hpp>
 
 namespace jaw
 {
@@ -28,6 +29,6 @@ namespace jaw
 
 		std::string _text;
 
-		float scale;
+		vcm::vec2 scale;
 	};
 }

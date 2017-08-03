@@ -103,6 +103,8 @@ namespace jaw
 		magenta_g.visible = false;
 
 		sprite_g.color = { 1.0f, 0.0f, 0.0f, 1.0f };
+	
+		health = 3;
 	}
 
 	Player::~Player()
@@ -341,5 +343,24 @@ namespace jaw
 				m->take_hit();
 			}
 		}
+	}
+
+	void Player::take_hit()
+	{
+		health--;
+
+		if (health <= 0)
+		{
+			health = 0;
+
+			die();
+		}
+
+		level->player_hud.set_hearts(health);
+	}
+
+	void Player::die()
+	{
+		world->remove_entity(this);
 	}
 }

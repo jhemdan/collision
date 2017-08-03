@@ -15,38 +15,28 @@ namespace jaw
 
 		CurDir cur_dir;
 
-		const float SPEED = 100.0f;
+		const float SPEED = 80.0f;
 
-		struct IdleStuff
-		{
-			const float MOVE_TIME_MIN = 0.2f;
-			const float MOVE_TIME_MAX = 2.0f;
-			const float STAY_TIME_MIN = 0.2f;
-			const float STAY_TIME_MAX = 2.0f;
+		const float MOVE_TIME_MIN = 0.2f;
+		const float MOVE_TIME_MAX = 2.0f;
+		const float STAY_TIME_MIN = 0.2f;
+		const float STAY_TIME_MAX = 2.0f;
 
-			IdleStuff()
-				: _moving(false)
-				, _move_timer(0.0f)
-				, _move_time(0.0f)
-				, _move_angle(0.0f)
+		const float CHASE_DIST = 150.0f;
+		const float STOP_CHASE_DIST = 200.0f;
+		const float ATTACK_DIST = 35.0f;
 
-				, _stay_timer(0.0f)
-				, _stay_time(0.0f)
-			{
-
-			}
-
-			bool _moving;
-			vcm::vec2 _move_dir;
-			float _move_angle;
-			float _move_timer;
-			float _move_time;
-			float _stay_timer;
-			float _stay_time;
-		};
+		const float CHASE_COOLDOWN = 0.2f;
 
 		bool _in_idle;
-		IdleStuff _idle_stuff;
+		bool _moving;
+		vcm::vec2 _move_dir;
+		float _move_angle;
+		float _move_timer;
+		float _move_time;
+		float _stay_timer;
+		float _stay_time;
+		float _chase_cooldown;
 
 		RandomSource rand;
 
@@ -57,15 +47,22 @@ namespace jaw
 		bool _flashing_red;
 		float _red_timer;
 
+		float _attack_timer1;
+		const float INITIAL_ATTACK_TIME = 1.5f;
+		const float ATTACK_TIMER1_TIME = 2.5f;
+
 		Monster(Texture2d* tex, Level* level);
 		~Monster();
 
 		void _do_idle(float dt);
 		void _get_idle_move_stay_times();
+		void _do_chase(float dt);
 
 		void update(float dt) override;
 
 		void take_hit();
 		void die();
+
+		void attack();
 	};
 }

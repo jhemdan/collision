@@ -10,12 +10,7 @@
 namespace jaw
 {
 	Level::Level()
-		: tilemap_tex(nullptr)
-		, tree_tex(nullptr)
-		, weeds1_tex(nullptr)
-		, player_tex(nullptr)
-
-		, player(nullptr)
+		: player(nullptr)
 	{
 
 	}
@@ -26,25 +21,21 @@ namespace jaw
 
 		Bitmap tilemap_bmp;
 		tilemap_bmp.create("../assets/grass_tiles1.png");
-		tilemap_tex = new Texture2d();
-		tilemap_tex->create(tilemap_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		tilemap_tex.create(tilemap_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		Bitmap tree_bmp;
 		tree_bmp.create("../assets/oak_tree.png");
-		tree_tex = new Texture2d();
-		tree_tex->create(tree_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		tree_tex.create(tree_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		Bitmap weeds1_bmp;
 		weeds1_bmp.create("../assets/weeds1.png");
-		weeds1_tex = new Texture2d();
-		weeds1_tex->create(weeds1_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
-		weeds1_g.create(weeds1_tex);
+		weeds1_tex.create(weeds1_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		weeds1_g.create(&weeds1_tex);
 		weeds1_g.origin = { 16, 31 };
 
 		Bitmap player_bmp;
 		player_bmp.create("../assets/main_character.png");
-		player_tex = new Texture2d();
-		player_tex->create(player_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		player_tex.create(player_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		struct Tile
 		{
@@ -101,7 +92,7 @@ namespace jaw
 			{
 				auto add_oak_tree = [this](int x, int y)
 				{
-					auto e = new OakTree(tree_tex);
+					auto e = new OakTree(&tree_tex);
 					e->position = { x, y };
 
 					e->set_layer(e->position.y);
@@ -156,7 +147,7 @@ namespace jaw
 		if (cols <= 0 || rows <= 0)
 			throw Exception("Bad level size.");
 
-		tilemap_graphic.create(tilemap_tex, cols, rows, 32, 32);
+		tilemap_graphic.create(&tilemap_tex, cols, rows, 32, 32);
 		tilemap_ent.graphic = &tilemap_graphic;
 
 		for (const auto& tile : tiles)
@@ -164,23 +155,27 @@ namespace jaw
 			tilemap_graphic.set_tile(tile.x, tile.y, tile.id);
 		}
 
-		player = new Player(player_tex, this);
+		player = new Player(&player_tex, this);
 		ents.push_back(player);
 
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 3; ++j)
 			{
-				auto monster = new Monster(player_tex, this);
+				auto monster = new Monster(&player_tex, this);
 				ents.push_back(monster);
 
-				monster->position = { i * 32, j * 32 };
+				monster->position = Point(200, 200) + Point{ i * 50, j * 50 };
 			}
 		}
+
+		player_hud.init();
 	}
 
 	void Level::clean()
 	{
+		player_hud.clean();
+
 		for (auto e : ents)
 		{
 			delete e;
@@ -188,15 +183,10 @@ namespace jaw
 		
 		ents.clear();
 
-		delete tilemap_tex;
-		delete weeds1_tex;
-		delete tree_tex;
-		delete player_tex;
-
-		tilemap_tex = nullptr;
-		weeds1_tex = nullptr;
-		tree_tex = nullptr;
-		player_tex = nullptr;
+		tilemap_tex.destroy();
+		weeds1_tex.destroy();
+		tree_tex.destroy();
+		player_tex.destroy();
 
 		player = nullptr;
 	}
@@ -209,6 +199,8 @@ namespace jaw
 
 		for (auto e : ents)
 			world->add_entity(e);
+
+		player_hud.add(world);
 	}
 
 	void Level::on_removed()
@@ -219,5 +211,7 @@ namespace jaw
 
 		for (auto e : ents)
 			world->remove_entity(e);
+
+		player_hud.remove();
 	}
 }

@@ -1,6 +1,7 @@
 #include "monster.h"
 #include "level.h"
 #include "../world.h"
+#include "player.h"
 
 #include <vecmath/pi.hpp>
 
@@ -8,7 +9,6 @@ namespace jaw
 {
 	Monster::Monster(Texture2d* tex, Level* level)
 		: level(level)
-		, _in_idle(true)
 	{
 		sprite_g.create(tex);
 
@@ -47,12 +47,23 @@ namespace jaw
 		anim = { "up",{ 9, 10, 11, 12, 13, 14 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
+		_in_idle = true;
+		_moving = false;
+		_move_angle = 0.0f;
+		_move_timer = 0.0f;
+		_move_time = 0.0f;
+		_stay_timer = 0.0f;
+		_stay_time = 0.0f;
+		_chase_cooldown = 0.0f;
+
 		type = "monster";
 
 		health = 3;
 
 		_flashing_red = false;
 		_red_timer = 0.0f;
+
+		_attack_timer1 = 0.0f;
 	}
 
 	Monster::~Monster()
@@ -62,8 +73,8 @@ namespace jaw
 
 	void Monster::_get_idle_move_stay_times()
 	{
-		_idle_stuff._move_time = rand.get(_idle_stuff.MOVE_TIME_MIN, _idle_stuff.MOVE_TIME_MAX);
-		_idle_stuff._stay_time = rand.get(_idle_stuff.STAY_TIME_MIN, _idle_stuff.STAY_TIME_MAX);
+		_move_time = rand.get(MOVE_TIME_MIN, MOVE_TIME_MAX);
+		_stay_time = rand.get(STAY_TIME_MIN, STAY_TIME_MAX);
 	}
 
 	void Monster::update(float dt)
@@ -74,6 +85,60 @@ namespace jaw
 		{
 			_do_idle(dt);
 		}
+		else
+		{
+			_do_chase(dt);
+		}
+
+		float angle = _move_angle;
+		if (angle <= (vcm::PI / 4) || angle >= (7 * vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_RIGHT;
+		}
+		else if (angle <= (3 * vcm::PI / 4) && angle >= (vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_UP;
+		}
+		else if (angle <= (5 * vcm::PI / 4) && angle >= (3 * vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_LEFT;
+		}
+		else if (angle <= (7 * vcm::PI / 4) && angle >= (5 * vcm::PI / 4))
+		{
+			cur_dir = CUR_DIR_DOWN;
+		}
+
+		std::string cur_anim = "idle_down";
+
+		switch (cur_dir)
+		{
+		case CUR_DIR_RIGHT:
+			if (_moving)
+				cur_anim = "right";
+			else
+				cur_anim = "idle_right";
+			break;
+		case CUR_DIR_UP:
+			if (_moving)
+				cur_anim = "up";
+			else
+				cur_anim = "idle_up";
+			break;
+		case CUR_DIR_LEFT:
+			if (_moving)
+				cur_anim = "left";
+			else
+				cur_anim = "idle_left";
+			break;
+		case CUR_DIR_DOWN:
+			if (_moving)
+				cur_anim = "down";
+			else
+				cur_anim = "idle_down";
+			break;
+		}
+
+		sprite_g.play_anim(cur_anim);
 
 		if (position.x + origin.x < 0)
 			position.x = 0 - origin.x;
@@ -117,92 +182,113 @@ namespace jaw
 
 	void Monster::_do_idle(float dt)
 	{
-		std::string cur_anim = "idle_down";
-
-		if (!_idle_stuff._moving)
+		if (!_moving)
 		{
-			_idle_stuff._stay_timer += dt;
+			_stay_timer += dt;
 
-			if (_idle_stuff._stay_timer >= _idle_stuff._stay_time)
+			if (_stay_timer >= _stay_time)
 			{
-				_idle_stuff._moving = true;
-				_idle_stuff._stay_timer = 0.0f;
+				_moving = true;
+				_stay_timer = 0.0f;
 
 				_get_idle_move_stay_times();
 
 				float angle = rand.get(0, 2 * vcm::PI);
 
-				_idle_stuff._move_dir = { cos(-angle), sin(-angle) };
-				_idle_stuff._move_angle = angle;
+				_move_dir = { cos(-angle), sin(-angle) };
+				_move_angle = angle;
 			}
 			else
 			{
-
+				
 			}
 		}
 
-		if (_idle_stuff._moving)
+		if (_moving)
 		{
-			_idle_stuff._move_timer += dt;
+			_move_timer += dt;
 			
-			if (_idle_stuff._move_timer >= _idle_stuff._move_time)
+			if (_move_timer >= _move_time)
 			{
-				_idle_stuff._moving = false;
-				_idle_stuff._move_timer = 0.0f;
+				_moving = false;
+				_move_timer = 0.0f;
 			}
 			else
 			{
-				move(_idle_stuff._move_dir * SPEED * dt);
+				move(_move_dir * SPEED * dt);
 			}
 		}
 
-		float angle = _idle_stuff._move_angle;
-		if (angle <= (vcm::PI / 4) || angle >= (7 * vcm::PI / 4))
+		auto player = level->player;
+		if (player && player->world)
 		{
-			cur_dir = CUR_DIR_RIGHT;
-		}
-		else if (angle <= (3 * vcm::PI / 4) && angle >= (vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_UP;
-		}
-		else if (angle <= (5 * vcm::PI / 4) && angle >= (3 * vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_LEFT;
-		}
-		else if (angle <= (7 * vcm::PI / 4) && angle >= (5 * vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_DOWN;
-		}
+			auto diff = player->get_center_pos() - get_center_pos();
+			vcm::vec2 diffv = (vcm::vec2)diff;
+			float dist = vcm::length(diffv);
 
-		switch (cur_dir)
-		{
-		case CUR_DIR_RIGHT:
-			if (_idle_stuff._moving)
-				cur_anim = "right";
-			else
-				cur_anim = "idle_right";
-			break;
-		case CUR_DIR_UP:
-			if (_idle_stuff._moving)
-				cur_anim = "up";
-			else
-				cur_anim = "idle_up";
-			break;
-		case CUR_DIR_LEFT:
-			if (_idle_stuff._moving)
-				cur_anim = "left";
-			else
-				cur_anim = "idle_left";
-			break;
-		case CUR_DIR_DOWN:
-			if (_idle_stuff._moving)
-				cur_anim = "down";
-			else
-				cur_anim = "idle_down";
-			break;
+			if (dist <= CHASE_DIST)
+			{
+				_in_idle = false;
+			}
 		}
+	}
 
-		sprite_g.play_anim(cur_anim);
+	void Monster::_do_chase(float dt)
+	{
+		auto player = level->player;
+		if (player && player->world)
+		{
+			auto diff = player->get_center_pos() - get_center_pos();
+			vcm::vec2 diffv = (vcm::vec2)diff;
+			float dist = vcm::length(diffv);
+
+			if (dist < STOP_CHASE_DIST)
+			{
+				_move_dir = vcm::normalize(diffv);
+				_move_angle = atan2(-_move_dir.y, _move_dir.x);
+				if (_move_angle < 0)
+					_move_angle += 2 * vcm::PI;
+
+				if (dist > ATTACK_DIST)
+				{
+					if (_chase_cooldown == 0.0f)
+					{
+						_moving = true;
+
+						move(_move_dir * SPEED * dt);
+					}
+
+					_chase_cooldown -= dt;
+
+					if (_chase_cooldown < 0)
+						_chase_cooldown = 0.0f;
+
+					_attack_timer1 = INITIAL_ATTACK_TIME;
+				}
+				else
+				{
+					_moving = false;
+
+					_chase_cooldown = CHASE_COOLDOWN;
+
+					_attack_timer1 += dt;
+
+					if (_attack_timer1 >= ATTACK_TIMER1_TIME)
+					{
+						_attack_timer1 = 0.0f;
+						attack();
+					}
+				}
+			}
+			else
+			{
+				_in_idle = true;
+			}
+		}
+		else
+		{
+			_in_idle = true;
+		}
 	}
 
 	void Monster::take_hit()
@@ -222,5 +308,14 @@ namespace jaw
 	void Monster::die()
 	{
 		world->remove_entity(this);
+	}
+
+	void Monster::attack()
+	{
+		auto player = level->player;
+		if (player && player->world)
+		{
+			player->take_hit();
+		}
 	}
 }

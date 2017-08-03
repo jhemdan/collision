@@ -38,6 +38,8 @@ namespace jaw
 		void set_layer(int value);
 		int get_layer() const { return _layer; }
 
+		Point get_center_pos() const { return position + origin + size * 0.5f; }
+
 		World* world;
 		
 		Point position;

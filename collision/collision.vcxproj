@@ -148,6 +148,7 @@
     <ClCompile Include="src\specific\monster.cpp" />
     <ClCompile Include="src\specific\oak_tree.cpp" />
     <ClCompile Include="src\specific\player.cpp" />
+    <ClCompile Include="src\specific\player_hud.cpp" />
     <ClCompile Include="src\sprite_graphic.cpp" />
     <ClCompile Include="src\texture_2d.cpp" />
     <ClCompile Include="src\text_graphic.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="src\specific\monster.h" />
     <ClInclude Include="src\specific\oak_tree.h" />
     <ClInclude Include="src\specific\player.h" />
+    <ClInclude Include="src\specific\player_hud.h" />
     <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />
     <ClInclude Include="src\text_graphic.h" />

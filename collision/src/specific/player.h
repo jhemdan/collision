@@ -44,6 +44,8 @@ namespace jaw
 		const float slash_moment;
 		bool has_attacked;
 
+		int health;
+
 		Player(Texture2d* tex, Level* level);
 		~Player();
 
@@ -55,5 +57,8 @@ namespace jaw
 		void update(float dt) override;
 
 		void attack();
+
+		void take_hit();
+		void die();
 	};
 }

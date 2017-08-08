@@ -23,6 +23,7 @@ namespace jaw
 		SpriteGraphic weeds1_g;
 		Texture2d weeds1_tex;
 		Texture2d player_tex;
+		Texture2d monster_tex;
 
 		Font font;
 

@@ -91,5 +91,7 @@ namespace jaw
 		vcm::vec2 scale;
 
 		vcm::vec4 color;
+		vcm::vec4 mix_color;
+		float mix_color_amount;
 	};
 }

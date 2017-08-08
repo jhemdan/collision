@@ -109,8 +109,6 @@ namespace jaw
 		sword_collider.parent = &magenta_ent;
 
 		magenta_g.visible = false;
-
-		sprite_g.color = { 1.0f, 0.0f, 0.0f, 1.0f };
 	
 		health = 3;
 	}

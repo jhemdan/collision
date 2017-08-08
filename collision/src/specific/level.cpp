@@ -39,6 +39,10 @@ namespace jaw
 
 		font.create("../assets/main_font.fnt");
 
+		Bitmap monster_bmp;
+		monster_bmp.create("../assets/monster.png");
+		monster_tex.create(monster_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
 		struct Tile
 		{
 			int x, y;
@@ -164,7 +168,7 @@ namespace jaw
 		{
 			for (int j = 0; j < 3; ++j)
 			{
-				auto monster = new Monster(&player_tex, this);
+				auto monster = new Monster(&monster_tex, this);
 				ents.push_back(monster);
 
 				monster->position = Point(200, 200) + Point{ i * 50, j * 50 };
@@ -189,6 +193,7 @@ namespace jaw
 		weeds1_tex.destroy();
 		tree_tex.destroy();
 		player_tex.destroy();
+		monster_tex.destroy();
 
 		font.destroy();
 

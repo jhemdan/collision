@@ -23,6 +23,9 @@ namespace jaw
 		scale = vcm::vec2{ 1.0f };
 
 		color = vcm::vec4{ 1.0f };
+	
+		mix_color = vcm::vec4{ 1.0f };
+		mix_color_amount = 0.0f;
 	}
 
 	void SpriteGraphic::create(Texture2d* tex)

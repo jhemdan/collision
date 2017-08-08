@@ -51,7 +51,7 @@ namespace jaw
 		anim = { "idle_left",{ 24 }, 8, true };
 		sprite_g.add_anim(anim);
 
-		anim = { "down",{ 1, 2, 3, 4, 5, 6 }, 11.5f, true };
+		anim = { "down",{ 1, 2, 3, 1, 2, 3 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
 		anim = { "left",{ 25, 26, 27, 28, 29, 30 }, 11.5f, true };
@@ -60,7 +60,7 @@ namespace jaw
 		anim = { "right",{ 17, 18, 19, 20, 21, 22 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
-		anim = { "up",{ 9, 10, 11, 12, 13, 14 }, 11.5f, true };
+		anim = { "up",{ 9, 10, 11, 9, 10, 11 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
 		_in_idle = true;
@@ -167,6 +167,7 @@ namespace jaw
 
 		set_layer(position.y + origin.y + size.y);
 
+		sprite_g.mix_color_amount = 0.0f;
 		sprite_g.color = vcm::vec4{ 1.0f };
 		if (_flashing_red)
 		{
@@ -179,12 +180,14 @@ namespace jaw
 			{
 				if (redi2 < 333)
 				{
-					sprite_g.color = { 1.0f, 0.0f, 0.0f, 1.0f };
+					sprite_g.mix_color = { 1.0f, 0.0f, 0.0f, 1.0f };
+					sprite_g.mix_color_amount = .75f;
 				}
 			}
 
 			if (redi2 >= 333 && redi2 < 500)
 			{
+				sprite_g.mix_color_amount = 0.0f;
 				sprite_g.color = vcm::vec4{ 0.0f };
 			}
 

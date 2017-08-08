@@ -8,8 +8,14 @@ uniform mat4 mvp;
 uniform vec2 quad_size;
 uniform vec4 my_color;
 
+uniform vec4 my_color_mix_color;
+uniform float my_color_mix_value;
+
 varying vec2 frag_tex_coords;
 varying vec4 frag_color;
+
+varying vec4 color_mix_color;
+varying float color_mix_value;
 
 void main()
 {
@@ -17,4 +23,7 @@ void main()
     
     frag_tex_coords = tex_coords;
     frag_color = color * my_color;
+    
+    color_mix_color = my_color_mix_color;
+    color_mix_value = my_color_mix_value;
 }

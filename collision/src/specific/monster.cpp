@@ -54,10 +54,10 @@ namespace jaw
 		anim = { "down",{ 1, 2, 3, 1, 2, 3 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
-		anim = { "left",{ 25, 26, 27, 28, 29, 30 }, 11.5f, true };
+		anim = { "left",{ 25, 26, 27, 25, 26, 27 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
-		anim = { "right",{ 17, 18, 19, 20, 21, 22 }, 11.5f, true };
+		anim = { "right",{ 17, 18, 19, 17, 18, 19 }, 11.5f, true };
 		sprite_g.add_anim(anim);
 
 		anim = { "up",{ 9, 10, 11, 9, 10, 11 }, 11.5f, true };

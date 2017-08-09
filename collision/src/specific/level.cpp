@@ -43,6 +43,10 @@ namespace jaw
 		monster_bmp.create("../assets/monster.png");
 		monster_tex.create(monster_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
+		Bitmap monster_flame_bmp;
+		monster_flame_bmp.create("../assets/flame.png");
+		monster_flame_tex.create(monster_flame_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
 		struct Tile
 		{
 			int x, y;
@@ -194,6 +198,7 @@ namespace jaw
 		tree_tex.destroy();
 		player_tex.destroy();
 		monster_tex.destroy();
+		monster_flame_tex.destroy();
 
 		font.destroy();
 

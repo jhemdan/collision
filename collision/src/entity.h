@@ -57,5 +57,7 @@ namespace jaw
 		Point rel_position; //position relative to parent
 
 		std::string type;
+
+		bool destroy_on_remove;
 	};
 }

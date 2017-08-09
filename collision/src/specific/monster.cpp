@@ -3,6 +3,8 @@
 #include "../world.h"
 #include "player.h"
 
+#include "monster_flame.h"
+
 #include <vecmath/pi.hpp>
 
 namespace jaw
@@ -16,7 +18,7 @@ namespace jaw
 
 	const float Monster::CHASE_DIST = 150.0f;
 	const float Monster::STOP_CHASE_DIST = 200.0f;
-	const float Monster::ATTACK_DIST = 35.0f;
+	const float Monster::ATTACK_DIST = 100.0f;
 
 	const float Monster::CHASE_COOLDOWN = 0.2f;
 
@@ -80,11 +82,13 @@ namespace jaw
 		_red_timer = 0.0f;
 
 		_attack_timer1 = 0.0f;
+
+		_get_idle_move_stay_times();
 	}
 
 	Monster::~Monster()
 	{
-		_get_idle_move_stay_times();
+		
 	}
 
 	void Monster::_get_idle_move_stay_times()
@@ -107,22 +111,7 @@ namespace jaw
 		}
 
 		float angle = _move_angle;
-		if (angle <= (vcm::PI / 4) || angle >= (7 * vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_RIGHT;
-		}
-		else if (angle <= (3 * vcm::PI / 4) && angle >= (vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_UP;
-		}
-		else if (angle <= (5 * vcm::PI / 4) && angle >= (3 * vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_LEFT;
-		}
-		else if (angle <= (7 * vcm::PI / 4) && angle >= (5 * vcm::PI / 4))
-		{
-			cur_dir = CUR_DIR_DOWN;
-		}
+		cur_dir = cur_dir_from_angle(angle);
 
 		std::string cur_anim = "idle_down";
 
@@ -335,7 +324,32 @@ namespace jaw
 		auto player = level->player;
 		if (player && player->world)
 		{
-			player->take_hit();
+			//player->take_hit();
+
+			auto dir = player->get_center_pos() - get_center_pos();
+
+			Point spawn_point;
+			switch (cur_dir)
+			{
+			case CUR_DIR_DOWN:
+				spawn_point = { 31, 42 };
+				break;
+			case CUR_DIR_UP:
+				spawn_point = { 31, 42 };
+				break;
+			case CUR_DIR_RIGHT:
+				spawn_point = { 43, 169 - 128 };
+				break;
+			case CUR_DIR_LEFT:
+				spawn_point = { 19, 234 - (128 + 64) };
+				break;
+			}
+
+			spawn_point -= Point(8, 8);
+
+			auto flame = new MonsterFlame(&level->monster_flame_tex, position + spawn_point, vcm::normalize((vcm::vec2)dir) * 100);
+			flame->destroy_on_remove = true;
+			world->add_entity(flame);
 		}
 	}
 }

@@ -15,6 +15,8 @@ namespace jaw
 		solid = false;
 
 		parent = nullptr;
+
+		destroy_on_remove = false;
 	}
 
 	Entity::~Entity()

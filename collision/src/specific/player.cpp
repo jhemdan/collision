@@ -111,6 +111,9 @@ namespace jaw
 		magenta_g.visible = false;
 	
 		health = 3;
+		//health = 100;
+
+		type = "player";
 	}
 
 	Player::~Player()

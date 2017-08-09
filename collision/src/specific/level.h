@@ -24,6 +24,7 @@ namespace jaw
 		Texture2d weeds1_tex;
 		Texture2d player_tex;
 		Texture2d monster_tex;
+		Texture2d monster_flame_tex;
 
 		Font font;
 

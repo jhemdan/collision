@@ -88,6 +88,9 @@ namespace jaw
 				e->world = this;
 				e->on_removed();
 				e->world = nullptr;
+
+				if (e->destroy_on_remove)
+					delete e;
 			}
 			_buffer.clear();
 		}
@@ -130,6 +133,9 @@ namespace jaw
 		for (auto e : entities)
 		{
 			e->on_removed();
+
+			if (e->destroy_on_remove)
+				delete e;
 		}
 
 		_to_add.clear();

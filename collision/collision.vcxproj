@@ -144,8 +144,10 @@
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\sound_buffer.cpp" />
     <ClCompile Include="src\sound_source.cpp" />
+    <ClCompile Include="src\specific\cur_dir.cpp" />
     <ClCompile Include="src\specific\level.cpp" />
     <ClCompile Include="src\specific\monster.cpp" />
+    <ClCompile Include="src\specific\monster_flame.cpp" />
     <ClCompile Include="src\specific\oak_tree.cpp" />
     <ClCompile Include="src\specific\player.cpp" />
     <ClCompile Include="src\specific\player_hud.cpp" />
@@ -184,6 +186,7 @@
     <ClInclude Include="src\specific\cur_dir.h" />
     <ClInclude Include="src\specific\level.h" />
     <ClInclude Include="src\specific\monster.h" />
+    <ClInclude Include="src\specific\monster_flame.h" />
     <ClInclude Include="src\specific\oak_tree.h" />
     <ClInclude Include="src\specific\player.h" />
     <ClInclude Include="src\specific\player_hud.h" />

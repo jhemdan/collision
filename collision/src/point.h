@@ -22,6 +22,13 @@ namespace jaw
 			return *this;
 		}
 
+		Point& operator-=(const Point& other)
+		{
+			x -= other.x;
+			y -= other.y;
+			return *this;
+		}
+
 		Point operator-(const Point& other) const
 		{
 			return Point(x - other.x, y - other.y);

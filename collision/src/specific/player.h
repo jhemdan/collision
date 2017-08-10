@@ -3,6 +3,7 @@
 #include "../entity.h"
 #include "../sprite_graphic.h"
 #include "cur_dir.h"
+#include "red_flash.h"
 
 namespace jaw
 {
@@ -45,6 +46,8 @@ namespace jaw
 		bool has_attacked;
 
 		int health;
+
+		RedFlash _red_flash;
 
 		Player(Texture2d* tex, Level* level);
 		~Player();

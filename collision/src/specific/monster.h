@@ -4,6 +4,7 @@
 #include "../sprite_graphic.h"
 #include "cur_dir.h"
 #include "../random_source.h"
+#include "red_flash.h"
 
 namespace jaw
 {
@@ -47,8 +48,7 @@ namespace jaw
 
 		int health;
 
-		bool _flashing_red;
-		float _red_timer;
+		RedFlash _red_flash;
 
 		float _attack_timer1;
 

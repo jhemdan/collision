@@ -111,9 +111,11 @@ namespace jaw
 		magenta_g.visible = false;
 	
 		health = 3;
-		//health = 100;
+		health = 100;
 
 		type = "player";
+
+		_red_flash.sprite = &sprite_g;
 	}
 
 	Player::~Player()
@@ -332,6 +334,8 @@ namespace jaw
 			has_attacked = true;
 			attack();
 		}
+
+		_red_flash.update(dt);
 	}
 
 	void Player::attack()
@@ -357,6 +361,8 @@ namespace jaw
 	void Player::take_hit()
 	{
 		health--;
+
+		_red_flash.hit();
 
 		if (health <= 0)
 		{

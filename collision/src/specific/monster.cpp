@@ -78,8 +78,7 @@ namespace jaw
 
 		health = 3;
 
-		_flashing_red = false;
-		_red_timer = 0.0f;
+		_red_flash.sprite = &sprite_g;
 
 		_attack_timer1 = 0.0f;
 
@@ -156,36 +155,7 @@ namespace jaw
 
 		set_layer(position.y + origin.y + size.y);
 
-		sprite_g.mix_color_amount = 0.0f;
-		sprite_g.color = vcm::vec4{ 1.0f };
-		if (_flashing_red)
-		{
-			_red_timer += dt;
-
-			int redi = (int)((_red_timer * 4.0f) * 1000);
-			int redi2 = redi % 1000;
-
-			if (redi <= 1000)
-			{
-				if (redi2 < 333)
-				{
-					sprite_g.mix_color = { 1.0f, 0.0f, 0.0f, 1.0f };
-					sprite_g.mix_color_amount = .75f;
-				}
-			}
-
-			if (redi2 >= 333 && redi2 < 500)
-			{
-				sprite_g.mix_color_amount = 0.0f;
-				sprite_g.color = vcm::vec4{ 0.0f };
-			}
-
-			if (redi > 3000)
-			{
-				_flashing_red = false;
-				_red_timer = 0.0f;
-			}
-		}
+		_red_flash.update(dt);
 	}
 
 	void Monster::_do_idle(float dt)
@@ -303,8 +273,7 @@ namespace jaw
 	{
 		health--;
 
-		_flashing_red = true;
-		_red_timer = 0.0f;
+		_red_flash.hit();
 
 		if (health <= 0)
 		{

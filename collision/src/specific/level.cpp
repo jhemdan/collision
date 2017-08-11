@@ -34,7 +34,7 @@ namespace jaw
 		weeds1_g.origin = { 16, 31 };
 
 		Bitmap player_bmp;
-		player_bmp.create("../assets/main_character.png");
+		player_bmp.create("../assets/ibrahim.png");
 		player_tex.create(player_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		font.create("../assets/main_font.fnt");

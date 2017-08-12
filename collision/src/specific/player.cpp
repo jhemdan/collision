@@ -336,6 +336,23 @@ namespace jaw
 		}
 
 		_red_flash.update(dt);
+
+		if (game.input.key_pressed(SDL_SCANCODE_SPACE))
+		{
+			static Texture2d* other_tex = nullptr;
+			if (!other_tex)
+			{
+				other_tex = new Texture2d();
+				Bitmap bitmap;
+				bitmap.create("../assets/jawdat.png");
+				other_tex->create(bitmap, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+			}
+			
+			if (sprite_g.texture == other_tex)
+				sprite_g.texture = &level->player_tex;
+			else
+				sprite_g.texture = other_tex;
+		}
 	}
 
 	void Player::attack()

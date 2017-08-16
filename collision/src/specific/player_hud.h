@@ -19,9 +19,13 @@ namespace jaw
 		TextGraphic heart_text_g;
 		Entity heart_text_ent;
 
+		Entity to_talk_ent;
+		TextGraphic to_talk_text;
+
 		int _heart_count;
 
 		World* world;
+		Level* level;
 
 		PlayerHud();
 
@@ -30,6 +34,11 @@ namespace jaw
 		void add(World* w);
 		void remove();
 
+		void update(float dt);
+
 		void set_hearts(int hc);
+
+		void show_to_talk_text();
+		void hide_to_talk_text();
 	};
 }

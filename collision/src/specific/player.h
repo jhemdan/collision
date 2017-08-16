@@ -5,9 +5,12 @@
 #include "cur_dir.h"
 #include "red_flash.h"
 
+#include <vector>
+
 namespace jaw
 {
 	struct Level;
+	struct NPC;
 
 	struct Player : Entity
 	{
@@ -48,6 +51,10 @@ namespace jaw
 		int health;
 
 		RedFlash _red_flash;
+
+		std::vector<Entity*> _ent_buff;
+
+		NPC* npc;
 
 		Player(Texture2d* tex, Level* level);
 		~Player();

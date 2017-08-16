@@ -1,5 +1,7 @@
 #include "player_hud.h"
 #include "level.h"
+#include "player.h"
+#include "npc.h"
 
 #include "../world.h"
 #include "../cam_ent.h"
@@ -11,6 +13,7 @@ namespace jaw
 	PlayerHud::PlayerHud()
 	{
 		world = nullptr;
+		level = nullptr;
 
 		_heart_count = 3;
 	}
@@ -40,6 +43,16 @@ namespace jaw
 		
 			hearts[i].rel_position = Point(50 + i * 20, 20);
 		}
+
+		to_talk_text.create(&level->font);
+		to_talk_text.set_text("Press 'Z' to talk...");
+		to_talk_text.scale = vcm::vec2{ .5f };
+		to_talk_ent.graphic = &to_talk_text;
+		to_talk_ent.set_layer(LAYER_NUM);
+
+		to_talk_text.visible = false;
+
+		this->level = level;
 	}
 
 	void PlayerHud::clean()
@@ -64,6 +77,8 @@ namespace jaw
 		}
 
 		world->add_entity(&heart_text_ent);
+
+		world->add_entity(&to_talk_ent);
 	}
 
 	void PlayerHud::remove()
@@ -81,6 +96,8 @@ namespace jaw
 		}
 
 		world->remove_entity(&heart_text_ent);
+
+		world->remove_entity(&to_talk_ent);
 
 		world = nullptr;
 	}
@@ -100,6 +117,29 @@ namespace jaw
 				hearts_g[i].visible = false;
 			for (int i = 0; i < hc; ++i)
 				hearts_g[i].visible = true;
+		}
+	}
+
+	void PlayerHud::show_to_talk_text()
+	{
+		to_talk_text.visible = true;
+
+		if (level->player->npc)
+		{
+			to_talk_ent.position = level->player->npc->position + Point(-10, 0);
+		}
+	}
+
+	void PlayerHud::hide_to_talk_text()
+	{
+		to_talk_text.visible = false;
+	}
+
+	void PlayerHud::update(float dt)
+	{
+		if (level->player->npc)
+		{
+			to_talk_ent.position = level->player->npc->position + Point(-10, 0);
 		}
 	}
 }

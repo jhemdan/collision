@@ -5,6 +5,8 @@
 #include "level.h"
 #include "../cam_ent.h"
 #include "monster.h"
+#include "npc.h"
+#include "gate.h"
 
 namespace jaw
 {
@@ -25,6 +27,8 @@ namespace jaw
 		, has_attacked(false)
 
 		, _cool_down(0.0f)
+
+		, npc(nullptr)
 	{
 		sprite_g.create(tex);
 
@@ -337,6 +341,7 @@ namespace jaw
 
 		_red_flash.update(dt);
 
+		/*
 		if (game.input.key_pressed(SDL_SCANCODE_SPACE))
 		{
 			static Texture2d* other_tex = nullptr;
@@ -353,21 +358,61 @@ namespace jaw
 			else
 				sprite_g.texture = other_tex;
 		}
+		*/
+
+		npc = nullptr;
+		_ent_buff.clear();
+		if (sword_collider.check_intersection(sword_collider.position, "npc", _ent_buff))
+		{
+			auto npc = (NPC*)_ent_buff[0];
+			this->npc = npc;
+
+			level->player_hud.show_to_talk_text();
+		}
+		else
+		{
+			level->player_hud.hide_to_talk_text();
+		}
+
+		if (game.input.key_pressed(SDL_SCANCODE_Z))
+		{
+
+		}
+
+		_ent_buff.clear();
+		if (sword_collider.check_intersection(sword_collider.position, "gate", _ent_buff))
+		{
+			auto gate = (Gate*)_ent_buff[0]->parent;
+			
+			if (game.input.key_pressed(SDL_SCANCODE_Z))
+			{
+				gate->open();
+			}
+		}
+
+		if (position.x + origin.x < 0)
+			position.x = 0 - origin.x;
+		if (position.y + origin.y < 0)
+			position.y = 0 - origin.y;
+		if (position.x + origin.x + size.x > level->size.x)
+			position.x = level->size.x - (origin.x + size.x);
+		if (position.y + origin.y + size.y > level->size.y)
+			position.y = level->size.y - (origin.y + size.y);
 	}
 
 	void Player::attack()
 	{
-		std::vector<Entity*> es;
-		if (sword_collider.check_intersection(sword_collider.position, "tree", es))
+		_ent_buff.clear();
+		if (sword_collider.check_intersection(sword_collider.position, "tree", _ent_buff))
 		{
-			auto tree = es[0]->parent;
+			auto tree = _ent_buff[0]->parent;
 			world->remove_entity(tree);
 		}
 
-		es.clear();
-		if (sword_collider.check_intersection(sword_collider.position, "monster", es))
+		_ent_buff.clear();
+		if (sword_collider.check_intersection(sword_collider.position, "monster", _ent_buff))
 		{
-			for (auto e : es)
+			for (auto e : _ent_buff)
 			{
 				auto m = (Monster*)e;
 				m->take_hit();

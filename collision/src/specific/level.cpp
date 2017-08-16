@@ -6,6 +6,8 @@
 #include "player.h"
 #include "oak_tree.h"
 #include "monster.h"
+#include "npc.h"
+#include "gate.h"
 
 namespace jaw
 {
@@ -17,7 +19,7 @@ namespace jaw
 
 	void Level::load()
 	{
-		std::string path = "../assets/test_level.oel";
+		std::string path = "../assets/level1.oel";
 
 		Bitmap tilemap_bmp;
 		tilemap_bmp.create("../assets/grass_tiles1.png");
@@ -37,6 +39,10 @@ namespace jaw
 		player_bmp.create("../assets/ibrahim.png");
 		player_tex.create(player_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
+		Bitmap npc_bmp;
+		npc_bmp.create("../assets/jawdat.png");
+		npc_tex.create(npc_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
 		font.create("../assets/main_font.fnt");
 
 		Bitmap monster_bmp;
@@ -46,6 +52,10 @@ namespace jaw
 		Bitmap monster_flame_bmp;
 		monster_flame_bmp.create("../assets/flame.png");
 		monster_flame_tex.create(monster_flame_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
+		Bitmap gate_bmp;
+		gate_bmp.create("../assets/gate.png");
+		gate_tex.create(gate_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		struct Tile
 		{
@@ -121,6 +131,42 @@ namespace jaw
 					ents.push_back(e);
 				};
 
+				auto add_player = [this](int x, int y)
+				{
+					if (!player)
+					{
+						auto e = new Player(&player_tex, this);
+						player = e;
+						e->position = { x, y };
+
+						ents.push_back(e);
+					}
+				};
+
+				auto add_npc = [this](int x, int y)
+				{
+					auto e = new NPC(&npc_tex, this);
+					e->position = { x, y };
+
+					ents.push_back(e);
+				};
+
+				auto add_monster = [this](int x, int y)
+				{
+					auto e = new Monster(&monster_tex, this);
+					e->position = { x, y };
+
+					ents.push_back(e);
+				};
+
+				auto add_gate = [this](int x, int y)
+				{
+					auto e = new Gate(&gate_tex);
+					e->position = { x, y };
+
+					ents.push_back(e);
+				};
+
 				auto first_entity = entities_node->FirstChild();
 				for (auto entity = first_entity; entity != nullptr; entity = entity->NextSibling())
 				{
@@ -144,6 +190,22 @@ namespace jaw
 					{
 						add_weeds1(x, y);
 					}
+					else if (name == "player")
+					{
+						add_player(x, y);
+					}
+					else if (name == "jawdat")
+					{
+						add_npc(x, y);
+					}
+					else if (name == "monster")
+					{
+						add_monster(x, y);
+					}
+					else if (name == "gate")
+					{
+						add_gate(x, y);
+					}
 				}
 			}
 		}
@@ -165,6 +227,7 @@ namespace jaw
 			tilemap_graphic.set_tile(tile.x, tile.y, tile.id);
 		}
 
+		/*
 		player = new Player(&player_tex, this);
 		ents.push_back(player);
 
@@ -178,6 +241,7 @@ namespace jaw
 				monster->position = Point(200, 200) + Point{ i * 50, j * 50 };
 			}
 		}
+		*/
 
 		player_hud.init(this);
 	}
@@ -197,8 +261,10 @@ namespace jaw
 		weeds1_tex.destroy();
 		tree_tex.destroy();
 		player_tex.destroy();
+		npc_tex.destroy();
 		monster_tex.destroy();
 		monster_flame_tex.destroy();
+		gate_tex.destroy();
 
 		font.destroy();
 
@@ -227,5 +293,12 @@ namespace jaw
 			world->remove_entity(e);
 
 		player_hud.remove();
+	}
+
+	void Level::update(float dt)
+	{
+		Entity::update(dt);
+
+		player_hud.update(dt);
 	}
 }

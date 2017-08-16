@@ -11,11 +11,6 @@ namespace jaw
 {
 	const float Monster::SPEED = 80.0f;
 
-	const float Monster::MOVE_TIME_MIN = 0.2f;
-	const float Monster::MOVE_TIME_MAX = 2.0f;
-	const float Monster::STAY_TIME_MIN = 0.2f;
-	const float Monster::STAY_TIME_MAX = 2.0f;
-
 	const float Monster::CHASE_DIST = 150.0f;
 	const float Monster::STOP_CHASE_DIST = 200.0f;
 	const float Monster::ATTACK_DIST = 100.0f;
@@ -66,12 +61,7 @@ namespace jaw
 		sprite_g.add_anim(anim);
 
 		_in_idle = true;
-		_moving = false;
-		_move_angle = 0.0f;
-		_move_timer = 0.0f;
-		_move_time = 0.0f;
-		_stay_timer = 0.0f;
-		_stay_time = 0.0f;
+		
 		_chase_cooldown = 0.0f;
 
 		type = "monster";
@@ -81,19 +71,11 @@ namespace jaw
 		_red_flash.sprite = &sprite_g;
 
 		_attack_timer1 = 0.0f;
-
-		_get_idle_move_stay_times();
 	}
 
 	Monster::~Monster()
 	{
 		
-	}
-
-	void Monster::_get_idle_move_stay_times()
-	{
-		_move_time = rand.get(MOVE_TIME_MIN, MOVE_TIME_MAX);
-		_stay_time = rand.get(STAY_TIME_MIN, STAY_TIME_MAX);
 	}
 
 	void Monster::update(float dt)
@@ -109,7 +91,7 @@ namespace jaw
 			_do_chase(dt);
 		}
 
-		float angle = _move_angle;
+		float angle = _idle_walking.get_move_angle();
 		cur_dir = cur_dir_from_angle(angle);
 
 		std::string cur_anim = "idle_down";
@@ -117,25 +99,25 @@ namespace jaw
 		switch (cur_dir)
 		{
 		case CUR_DIR_RIGHT:
-			if (_moving)
+			if (_idle_walking.is_moving())
 				cur_anim = "right";
 			else
 				cur_anim = "idle_right";
 			break;
 		case CUR_DIR_UP:
-			if (_moving)
+			if (_idle_walking.is_moving())
 				cur_anim = "up";
 			else
 				cur_anim = "idle_up";
 			break;
 		case CUR_DIR_LEFT:
-			if (_moving)
+			if (_idle_walking.is_moving())
 				cur_anim = "left";
 			else
 				cur_anim = "idle_left";
 			break;
 		case CUR_DIR_DOWN:
-			if (_moving)
+			if (_idle_walking.is_moving())
 				cur_anim = "down";
 			else
 				cur_anim = "idle_down";
@@ -160,41 +142,11 @@ namespace jaw
 
 	void Monster::_do_idle(float dt)
 	{
-		if (!_moving)
+		_idle_walking.update(dt);
+
+		if (_idle_walking.is_moving())
 		{
-			_stay_timer += dt;
-
-			if (_stay_timer >= _stay_time)
-			{
-				_moving = true;
-				_stay_timer = 0.0f;
-
-				_get_idle_move_stay_times();
-
-				float angle = rand.get(0, 2 * vcm::PI);
-
-				_move_dir = { cos(-angle), sin(-angle) };
-				_move_angle = angle;
-			}
-			else
-			{
-				
-			}
-		}
-
-		if (_moving)
-		{
-			_move_timer += dt;
-			
-			if (_move_timer >= _move_time)
-			{
-				_moving = false;
-				_move_timer = 0.0f;
-			}
-			else
-			{
-				move(_move_dir * SPEED * dt);
-			}
+			move(_idle_walking.get_move_dir() * SPEED * dt);
 		}
 
 		auto player = level->player;
@@ -222,18 +174,18 @@ namespace jaw
 
 			if (dist < STOP_CHASE_DIST)
 			{
-				_move_dir = vcm::normalize(diffv);
-				_move_angle = atan2(-_move_dir.y, _move_dir.x);
-				if (_move_angle < 0)
-					_move_angle += 2 * vcm::PI;
+				_idle_walking._move_dir = vcm::normalize(diffv);
+				_idle_walking._move_angle = atan2(-_idle_walking._move_dir.y, _idle_walking._move_dir.x);
+				if (_idle_walking._move_angle < 0)
+					_idle_walking._move_angle += 2 * vcm::PI;
 
 				if (dist > ATTACK_DIST)
 				{
 					if (_chase_cooldown == 0.0f)
 					{
-						_moving = true;
+						_idle_walking._moving = true;
 
-						move(_move_dir * SPEED * dt);
+						move(_idle_walking._move_dir * SPEED * dt);
 					}
 
 					_chase_cooldown -= dt;
@@ -245,7 +197,7 @@ namespace jaw
 				}
 				else
 				{
-					_moving = false;
+					_idle_walking._moving = false;
 
 					_chase_cooldown = CHASE_COOLDOWN;
 

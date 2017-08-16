@@ -117,6 +117,15 @@
     <ClCompile Include="src\specific\red_flash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\specific\idle_walking.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\specific\npc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\specific\gate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h">
@@ -234,6 +243,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\specific\red_flash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\specific\idle_walking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\specific\npc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\specific\gate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,8 +23,10 @@ namespace jaw
 		SpriteGraphic weeds1_g;
 		Texture2d weeds1_tex;
 		Texture2d player_tex;
+		Texture2d npc_tex;
 		Texture2d monster_tex;
 		Texture2d monster_flame_tex;
+		Texture2d gate_tex;
 
 		Font font;
 
@@ -43,5 +45,7 @@ namespace jaw
 
 		void on_added() override;
 		void on_removed() override;
+
+		void update(float dt) override;
 	};
 }

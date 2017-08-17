@@ -5,11 +5,16 @@
 #include "world.h"
 #include "font.h"
 
+#include <iostream>
+
 namespace jaw
 {
 	TextGraphic::TextGraphic()
 		: font(nullptr)
-		, scale(1.0f)
+		, _scale(1.0f)
+
+		, _word_wrap(false)
+		, _word_wrap_width(0)
 	{
 
 	}
@@ -36,8 +41,8 @@ namespace jaw
 
 		vcm::mat4 tran_mat = vcm::mat4
 		{
-			{ scale.x, 0, 0, 0 },
-			{ 0, scale.y, 0, 0 },
+			{ _scale.x, 0, 0, 0 },
+			{ 0, _scale.y, 0, 0 },
 			{ 0, 0, 1.0f, 0 },
 			{ (float)entity->position.x, (float)entity->position.y, 0, 1 }
 		};
@@ -64,23 +69,73 @@ namespace jaw
 
 		Point pen;
 
+		//TODO: tabs?
+
 		int prev = -1;
-		for (auto c : _text)
+		for (auto cp = &_text[0]; *cp != 0; ++cp)
 		{
+			auto c = *cp;
+
 			if (c == '\n' || c == '\r')
 			{
 				pen.y += font->line_height;
 				pen.x = 0;
+
+				prev = (int)c;
 				continue;
 			}
 
 			Font::Glyph glyph = font->get_glyph((int)c);
-			Font::Kerning kerning = font->get_kerning(prev, (int)c);
+			//Font::Kerning kerning = font->get_kerning(prev, (int)c); //TODO
 
 			if (glyph.id == -1)
 			{
 				pen.x += 1;
+
+				prev = (int)c;
 				continue;
+			}
+
+			if (_word_wrap)
+			{
+				if ((prev == ' ' || prev == '\n' || prev == '\r' || ispunct(prev)) && (isalpha(c) || isdigit(c)))
+				{
+					int min = (int)(pen.x * _scale.x);
+					if (min >= _word_wrap_width)
+					{
+						pen.x = 0;
+						pen.y += font->line_height;
+					}
+					else
+					{
+						int max = pen.x;
+
+						char* last_letter = cp;
+						for (auto cp2 = cp; *cp2 != 0; ++cp2)
+						{
+							if (*cp2 == ' ' || *cp2 == '\n' || *cp2 == '\r' || ispunct(*cp2))
+								break;
+
+							last_letter = cp2;
+						}
+
+						for (auto i = cp; i != last_letter + 1; ++i)
+						{
+							Font::Glyph glyph2 = font->get_glyph((int)*i);
+							max += glyph2.xoffset;
+							max += glyph2.width;
+							max += glyph2.xadvance;
+						}
+						
+						max = (int)(max * _scale.x);
+
+						if (max >= _word_wrap_width)
+						{
+							pen.x = 0;
+							pen.y += font->line_height;
+						}
+					}
+				}
 			}
 
 			int x = pen.x + glyph.xoffset;
@@ -113,5 +168,32 @@ namespace jaw
 		}
 
 		model.mbuffers.recreate(model.mesh);
+	}
+
+	void TextGraphic::set_word_wrap_width(int width)
+	{
+		if (_word_wrap_width != width)
+		{
+			_word_wrap_width = width;
+			_build_mesh();
+		}
+	}
+
+	void TextGraphic::set_word_wrap(bool val)
+	{
+		if (_word_wrap != val)
+		{
+			_word_wrap = val;
+			_build_mesh();
+		}
+	}
+
+	void TextGraphic::set_scale(float x, float y)
+	{
+		if (_scale != vcm::vec2(x, y))
+		{
+			_scale = { x, y };
+			_build_mesh();
+		}
 	}
 }

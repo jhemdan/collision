@@ -22,6 +22,12 @@ namespace jaw
 		void set_text(const std::string& text);
 		const std::string& get_text() const { return _text; }
 
+		void set_word_wrap_width(int width);
+		void set_word_wrap(bool val);
+
+		void set_scale(float x, float y);
+		const vcm::vec2& get_scale() const { return _scale; }
+
 		void _build_mesh();
 
 		Font* font;
@@ -29,6 +35,9 @@ namespace jaw
 
 		std::string _text;
 
-		vcm::vec2 scale;
+		vcm::vec2 _scale;
+
+		int _word_wrap_width;
+		bool _word_wrap;
 	};
 }

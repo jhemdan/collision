@@ -32,7 +32,7 @@ namespace jaw
 		heart_text_ent.graphic = &heart_text_g;
 		heart_text_ent.set_layer(LAYER_NUM);
 		heart_text_g.set_text("Life:");
-		heart_text_g.scale = vcm::vec2{ 0.5f };
+		heart_text_g.set_scale(0.5f, 0.5f);
 		heart_text_ent.rel_position = Point(20, 20);
 
 		for (int i = 0; i < 3; ++i)
@@ -46,7 +46,7 @@ namespace jaw
 
 		to_talk_text.create(&level->font);
 		to_talk_text.set_text("Press 'Z' to talk...");
-		to_talk_text.scale = vcm::vec2{ .5f };
+		to_talk_text.set_scale(0.5f, 0.5f);
 		to_talk_ent.graphic = &to_talk_text;
 		to_talk_ent.set_layer(LAYER_NUM);
 

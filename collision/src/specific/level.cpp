@@ -244,6 +244,22 @@ namespace jaw
 		*/
 
 		player_hud.init(this);
+
+		auto test_text = new Entity();
+		auto test_text_text = new TextGraphic();
+		
+		test_text_text->create(&font);
+		test_text_text->set_text("1 2 3 4 5 6 7 8 9 This is a test for word-wrap. Testing, testing, 1 2 3. Testing, testing, 1 2 3. Is it working?");
+		test_text_text->set_word_wrap(true);
+		test_text_text->set_word_wrap_width(100);
+
+		test_text_text->set_scale(0.5f, 0.5f);
+
+		test_text->position = player->position;
+		test_text->graphic = test_text_text;
+		test_text->set_layer(player_hud.LAYER_NUM);
+
+		ents.push_back(test_text);
 	}
 
 	void Level::clean()

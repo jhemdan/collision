@@ -39,5 +39,7 @@ namespace jaw
 
 		int _word_wrap_width;
 		bool _word_wrap;
+
+		vcm::vec4 color;
 	};
 }

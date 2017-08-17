@@ -15,6 +15,8 @@ namespace jaw
 
 		, _word_wrap(false)
 		, _word_wrap_width(0)
+
+		, color(1.0f)
 	{
 
 	}

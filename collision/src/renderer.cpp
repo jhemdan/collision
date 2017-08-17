@@ -131,6 +131,7 @@ namespace jaw
 
 		glUniform1i(text_shader.get_uniform("tex"), 0);
 		glUniform2f(text_shader.get_uniform("quad_size"), (float)1, (float)1);
+		glUniform4f(text_shader.get_uniform("my_color"), text->color.x, text->color.y, text->color.z, text->color.w);
 
 		glBindBuffer(GL_ARRAY_BUFFER, text->model.mbuffers.vbo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, text->model.mbuffers.ibo);

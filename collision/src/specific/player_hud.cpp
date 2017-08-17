@@ -52,12 +52,37 @@ namespace jaw
 
 		to_talk_text.visible = false;
 
+		Bitmap text_box_bmp;
+		text_box_bmp.create("../assets/text_box.png");
+		text_box_tex.create(text_box_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
+		text_box_sprite.create(&text_box_tex);
+		text_box_ent.graphic = &text_box_sprite;
+		text_box_ent.rel_position = { 0, 300 - 74 };
+		text_box_ent.set_layer(LAYER_NUM);
+
+		text_box_text.create(&level->font);
+		text_box_text.set_scale(0.5f, 0.5f);
+		text_box_text.set_word_wrap(true);
+		text_box_text.set_word_wrap_width(380);
+
+		text_box_text_ent.graphic = &text_box_text;
+
+		text_box_text_ent.parent = &text_box_ent;
+		text_box_text_ent.rel_position = { 10, 10 };
+		text_box_text_ent.set_layer(LAYER_NUM + 1);
+
+		text_box_text.color = vcm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
+		text_box_text.set_text("This is only a test.");
+
 		this->level = level;
 	}
 
 	void PlayerHud::clean()
 	{
 		heart_tex.destroy();
+
+		text_box_tex.destroy();
 	}
 
 	void PlayerHud::add(World* w)
@@ -71,6 +96,8 @@ namespace jaw
 			hearts[i].parent = world->cam_ent;
 		}
 
+		text_box_ent.parent = world->cam_ent;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			world->add_entity(&hearts[i]);
@@ -79,6 +106,10 @@ namespace jaw
 		world->add_entity(&heart_text_ent);
 
 		world->add_entity(&to_talk_ent);
+
+		world->add_entity(&text_box_ent);
+
+		world->add_entity(&text_box_text_ent);
 	}
 
 	void PlayerHud::remove()
@@ -90,6 +121,8 @@ namespace jaw
 			hearts[i].parent = nullptr;
 		}
 
+		text_box_ent.parent = nullptr;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			world->remove_entity(&hearts[i]);
@@ -98,6 +131,10 @@ namespace jaw
 		world->remove_entity(&heart_text_ent);
 
 		world->remove_entity(&to_talk_ent);
+
+		world->remove_entity(&text_box_ent);
+
+		world->remove_entity(&text_box_text_ent);
 
 		world = nullptr;
 	}

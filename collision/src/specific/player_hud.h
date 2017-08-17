@@ -9,6 +9,24 @@ namespace jaw
 	struct Level;
 	struct World;
 
+	struct TextBoxTree
+	{
+		TextBoxTree()
+			: yes_no(false)
+			, yes_tree(nullptr)
+			, no_tree(nullptr)
+			, next(nullptr)
+		{
+
+		}
+
+		std::string msg;
+		bool yes_no;
+		TextBoxTree* yes_tree;
+		TextBoxTree* no_tree;
+		TextBoxTree* next;
+	};
+
 	struct PlayerHud
 	{
 		static const int LAYER_NUM;
@@ -21,6 +39,12 @@ namespace jaw
 
 		Entity to_talk_ent;
 		TextGraphic to_talk_text;
+
+		Texture2d text_box_tex;
+		Entity text_box_ent;
+		SpriteGraphic text_box_sprite;
+		Entity text_box_text_ent;
+		TextGraphic text_box_text;
 
 		int _heart_count;
 
@@ -40,5 +64,8 @@ namespace jaw
 
 		void show_to_talk_text();
 		void hide_to_talk_text();
+
+		void show_text_box(TextBoxTree* tree);
+		void hide_text_box();
 	};
 }

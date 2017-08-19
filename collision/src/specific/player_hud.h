@@ -3,29 +3,12 @@
 #include "../sprite_graphic.h"
 #include "../text_graphic.h"
 #include "../entity.h"
+#include "text_box_tree.h"
 
 namespace jaw
 {
 	struct Level;
 	struct World;
-
-	struct TextBoxTree
-	{
-		TextBoxTree()
-			: yes_no(false)
-			, yes_tree(nullptr)
-			, no_tree(nullptr)
-			, next(nullptr)
-		{
-
-		}
-
-		std::string msg;
-		bool yes_no;
-		TextBoxTree* yes_tree;
-		TextBoxTree* no_tree;
-		TextBoxTree* next;
-	};
 
 	struct PlayerHud
 	{
@@ -45,6 +28,14 @@ namespace jaw
 		SpriteGraphic text_box_sprite;
 		Entity text_box_text_ent;
 		TextGraphic text_box_text;
+
+		Texture2d button_presser_tex;
+		Entity button_presser_ent;
+		SpriteGraphic button_presser_sprite;
+		Entity button_presser_text_ent;
+		TextGraphic button_presser_text;
+
+		TextBoxTree* _cur_tree;
 
 		int _heart_count;
 

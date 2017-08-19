@@ -254,5 +254,8 @@
     <ClInclude Include="src\specific\gate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\specific\text_box_tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

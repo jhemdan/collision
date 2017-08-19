@@ -1,10 +1,14 @@
 #include "npc.h"
 
 #include "level.h"
+#include "player.h"
+
+#include <vecmath/pi.hpp>
 
 namespace jaw
 {
 	const float NPC::SPEED = 80.0f;
+	const float NPC::STOP_TALKING_DIST = 100.0f;
 
 	NPC::NPC(Texture2d* tex, Level* level)
 	{
@@ -50,6 +54,14 @@ namespace jaw
 		this->level = level;
 
 		type = "npc";
+
+		_build_text_tree();
+	}
+
+	NPC::~NPC()
+	{
+		_text_tree->delete_all();
+		delete _text_tree;
 	}
 
 	void NPC::update(float dt)
@@ -62,7 +74,7 @@ namespace jaw
 		}
 		else
 		{
-			
+			_do_talking(dt);
 		}
 
 		float angle = _idle_walking.get_move_angle();
@@ -120,5 +132,60 @@ namespace jaw
 		{
 			move(_idle_walking.get_move_dir() * SPEED * dt);
 		}
+
+		level->player_hud.hide_text_box();
+	}
+
+	void NPC::_do_talking(float dt)
+	{
+		auto player = level->player;
+		if (player)
+		{
+			auto diff = player->get_center_pos() - get_center_pos();
+			vcm::vec2 diffv = (vcm::vec2)diff;
+			float dist = vcm::length(diffv);
+
+			if (dist >= STOP_TALKING_DIST)
+			{
+				_in_idle = true;
+			}
+
+			_idle_walking._move_dir = vcm::normalize(diffv);
+			_idle_walking._move_angle = atan2(-_idle_walking._move_dir.y, _idle_walking._move_dir.x);
+			if (_idle_walking._move_angle < 0)
+				_idle_walking._move_angle += 2 * vcm::PI;
+
+			_idle_walking._moving = false;
+		}
+		else
+		{
+			_in_idle = true;
+		}
+	}
+
+	void NPC::talk()
+	{
+		if (_in_idle)
+		{
+			_in_idle = false;
+
+			level->player_hud.show_text_box(_text_tree);
+		}
+	}
+
+	void NPC::_build_text_tree()
+	{
+		_text_tree = new TextBoxTree();
+		
+		_text_tree->msg = "Jawdat: What's up Ibrahim? I need some help. Can you please help me?";
+		_text_tree->yes_no = true;
+
+		_text_tree->yes_tree = new TextBoxTree();
+		_text_tree->yes_tree->msg = "Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there. Good luck.";
+		_text_tree->yes_tree->result = 1;
+
+		_text_tree->no_tree = new TextBoxTree();
+		_text_tree->no_tree->msg = "Jawdat: That's not good. Let me know if you change your mind.";
+		_text_tree->no_tree->result = 2;
 	}
 }

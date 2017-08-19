@@ -360,6 +360,8 @@ namespace jaw
 		}
 		*/
 
+		level->player_hud.hide_to_talk_text();
+
 		npc = nullptr;
 		_ent_buff.clear();
 		if (sword_collider.check_intersection(sword_collider.position, "npc", _ent_buff))
@@ -367,16 +369,16 @@ namespace jaw
 			auto npc = (NPC*)_ent_buff[0];
 			this->npc = npc;
 
-			level->player_hud.show_to_talk_text();
-		}
-		else
-		{
-			level->player_hud.hide_to_talk_text();
+			if(!npc->is_talking())
+				level->player_hud.show_to_talk_text();
 		}
 
 		if (game.input.key_pressed(SDL_SCANCODE_Z))
 		{
-
+			if (npc && !npc->is_talking())
+			{
+				npc->talk();
+			}
 		}
 
 		_ent_buff.clear();

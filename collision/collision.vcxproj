@@ -198,6 +198,7 @@
     <ClInclude Include="src\specific\player.h" />
     <ClInclude Include="src\specific\player_hud.h" />
     <ClInclude Include="src\specific\red_flash.h" />
+    <ClInclude Include="src\specific\text_box_tree.h" />
     <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />
     <ClInclude Include="src\text_graphic.h" />

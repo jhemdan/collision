@@ -16,6 +16,8 @@ namespace jaw
 		level = nullptr;
 
 		_heart_count = 3;
+
+		_cur_tree = nullptr;
 	}
 
 	void PlayerHud::init(Level* level)
@@ -75,6 +77,35 @@ namespace jaw
 		text_box_text.color = vcm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f };
 		text_box_text.set_text("This is only a test.");
 
+		text_box_sprite.visible = false;
+		text_box_text.visible = false;
+
+		Bitmap button_presser_bmp;
+		button_presser_bmp.create("../assets/text_box_button_presser.png");
+		button_presser_tex.create(button_presser_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		button_presser_sprite.create(&button_presser_tex);
+		button_presser_sprite.frame_size = { 16, 16 };
+
+		SpriteAnim anim = { "idle", { 0, 1, 2, 3 }, 8, true };
+		button_presser_sprite.add_anim(anim);
+		button_presser_sprite.play_anim("idle");
+
+		button_presser_ent.graphic = &button_presser_sprite;
+		button_presser_ent.rel_position = { 316, 300 - 24 };
+		button_presser_ent.set_layer(LAYER_NUM + 1);
+
+		button_presser_text.create(&level->font);
+		button_presser_text.set_scale(0.5f, 0.5f);
+		button_presser_text.color = { 0.0f, 0.0f, 0.0f, 1.0f };
+		button_presser_text.set_text("Press 'Z'...");
+		
+		button_presser_text_ent.graphic = &button_presser_text;
+		button_presser_text_ent.set_layer(LAYER_NUM + 1);
+		button_presser_text_ent.rel_position = { 316 + 20, 300 - 24 };
+
+		button_presser_text.visible = false;
+		button_presser_sprite.visible = false;
+
 		this->level = level;
 	}
 
@@ -98,6 +129,9 @@ namespace jaw
 
 		text_box_ent.parent = world->cam_ent;
 
+		button_presser_ent.parent = world->cam_ent;
+		button_presser_text_ent.parent = world->cam_ent;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			world->add_entity(&hearts[i]);
@@ -110,6 +144,9 @@ namespace jaw
 		world->add_entity(&text_box_ent);
 
 		world->add_entity(&text_box_text_ent);
+
+		world->add_entity(&button_presser_ent);
+		world->add_entity(&button_presser_text_ent);
 	}
 
 	void PlayerHud::remove()
@@ -123,6 +160,9 @@ namespace jaw
 
 		text_box_ent.parent = nullptr;
 
+		button_presser_ent.parent = nullptr;
+		button_presser_text_ent.parent = nullptr;
+
 		for (int i = 0; i < 3; ++i)
 		{
 			world->remove_entity(&hearts[i]);
@@ -135,6 +175,9 @@ namespace jaw
 		world->remove_entity(&text_box_ent);
 
 		world->remove_entity(&text_box_text_ent);
+
+		world->remove_entity(&button_presser_ent);
+		world->remove_entity(&button_presser_text_ent);
 
 		world = nullptr;
 	}
@@ -177,6 +220,42 @@ namespace jaw
 		if (level->player->npc)
 		{
 			to_talk_ent.position = level->player->npc->position + Point(-10, 0);
+		}
+
+		if (_cur_tree)
+		{
+			if (_cur_tree->yes_no)
+			{
+
+			}
+		}
+	}
+
+	void PlayerHud::show_text_box(TextBoxTree* tree)
+	{
+		if (_cur_tree != tree)
+		{
+			_cur_tree = tree;
+
+			text_box_sprite.visible = true;
+			text_box_text.visible = true;
+			button_presser_sprite.visible = true;
+			button_presser_text.visible = true;
+
+			text_box_text.set_text(_cur_tree->msg);
+		}
+	}
+
+	void PlayerHud::hide_text_box()
+	{
+		if (_cur_tree)
+		{
+			_cur_tree = nullptr;
+
+			text_box_sprite.visible = false;
+			text_box_text.visible = false;
+			button_presser_sprite.visible = false;
+			button_presser_text.visible = false;
 		}
 	}
 }

@@ -6,6 +6,8 @@
 #include "../world.h"
 #include "../cam_ent.h"
 
+#include "../game.h"
+
 namespace jaw
 {
 	const int PlayerHud::LAYER_NUM = 1000000;
@@ -17,7 +19,8 @@ namespace jaw
 
 		_heart_count = 3;
 
-		_cur_tree = nullptr;
+		_cur_dialogue = nullptr;
+		_dialogue_index = 0;
 	}
 
 	void PlayerHud::init(Level* level)
@@ -162,35 +165,45 @@ namespace jaw
 			to_talk_text.position = level->player->npc->position + Point(-10, 0) - world->cam_ent->position;
 		}
 
-		if (_cur_tree)
+		if (_cur_dialogue)
 		{
-			if (_cur_tree->yes_no)
+			if (game.input.key_pressed(SDL_SCANCODE_Z))
 			{
+				_dialogue_index++;
 
+				if (_dialogue_index >= (int)_cur_dialogue->list.size())
+				{
+					hide_text_box();
+				}
+				else
+				{
+					text_box_text.set_text(_cur_dialogue->list[_dialogue_index]);
+				}
 			}
 		}
 	}
 
-	void PlayerHud::show_text_box(TextBoxTree* tree)
+	void PlayerHud::show_text_box(DialogueList* dialogue)
 	{
-		if (_cur_tree != tree)
+		if (_cur_dialogue != dialogue)
 		{
-			_cur_tree = tree;
+			_cur_dialogue = dialogue;
 
 			text_box_sprite.visible = true;
 			text_box_text.visible = true;
 			button_presser_sprite.visible = true;
 			button_presser_text.visible = true;
 
-			text_box_text.set_text(_cur_tree->msg);
+			text_box_text.set_text(_cur_dialogue->list[0]);
 		}
 	}
 
 	void PlayerHud::hide_text_box()
 	{
-		if (_cur_tree)
+		if (_cur_dialogue)
 		{
-			_cur_tree = nullptr;
+			_cur_dialogue = nullptr;
+			_dialogue_index = 0;
 
 			text_box_sprite.visible = false;
 			text_box_text.visible = false;

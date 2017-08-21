@@ -3,7 +3,8 @@
 #include "../sprite_graphic.h"
 #include "../text_graphic.h"
 #include "../entity.h"
-#include "text_box_tree.h"
+#include "dialogue_list.h"
+
 #include "../graphic_group.h"
 
 namespace jaw
@@ -32,7 +33,8 @@ namespace jaw
 		SpriteGraphic button_presser_sprite;
 		TextGraphic button_presser_text;
 
-		TextBoxTree* _cur_tree;
+		DialogueList* _cur_dialogue;
+		int _dialogue_index;
 
 		int _heart_count;
 
@@ -53,7 +55,9 @@ namespace jaw
 		void show_to_talk_text();
 		void hide_to_talk_text();
 
-		void show_text_box(TextBoxTree* tree);
+		void show_text_box(DialogueList* dialogue);
 		void hide_text_box();
+
+		bool is_showing_text_box() const { return _cur_dialogue != nullptr; }
 	};
 }

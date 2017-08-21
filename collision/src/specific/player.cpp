@@ -381,6 +381,11 @@ namespace jaw
 			}
 		}
 
+		if (npc && !level->player_hud.is_showing_text_box())
+		{
+			npc->stop_talking();
+		}
+
 		_ent_buff.clear();
 		if (sword_collider.check_intersection(sword_collider.position, "gate", _ent_buff))
 		{

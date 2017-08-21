@@ -55,13 +55,12 @@ namespace jaw
 
 		type = "npc";
 
-		_build_text_tree();
+		_set_up_dialogue();
 	}
 
 	NPC::~NPC()
 	{
-		_text_tree->delete_all();
-		delete _text_tree;
+		
 	}
 
 	void NPC::update(float dt)
@@ -169,23 +168,22 @@ namespace jaw
 		{
 			_in_idle = false;
 
-			level->player_hud.show_text_box(_text_tree);
+			level->player_hud.show_text_box(&_dialogue);
 		}
 	}
 
-	void NPC::_build_text_tree()
+	void NPC::stop_talking()
 	{
-		_text_tree = new TextBoxTree();
-		
-		_text_tree->msg = "Jawdat: What's up Ibrahim? I need some help. Can you please help me?";
-		_text_tree->yes_no = true;
+		if (!_in_idle)
+		{
+			_in_idle = true;
+		}
+	}
 
-		_text_tree->yes_tree = new TextBoxTree();
-		_text_tree->yes_tree->msg = "Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there. Good luck.";
-		_text_tree->yes_tree->result = 1;
-
-		_text_tree->no_tree = new TextBoxTree();
-		_text_tree->no_tree->msg = "Jawdat: That's not good. Let me know if you change your mind.";
-		_text_tree->no_tree->result = 2;
+	void NPC::_set_up_dialogue()
+	{
+		_dialogue.list.push_back("Jawdat: What's up Ibrahim? I need some help. Can you please help me?");
+		_dialogue.list.push_back("Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there.");
+		_dialogue.list.push_back("Jawdat: Press 'X' to attack. Good luck.");
 	}
 }

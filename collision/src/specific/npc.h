@@ -4,7 +4,7 @@
 #include "../sprite_graphic.h"
 #include "cur_dir.h"
 #include "idle_walking.h"
-#include "text_box_tree.h"
+#include "dialogue_list.h"
 
 namespace jaw
 {
@@ -24,7 +24,7 @@ namespace jaw
 	
 		Level* level;
 
-		TextBoxTree* _text_tree;
+		DialogueList _dialogue;
 
 		NPC(Texture2d* tex, Level* level);
 		~NPC();
@@ -35,9 +35,10 @@ namespace jaw
 		void _do_talking(float dt);
 
 		void talk();
+		void stop_talking();
 
 		bool is_talking() const { return !_in_idle; }
 
-		void _build_text_tree();
+		void _set_up_dialogue();
 	};
 }

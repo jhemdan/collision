@@ -190,6 +190,7 @@
     <ClInclude Include="src\sound_buffer.h" />
     <ClInclude Include="src\sound_source.h" />
     <ClInclude Include="src\specific\cur_dir.h" />
+    <ClInclude Include="src\specific\dialogue_list.h" />
     <ClInclude Include="src\specific\gate.h" />
     <ClInclude Include="src\specific\idle_walking.h" />
     <ClInclude Include="src\specific\level.h" />
@@ -200,7 +201,6 @@
     <ClInclude Include="src\specific\player.h" />
     <ClInclude Include="src\specific\player_hud.h" />
     <ClInclude Include="src\specific\red_flash.h" />
-    <ClInclude Include="src\specific\text_box_tree.h" />
     <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />
     <ClInclude Include="src\text_graphic.h" />

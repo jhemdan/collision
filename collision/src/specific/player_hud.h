@@ -4,6 +4,7 @@
 #include "../text_graphic.h"
 #include "../entity.h"
 #include "text_box_tree.h"
+#include "../graphic_group.h"
 
 namespace jaw
 {
@@ -14,25 +15,21 @@ namespace jaw
 	{
 		static const int LAYER_NUM;
 
+		Entity entity;
+		GraphicGroup group;
+
 		Texture2d heart_tex;
 		SpriteGraphic hearts_g[3];
-		Entity hearts[3];
 		TextGraphic heart_text_g;
-		Entity heart_text_ent;
 
-		Entity to_talk_ent;
 		TextGraphic to_talk_text;
 
 		Texture2d text_box_tex;
-		Entity text_box_ent;
 		SpriteGraphic text_box_sprite;
-		Entity text_box_text_ent;
 		TextGraphic text_box_text;
 
 		Texture2d button_presser_tex;
-		Entity button_presser_ent;
 		SpriteGraphic button_presser_sprite;
-		Entity button_presser_text_ent;
 		TextGraphic button_presser_text;
 
 		TextBoxTree* _cur_tree;

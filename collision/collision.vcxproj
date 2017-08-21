@@ -131,6 +131,7 @@
     <ClCompile Include="src\font.cpp" />
     <ClCompile Include="src\game.cpp" />
     <ClCompile Include="src\graphic.cpp" />
+    <ClCompile Include="src\graphic_group.cpp" />
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\kick_gen.cpp" />
     <ClCompile Include="src\load_file.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="src\font.h" />
     <ClInclude Include="src\game.h" />
     <ClInclude Include="src\graphic.h" />
+    <ClInclude Include="src\graphic_group.h" />
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\kick_gen.h" />
     <ClInclude Include="src\load_file.h" />

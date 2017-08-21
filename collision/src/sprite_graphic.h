@@ -42,7 +42,7 @@ namespace jaw
 		void destroy();
 
 		void update(float dt) override;
-		void render(Renderer* renderer, Entity* entity) override;
+		void render(Renderer* renderer, Entity* entity, const Point& offset) override;
 
 		void set_clip_rect(const Rect& r);
 		Rect get_clip_rect() const { return _clip_rect; }

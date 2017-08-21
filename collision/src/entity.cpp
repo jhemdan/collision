@@ -48,7 +48,7 @@ namespace jaw
 	void Entity::render(Renderer* renderer)
 	{
 		if (graphic)
-			graphic->render(renderer, this);
+			graphic->render(renderer, this, Point());
 	}
 
 	bool Entity::check_intersection(const Point& pos, Entity* other) const

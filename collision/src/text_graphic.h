@@ -17,7 +17,7 @@ namespace jaw
 		void create(Font* font);
 		void destroy();
 
-		void render(Renderer* renderer, Entity* entity) override;
+		void render(Renderer* renderer, Entity* entity, const Point& offset) override;
 
 		void set_text(const std::string& text);
 		const std::string& get_text() const { return _text; }

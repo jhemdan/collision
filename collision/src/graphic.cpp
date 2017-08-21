@@ -18,7 +18,7 @@ namespace jaw
 
 	}
 
-	void Graphic::render(Renderer* renderer, Entity* entity)
+	void Graphic::render(Renderer* renderer, Entity* entity, const Point& offset)
 	{
 
 	}

@@ -79,9 +79,9 @@ namespace jaw
 		_calc_clip_rect();
 	}
 
-	void SpriteGraphic::render(Renderer* renderer, Entity* entity)
+	void SpriteGraphic::render(Renderer* renderer, Entity* entity, const Point& offset)
 	{
-		Graphic::render(renderer, entity);
+		Graphic::render(renderer, entity, offset);
 
 		if (_dirty_clip)
 		{
@@ -89,12 +89,13 @@ namespace jaw
 			_build_uvs();
 		}
 
+		Point p = entity->position + position + offset;
 		vcm::mat4 tran_mat = vcm::mat4
 		{
 			{ scale.x, 0, 0, 0 },
 			{ 0, scale.y, 0, 0 },
 			{ 0, 0, 1, 0 },
-			{ (float)entity->position.x - (float)origin.x, (float)entity->position.y - (float)origin.y, 0, 1 }
+			{ (float)p.x - (float)origin.x, (float)p.y - (float)origin.y, 0, 1 }
 		};
 
 		renderer->render(this, vcm::inverse(entity->world->cam_tran) * tran_mat);

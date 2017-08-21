@@ -64,9 +64,9 @@ namespace jaw
 		Graphic::update(dt);
 	}
 
-	void TilemapGraphic::render(Renderer* renderer, Entity* entity)
+	void TilemapGraphic::render(Renderer* renderer, Entity* entity, const Point& offset)
 	{
-		Graphic::render(renderer, entity);
+		Graphic::render(renderer, entity, offset);
 
 		if (_dirty)
 		{
@@ -74,12 +74,13 @@ namespace jaw
 			_build_mesh();
 		}
 
+		Point p = entity->position + position + offset;
 		vcm::mat4 tran_mat = vcm::mat4
 		{
 			{ 1, 0, 0, 0 },
 			{ 0, 1, 0, 0 },
 			{ 0, 0, 1, 0 },
-			{ (float)entity->position.x, (float)entity->position.y, 0, 1 }
+			{ (float)p.x, (float)p.y, 0, 1 }
 		};
 
 		renderer->render(this, vcm::inverse(entity->world->cam_tran) * tran_mat);

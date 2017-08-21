@@ -1,5 +1,7 @@
 #pragma once
 
+#include "point.h"
+
 namespace jaw
 {
 	struct Entity;
@@ -11,8 +13,9 @@ namespace jaw
 		virtual ~Graphic();
 
 		virtual void update(float dt);
-		virtual void render(Renderer* renderer, Entity* entity);
+		virtual void render(Renderer* renderer, Entity* entity, const Point& offset);
 
 		bool visible;
+		Point position;
 	};
 }

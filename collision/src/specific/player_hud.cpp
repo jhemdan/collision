@@ -99,14 +99,24 @@ namespace jaw
 
 		group.add(&button_presser_text);
 
+		Bitmap key_bmp;
+		key_bmp.create("../assets/key.png");
+		key_tex.create(key_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		key_g.create(&key_tex);
+		key_g.position = { 400 - 50, 15 };
+		key_g.visible = false;
+
+		group.add(&key_g);
+
 		this->level = level;
 	}
 
 	void PlayerHud::clean()
 	{
 		heart_tex.destroy();
-
 		text_box_tex.destroy();
+		button_presser_tex.destroy();
+		key_tex.destroy();
 	}
 
 	void PlayerHud::add(World* w)
@@ -177,6 +187,11 @@ namespace jaw
 				}
 				else
 				{
+					if (_cur_dialogue->codes[_dialogue_index] == 1)
+					{
+						key_g.visible = true;
+					}
+
 					text_box_text.set_text(_cur_dialogue->list[_dialogue_index]);
 				}
 			}

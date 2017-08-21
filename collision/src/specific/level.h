@@ -27,6 +27,7 @@ namespace jaw
 		Texture2d monster_tex;
 		Texture2d monster_flame_tex;
 		Texture2d gate_tex;
+		Texture2d bush_tex;
 
 		Font font;
 

@@ -8,6 +8,7 @@
 #include "monster.h"
 #include "npc.h"
 #include "gate.h"
+#include "bush.h"
 
 namespace jaw
 {
@@ -56,6 +57,10 @@ namespace jaw
 		Bitmap gate_bmp;
 		gate_bmp.create("../assets/gate.png");
 		gate_tex.create(gate_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
+		Bitmap bush_bmp;
+		bush_bmp.create("../assets/bush.png");
+		bush_tex.create(bush_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		struct Tile
 		{
@@ -167,6 +172,15 @@ namespace jaw
 					ents.push_back(e);
 				};
 
+				auto add_bush = [this](int x, int y)
+				{
+					auto e = new Bush(&bush_tex);
+					e->position = { x, y };
+					e->set_layer(e->position.y);
+
+					ents.push_back(e);
+				};
+
 				auto first_entity = entities_node->FirstChild();
 				for (auto entity = first_entity; entity != nullptr; entity = entity->NextSibling())
 				{
@@ -205,6 +219,10 @@ namespace jaw
 					else if (name == "gate")
 					{
 						add_gate(x, y);
+					}
+					else if (name == "bush")
+					{
+						add_bush(x, y);
 					}
 				}
 			}
@@ -281,6 +299,7 @@ namespace jaw
 		monster_tex.destroy();
 		monster_flame_tex.destroy();
 		gate_tex.destroy();
+		bush_tex.destroy();
 
 		font.destroy();
 

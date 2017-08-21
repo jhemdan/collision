@@ -49,6 +49,7 @@ namespace jaw
 		bool has_attacked;
 
 		int health;
+		float _health_timer;
 
 		RedFlash _red_flash;
 

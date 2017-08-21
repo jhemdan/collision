@@ -115,7 +115,8 @@ namespace jaw
 		magenta_g.visible = false;
 	
 		health = 3;
-		health = 100;
+		//health = 100;
+		_health_timer = 0.0f;
 
 		type = "player";
 
@@ -391,7 +392,7 @@ namespace jaw
 		{
 			auto gate = (Gate*)_ent_buff[0]->parent;
 			
-			if (game.input.key_pressed(SDL_SCANCODE_Z))
+			if (game.input.key_pressed(SDL_SCANCODE_Z) && level->player_hud.key_g.visible)
 			{
 				gate->open();
 			}
@@ -405,6 +406,18 @@ namespace jaw
 			position.x = level->size.x - (origin.x + size.x);
 		if (position.y + origin.y + size.y > level->size.y)
 			position.y = level->size.y - (origin.y + size.y);
+
+		_health_timer += dt;
+		if (_health_timer >= 3.0f)
+		{
+			++health;
+			_health_timer = 0.0f;
+
+			if (health > 3)
+				health = 3;
+		}
+
+		level->player_hud.set_hearts(health);
 	}
 
 	void Player::attack()
@@ -430,6 +443,7 @@ namespace jaw
 	void Player::take_hit()
 	{
 		health--;
+		_health_timer = 0.0f;
 
 		_red_flash.hit();
 
@@ -439,8 +453,6 @@ namespace jaw
 
 			die();
 		}
-
-		level->player_hud.set_hearts(health);
 	}
 
 	void Player::die()

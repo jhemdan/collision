@@ -4,6 +4,8 @@
 
 #include <vecmath/pi.hpp>
 
+#include <iostream>
+
 namespace jaw
 {
 	MonsterFlame::MonsterFlame(Texture2d* tex, const Point& pos, const vcm::vec2& movement)
@@ -101,6 +103,8 @@ namespace jaw
 
 				world->remove_entity(this);
 				alive = false;
+
+				std::cout << "test" << std::endl;
 			}
 		}
 	}

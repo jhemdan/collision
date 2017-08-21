@@ -182,8 +182,8 @@ namespace jaw
 
 	void NPC::_set_up_dialogue()
 	{
-		_dialogue.list.push_back("Jawdat: What's up Ibrahim? I need some help. Can you please help me?");
-		_dialogue.list.push_back("Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there.");
-		_dialogue.list.push_back("Jawdat: Press 'X' to attack. Good luck.");
+		_dialogue.add("Jawdat: What's up Ibrahim? I need some help. Can you please help me?", 0);
+		_dialogue.add("Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there.", 1);
+		_dialogue.add("Jawdat: Press 'Z' to open the gate. Press 'X' to attack. Good luck.", 0);
 	}
 }

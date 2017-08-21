@@ -33,6 +33,9 @@ namespace jaw
 		SpriteGraphic button_presser_sprite;
 		TextGraphic button_presser_text;
 
+		Texture2d key_tex;
+		SpriteGraphic key_g;
+
 		DialogueList* _cur_dialogue;
 		int _dialogue_index;
 

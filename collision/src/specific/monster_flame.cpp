@@ -1,20 +1,18 @@
 #include "monster_flame.h"
 #include "../world.h"
 #include "player.h"
+#include "flame_smoke.h"
 
 #include <vecmath/pi.hpp>
 
-#include <iostream>
-
 namespace jaw
 {
-	MonsterFlame::MonsterFlame(Texture2d* tex, const Point& pos, const vcm::vec2& movement)
+	MonsterFlame::MonsterFlame(Texture2d* tex, Texture2d* particle_tex, const Point& pos, const vcm::vec2& movement)
 	{
 		position = pos;
+		graphic = &sprite_g;
 
 		sprite_g.create(tex);
-
-		graphic = &sprite_g;
 
 		sprite_g.frame_size = { 16, 16 };
 
@@ -44,6 +42,15 @@ namespace jaw
 		timer = 4.0f;
 
 		alive = true;
+
+		smoke = new FlameSmoke(particle_tex, move_dir);
+	}
+
+	void MonsterFlame::on_added()
+	{
+		Entity::on_added();
+
+		world->add_entity(smoke);
 	}
 
 	void MonsterFlame::update(float dt)
@@ -99,13 +106,16 @@ namespace jaw
 			if (!isecs.empty())
 			{
 				auto player = (Player*)isecs[0];
-				player->take_hit();
+				//player->take_hit();
 
 				world->remove_entity(this);
 				alive = false;
-
-				std::cout << "test" << std::endl;
 			}
 		}
+
+		smoke->alive = alive;
+		smoke->emit_pos = position + Point(8, 8);
+
+		smoke->set_layer(get_layer() - 1);
 	}
 }

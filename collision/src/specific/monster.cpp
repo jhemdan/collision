@@ -268,7 +268,7 @@ namespace jaw
 
 			spawn_point -= Point(8, 8);
 
-			auto flame = new MonsterFlame(&level->monster_flame_tex, position + spawn_point, vcm::normalize((vcm::vec2)dir) * 100);
+			auto flame = new MonsterFlame(&level->monster_flame_tex, &level->smoke_tex, position + spawn_point, vcm::normalize((vcm::vec2)dir) * 100);
 			flame->destroy_on_remove = true;
 			world->add_entity(flame);
 		}

@@ -147,6 +147,7 @@
     <ClCompile Include="src\sound_source.cpp" />
     <ClCompile Include="src\specific\bush.cpp" />
     <ClCompile Include="src\specific\cur_dir.cpp" />
+    <ClCompile Include="src\specific\flame_smoke.cpp" />
     <ClCompile Include="src\specific\gate.cpp" />
     <ClCompile Include="src\specific\idle_walking.cpp" />
     <ClCompile Include="src\specific\level.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="src\specific\bush.h" />
     <ClInclude Include="src\specific\cur_dir.h" />
     <ClInclude Include="src\specific\dialogue_list.h" />
+    <ClInclude Include="src\specific\flame_smoke.h" />
     <ClInclude Include="src\specific\gate.h" />
     <ClInclude Include="src\specific\idle_walking.h" />
     <ClInclude Include="src\specific\level.h" />

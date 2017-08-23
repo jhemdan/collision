@@ -54,6 +54,10 @@ namespace jaw
 		monster_flame_bmp.create("../assets/flame.png");
 		monster_flame_tex.create(monster_flame_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
+		Bitmap smoke_bmp;
+		smoke_bmp.create("../assets/smoke.png");
+		smoke_tex.create(smoke_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
 		Bitmap gate_bmp;
 		gate_bmp.create("../assets/gate.png");
 		gate_tex.create(gate_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);

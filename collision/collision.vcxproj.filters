@@ -132,6 +132,9 @@
     <ClCompile Include="src\specific\bush.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\specific\flame_smoke.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h">
@@ -267,6 +270,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\specific\bush.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\specific\flame_smoke.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

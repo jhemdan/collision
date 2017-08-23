@@ -184,6 +184,7 @@ namespace jaw
 	{
 		_dialogue.add("Jawdat: What's up Ibrahim? I need some help. Can you please help me?", 0);
 		_dialogue.add("Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there.", 1);
-		_dialogue.add("Jawdat: Press 'Z' to open the gate. Press 'X' to attack. Good luck.", 0);
+		_dialogue.add("Jawdat: Press 'Z' to open the gate. Press 'X' to attack.", 0);
+		_dialogue.add("Jawdat: Be careful, Ibrahim. They shoot fireballs. Also, your health regenerates over time. Good luck.", 0);
 	}
 }

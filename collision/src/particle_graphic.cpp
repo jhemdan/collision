@@ -15,6 +15,8 @@ namespace jaw
 		, _timer(0.0f)
 
 		, random_dist(0.0f, 1.0f)
+
+		, relative(true)
 	{
 		std::random_device random_device;
 		mt_random.seed(random_device());
@@ -44,6 +46,7 @@ namespace jaw
 
 		_timer += dt;
 
+		/*
 		const int eps = 100;
 		
 		if (_timer >= 1.0f / eps)
@@ -51,6 +54,7 @@ namespace jaw
 			_timer = 0.0f;
 			emit();
 		}
+		*/
 
 		int cur_anim = get_anim(method.anim);
 
@@ -76,6 +80,9 @@ namespace jaw
 				p.frame = _anims[cur_anim].frames[(int)(life_percent * _anims[cur_anim].frames.size())];
 			}
 
+			p.position += p.velocity * dt;
+			p.velocity -= vcm::normalize(p.velocity) * vcm::vec2(method.force_damping * dt);
+
 			++i;
 		}
 
@@ -91,6 +98,11 @@ namespace jaw
 		Graphic::render(renderer, entity, offset);
 
 		Point p = entity->position + position + offset;
+		if (!relative)
+		{
+			p = Point();
+		}
+
 		vcm::mat4 tran_mat = vcm::mat4
 		{
 			{ 1, 0, 0, 0 },
@@ -102,7 +114,7 @@ namespace jaw
 		renderer->render(this, vcm::inverse(entity->world->cam_tran) * tran_mat);
 	}
 
-	void ParticleGraphic::emit()
+	void ParticleGraphic::emit(const Point& position)
 	{
 		Particle p;
 
@@ -115,11 +127,16 @@ namespace jaw
 		float pos_angle = rrange(0, 2 * vcm::PI);
 		float pos_dist = rrange(method.spawn_radius_min, method.spawn_radius_max);
 		p.position = { cos(pos_angle) * pos_dist, -sin(pos_angle) * pos_dist };
+		p.position += vcm::vec2(position);
 		
 		p.angle = rrange(method.angle_min, method.angle_max);
 
 		p.scale.x = rrange(method.scale_min.x, method.scale_max.x);
 		p.scale.y = rrange(method.scale_min.y, method.scale_max.y);
+
+		float force = rrange(method.force_min, method.force_max);
+		float force_angle = rrange(method.force_angle_min, method.force_angle_max) * vcm::RAD;
+		p.velocity = vcm::vec2(cos(force_angle), -sin(force_angle)) * force;
 
 		particles.push_back(p);
 

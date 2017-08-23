@@ -33,7 +33,7 @@ namespace jaw
 		vcm::vec4 color;
 		float angle; //degrees
 		vcm::vec2 scale;
-		vcm::vec2 speed;
+		vcm::vec2 velocity;
 	};
 
 	struct ParticleMethod
@@ -52,6 +52,7 @@ namespace jaw
 			force_angle_max = 360.0f;
 			force_min = 50.0f;
 			force_max = 100.0f;
+			force_damping = 50.0f;
 		}
 
 		float life_min, life_max;
@@ -60,6 +61,7 @@ namespace jaw
 		vcm::vec2 scale_min, scale_max;
 		float force_angle_min, force_angle_max; //degrees
 		float force_min, force_max; //pixels per second
+		float force_damping; //pixels per second
 		std::string anim;
 	};
 
@@ -70,6 +72,12 @@ namespace jaw
 			//fps = 0;
 			//loop = false;
 			//life_mode = true;
+		}
+
+		ParticleAnim(const std::string& name, const std::vector<int>& frames)
+		{
+			this->name = name;
+			this->frames = frames;
 		}
 
 		std::string name;
@@ -89,7 +97,9 @@ namespace jaw
 		void update(float dt) override;
 		void render(Renderer* renderer, Entity* entity, const Point& offset) override;
 
-		void emit();
+		//position is relative if relative is true
+		//position is global if relative is false
+		void emit(const Point& position);
 
 		void _build_mesh();
 
@@ -112,5 +122,7 @@ namespace jaw
 		Point frame_size;
 
 		std::vector<ParticleAnim> _anims;
+
+		bool relative; //if the particles should be rendered relative to entity/graphic position
 	};
 }

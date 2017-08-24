@@ -46,22 +46,24 @@ namespace jaw
 			spawn_radius_max = 16.0f;
 			angle_min = 0.0f;
 			angle_max = 360.0f;
-			scale_min = { 0.5f, 0.5f };
-			scale_max = { 1.0f, 1.0f };
+			scale_min = 0.5f;
+			scale_max = 1.0f;
 			force_angle_min = 0.0f;
 			force_angle_max = 360.0f;
 			force_min = 50.0f;
 			force_max = 100.0f;
-			force_damping = 50.0f;
+			force_damping = 50.0f; //only does anything if no gravity
+			gravity = 0.0f;
 		}
 
 		float life_min, life_max;
 		float spawn_radius_min, spawn_radius_max;
 		float angle_min, angle_max; //degrees
-		vcm::vec2 scale_min, scale_max;
+		float scale_min, scale_max;
 		float force_angle_min, force_angle_max; //degrees
 		float force_min, force_max; //pixels per second
 		float force_damping; //pixels per second
+		float gravity;
 		std::string anim;
 	};
 

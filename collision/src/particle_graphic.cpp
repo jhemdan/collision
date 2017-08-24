@@ -81,7 +81,14 @@ namespace jaw
 			}
 
 			p.position += p.velocity * dt;
-			p.velocity -= vcm::normalize(p.velocity) * vcm::vec2(method.force_damping * dt);
+			if (method.gravity == 0.0f)
+			{
+				p.velocity -= vcm::normalize(p.velocity) * vcm::vec2(method.force_damping * dt);
+			}
+			else
+			{
+				p.velocity += vcm::vec2(0.0f, method.gravity) * dt;
+			}
 
 			++i;
 		}
@@ -131,8 +138,7 @@ namespace jaw
 		
 		p.angle = rrange(method.angle_min, method.angle_max);
 
-		p.scale.x = rrange(method.scale_min.x, method.scale_max.x);
-		p.scale.y = rrange(method.scale_min.y, method.scale_max.y);
+		p.scale = vcm::vec2(rrange(method.scale_min, method.scale_max));
 
 		float force = rrange(method.force_min, method.force_max);
 		float force_angle = rrange(method.force_angle_min, method.force_angle_max) * vcm::RAD;

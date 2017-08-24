@@ -145,6 +145,7 @@
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\sound_buffer.cpp" />
     <ClCompile Include="src\sound_source.cpp" />
+    <ClCompile Include="src\specific\blood_squirt.cpp" />
     <ClCompile Include="src\specific\bush.cpp" />
     <ClCompile Include="src\specific\cur_dir.cpp" />
     <ClCompile Include="src\specific\flame_smoke.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="src\shader.h" />
     <ClInclude Include="src\sound_buffer.h" />
     <ClInclude Include="src\sound_source.h" />
+    <ClInclude Include="src\specific\blood_squirt.h" />
     <ClInclude Include="src\specific\bush.h" />
     <ClInclude Include="src\specific\cur_dir.h" />
     <ClInclude Include="src\specific\dialogue_list.h" />

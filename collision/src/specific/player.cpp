@@ -7,6 +7,7 @@
 #include "monster.h"
 #include "npc.h"
 #include "gate.h"
+#include "blood_squirt.h"
 
 namespace jaw
 {
@@ -446,6 +447,11 @@ namespace jaw
 		_health_timer = 0.0f;
 
 		_red_flash.hit();
+
+		auto blood = new BloodSquirt(&level->blood_squirt_tex);
+		blood->emit_pos = get_center_pos();
+		blood->set_layer(get_layer() + 1);
+		world->add_entity(blood);
 
 		if (health <= 0)
 		{

@@ -29,6 +29,7 @@ namespace jaw
 		Texture2d smoke_tex;
 		Texture2d gate_tex;
 		Texture2d bush_tex;
+		Texture2d blood_squirt_tex;
 
 		Font font;
 

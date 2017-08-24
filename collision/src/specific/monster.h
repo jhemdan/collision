@@ -49,6 +49,7 @@ namespace jaw
 
 		void update(float dt) override;
 
+		//the direction from the hitter to this monster
 		void take_hit();
 		void die();
 

@@ -106,7 +106,7 @@ namespace jaw
 			if (!isecs.empty())
 			{
 				auto player = (Player*)isecs[0];
-				//player->take_hit();
+				player->take_hit();
 
 				world->remove_entity(this);
 				alive = false;

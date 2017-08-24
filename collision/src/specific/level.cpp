@@ -66,6 +66,10 @@ namespace jaw
 		bush_bmp.create("../assets/bush.png");
 		bush_tex.create(bush_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
+		Bitmap blood_squirt_bmp;
+		blood_squirt_bmp.create("../assets/blood.png");
+		blood_squirt_tex.create(blood_squirt_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
 		struct Tile
 		{
 			int x, y;
@@ -267,6 +271,7 @@ namespace jaw
 
 		player_hud.init(this);
 
+		/*
 		auto test_text = new Entity();
 		auto test_text_text = new TextGraphic();
 		
@@ -282,6 +287,7 @@ namespace jaw
 		test_text->set_layer(player_hud.LAYER_NUM);
 
 		ents.push_back(test_text);
+		*/
 	}
 
 	void Level::clean()
@@ -304,6 +310,7 @@ namespace jaw
 		monster_flame_tex.destroy();
 		gate_tex.destroy();
 		bush_tex.destroy();
+		blood_squirt_tex.destroy();
 
 		font.destroy();
 

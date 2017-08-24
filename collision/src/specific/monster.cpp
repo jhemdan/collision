@@ -4,6 +4,7 @@
 #include "player.h"
 
 #include "monster_flame.h"
+#include "blood_squirt.h"
 
 #include <vecmath/pi.hpp>
 
@@ -226,6 +227,11 @@ namespace jaw
 		health--;
 
 		_red_flash.hit();
+
+		auto blood = new BloodSquirt(&level->blood_squirt_tex);
+		blood->emit_pos = get_center_pos();
+		blood->set_layer(get_layer() + 1);
+		world->add_entity(blood);
 
 		if (health <= 0)
 		{

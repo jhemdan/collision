@@ -70,6 +70,14 @@ namespace jaw
 		blood_squirt_bmp.create("../assets/blood.png");
 		blood_squirt_tex.create(blood_squirt_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
+		WavFile wav_file;
+		wav_file.create("../assets/real_song1.wav");
+		bg_music_buff.create(wav_file);
+		bg_music_src.create();
+		bg_music_src.queue_buffer(bg_music_buff.id);
+		bg_music_src.play();
+		bg_music_src.set_loop(true);
+
 		struct Tile
 		{
 			int x, y;

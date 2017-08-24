@@ -12,6 +12,8 @@ namespace jaw
 
 		void queue_buffer(unsigned buff_id);
 
+		void set_loop(bool val);
+
 		void play();
 
 		unsigned id;

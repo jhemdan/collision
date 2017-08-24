@@ -6,6 +6,8 @@
 #include "../sprite_graphic.h"
 #include "player_hud.h"
 #include "../font.h"
+#include "../sound_buffer.h"
+#include "../sound_source.h"
 
 #include <vector>
 
@@ -30,6 +32,9 @@ namespace jaw
 		Texture2d gate_tex;
 		Texture2d bush_tex;
 		Texture2d blood_squirt_tex;
+
+		SoundBuffer bg_music_buff;
+		SoundSource bg_music_src;
 
 		Font font;
 

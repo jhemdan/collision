@@ -44,4 +44,10 @@ namespace jaw
 	{
 		alSourcePlay(id);
 	}
+
+	void SoundSource::set_loop(bool val)
+	{
+		int v = (int)val;
+		alSourceiv(id, AL_LOOPING, &v);
+	}
 }

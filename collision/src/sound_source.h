@@ -15,6 +15,7 @@ namespace jaw
 		void set_loop(bool val);
 
 		void play();
+		void stop();
 
 		unsigned id;
 	};

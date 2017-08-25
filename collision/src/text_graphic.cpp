@@ -18,7 +18,7 @@ namespace jaw
 
 		, color(1.0f)
 	{
-
+		_total_width = 0;
 	}
 
 	void TextGraphic::create(Font* font)
@@ -64,6 +64,8 @@ namespace jaw
 
 	void TextGraphic::_build_mesh()
 	{
+		_total_width = 0;
+
 		auto& verts = model.mesh.vertices;
 		auto& tris = model.mesh.triangles;
 
@@ -162,6 +164,8 @@ namespace jaw
 			verts.push_back({ { bottom_right.x, bottom_right.y },{ tex_bottom_right.x, tex_bottom_right.y } });
 			verts.push_back({ { bottom_right.x, top_left.y },{ tex_bottom_right.x, tex_top_left.y } });
 
+			_total_width = (int)(bottom_right.x * _scale.x) > _total_width ? (int)(bottom_right.x * _scale.x) : _total_width;
+
 			tris.push_back(MeshTriangle{ 0, 1, 2 } +vc);
 			tris.push_back(MeshTriangle{ 2, 3, 0 } +vc);
 
@@ -198,5 +202,10 @@ namespace jaw
 			_scale = { x, y };
 			_build_mesh();
 		}
+	}
+
+	int TextGraphic::get_total_width() const
+	{
+		return _total_width;
 	}
 }

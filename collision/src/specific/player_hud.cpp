@@ -185,7 +185,7 @@ namespace jaw
 	{
 		to_talk_text.visible = true;
 
-		if (level->player->npc)
+		if (level->player && level->player->npc && world)
 		{
 			to_talk_text.position = level->player->npc->position + Point(-10, 0) - world->cam_ent->position;
 		}
@@ -199,7 +199,10 @@ namespace jaw
 	void PlayerHud::show_portal_text()
 	{
 		portal_text.visible = true;
-		portal_text.position = level->player->position + Point(-27, 0) - world->cam_ent->position;
+		if (world)
+		{
+			portal_text.position = level->player->position + Point(-27, 0) - world->cam_ent->position;
+		}
 	}
 
 	void PlayerHud::hide_portal_text()

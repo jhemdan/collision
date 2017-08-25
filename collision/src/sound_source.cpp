@@ -45,6 +45,11 @@ namespace jaw
 		alSourcePlay(id);
 	}
 
+	void SoundSource::stop()
+	{
+		alSourceStop(id);
+	}
+
 	void SoundSource::set_loop(bool val)
 	{
 		int v = (int)val;

@@ -28,6 +28,8 @@ namespace jaw
 		void set_scale(float x, float y);
 		const vcm::vec2& get_scale() const { return _scale; }
 
+		int get_total_width() const;
+
 		void _build_mesh();
 
 		Font* font;
@@ -41,5 +43,7 @@ namespace jaw
 		bool _word_wrap;
 
 		vcm::vec4 color;
+
+		int _total_width;
 	};
 }

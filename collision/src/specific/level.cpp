@@ -81,7 +81,6 @@ namespace jaw
 		bg_music_buff.create(wav_file);
 		bg_music_src.create();
 		bg_music_src.queue_buffer(bg_music_buff.id);
-		bg_music_src.play();
 		bg_music_src.set_loop(true);
 
 		struct Tile
@@ -356,6 +355,8 @@ namespace jaw
 	{
 		Entity::on_added();
 
+		bg_music_src.play();
+
 		world->add_entity(&tilemap_ent);
 
 		for (auto e : ents)
@@ -367,6 +368,8 @@ namespace jaw
 	void Level::on_removed()
 	{
 		Entity::on_removed();
+
+		bg_music_src.stop();
 
 		world->remove_entity(&tilemap_ent);
 

@@ -110,17 +110,28 @@ namespace jaw
 		//move all this specific stuff (level, player, etc.) into an organized space (different files, etc.)
 		//make ibrahim the main character
 
+		/*
 		level = new Level();
 		level->load();
 		world.add_entity(level);
+		*/
+
+		//TODO get sound to stop playing after destroyed
+
+		_game_state.load(&world);
+		_game_state.set_state(GAME_STATE_MENU);
 	}
 
 	void Game::clean()
 	{
 		world.clear();
 
+		/*
 		level->clean();
 		delete level;
+		*/
+
+		_game_state.clean();
 
 		renderer.clean();
 	}

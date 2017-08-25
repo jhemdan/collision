@@ -5,6 +5,7 @@
 #include "world.h"
 #include "sprite_graphic.h"
 #include "input.h"
+#include "specific/game_state.h"
 
 #include <vecmath/matrix.hpp>
 
@@ -40,13 +41,15 @@ namespace jaw
 		vcm::mat4 cam_view;
 		vcm::mat4 inv_cam_view;
 
-		Texture2d sprite_texture;
+		//Texture2d sprite_texture;
 
 		Renderer renderer;
 
 		World world;
 
-		Level* level;
+		//Level* level;
+
+		GameState _game_state;
 	};
 	
 	extern Game game;

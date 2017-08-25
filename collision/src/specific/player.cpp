@@ -397,9 +397,9 @@ namespace jaw
 			if(level->portal->sprite_g.visible)
 				level->player_hud.show_portal_text();
 
-			if (game.input.key_pressed(SDL_SCANCODE_Z) && !level->player_hud.is_showing_text_box())
+			if (game.input.key_pressed(SDL_SCANCODE_Z) && !level->player_hud.is_showing_text_box() && !npc)
 			{
-				//to credits here
+				game._game_state.set_state(GAME_STATE_CREDITS);
 			}
 		}
 

@@ -14,6 +14,7 @@
 namespace jaw
 {
 	struct Player;
+	struct Portal;
 
 	struct Level : Entity
 	{
@@ -32,6 +33,7 @@ namespace jaw
 		Texture2d gate_tex;
 		Texture2d bush_tex;
 		Texture2d blood_squirt_tex;
+		Texture2d portal_tex;
 
 		SoundBuffer bg_music_buff;
 		SoundSource bg_music_src;
@@ -41,6 +43,7 @@ namespace jaw
 		std::vector<Entity*> ents;
 
 		Player* player;
+		Portal* portal;
 
 		Point size;
 

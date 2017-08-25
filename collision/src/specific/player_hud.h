@@ -36,6 +36,13 @@ namespace jaw
 		Texture2d key_tex;
 		SpriteGraphic key_g;
 
+		Texture2d eye_tex;
+		SpriteGraphic eye_g;
+		TextGraphic eye_text;
+		int _eye_count;
+
+		TextGraphic portal_text;
+
 		DialogueList* _cur_dialogue;
 		int _dialogue_index;
 
@@ -57,10 +64,15 @@ namespace jaw
 
 		void show_to_talk_text();
 		void hide_to_talk_text();
+		void show_portal_text();
+		void hide_portal_text();
 
 		void show_text_box(DialogueList* dialogue);
 		void hide_text_box();
-
+		
 		bool is_showing_text_box() const { return _cur_dialogue != nullptr; }
+
+		void set_eye_count(int i);
+		int get_eye_count() const { return _eye_count; }
 	};
 }

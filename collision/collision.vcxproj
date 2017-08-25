@@ -158,6 +158,7 @@
     <ClCompile Include="src\specific\oak_tree.cpp" />
     <ClCompile Include="src\specific\player.cpp" />
     <ClCompile Include="src\specific\player_hud.cpp" />
+    <ClCompile Include="src\specific\portal.cpp" />
     <ClCompile Include="src\specific\red_flash.cpp" />
     <ClCompile Include="src\sprite_graphic.cpp" />
     <ClCompile Include="src\texture_2d.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="src\specific\oak_tree.h" />
     <ClInclude Include="src\specific\player.h" />
     <ClInclude Include="src\specific\player_hud.h" />
+    <ClInclude Include="src\specific\portal.h" />
     <ClInclude Include="src\specific\red_flash.h" />
     <ClInclude Include="src\sprite_graphic.h" />
     <ClInclude Include="src\texture_2d.h" />

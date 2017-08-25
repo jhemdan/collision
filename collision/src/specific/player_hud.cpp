@@ -7,6 +7,7 @@
 #include "../cam_ent.h"
 
 #include "../game.h"
+#include "portal.h"
 
 namespace jaw
 {
@@ -108,6 +109,32 @@ namespace jaw
 
 		group.add(&key_g);
 
+		Bitmap eye_bmp;
+		eye_bmp.create("../assets/monster_eye.png");
+		eye_tex.create(eye_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		eye_g.create(&eye_tex);
+		eye_g.position = { 400 - 50, 45 };
+		eye_g.visible = false;
+
+		group.add(&eye_g);
+
+		eye_text.create(&level->font);
+		eye_text.position = { 400 - 55, 55 };
+		eye_text.set_scale(0.5f, 0.5f);
+		eye_text.set_text("0");
+		eye_text.visible = false;
+
+		group.add(&eye_text);
+
+		portal_text.create(&level->font);
+		portal_text.set_scale(0.5f, 0.5f);
+		portal_text.set_text("Press 'Z' to enter portal.");
+		portal_text.visible = false;
+
+		group.add(&portal_text);
+
+		_eye_count = 0;
+		
 		this->level = level;
 	}
 
@@ -117,6 +144,7 @@ namespace jaw
 		text_box_tex.destroy();
 		button_presser_tex.destroy();
 		key_tex.destroy();
+		eye_tex.destroy();
 	}
 
 	void PlayerHud::add(World* w)
@@ -168,11 +196,27 @@ namespace jaw
 		to_talk_text.visible = false;
 	}
 
+	void PlayerHud::show_portal_text()
+	{
+		portal_text.visible = true;
+		portal_text.position = level->player->position + Point(-27, 0) - world->cam_ent->position;
+	}
+
+	void PlayerHud::hide_portal_text()
+	{
+		portal_text.visible = false;
+	}
+
 	void PlayerHud::update(float dt)
 	{
 		if (level->player->npc)
 		{
 			to_talk_text.position = level->player->npc->position + Point(-10, 0) - world->cam_ent->position;
+		}
+
+		if (level->portal->sprite_g.visible)
+		{
+			portal_text.position = level->player->position + Point(-27, 0) - world->cam_ent->position;
 		}
 
 		if (_cur_dialogue)
@@ -183,6 +227,11 @@ namespace jaw
 
 				if (_dialogue_index >= (int)_cur_dialogue->list.size())
 				{
+					if (level->player->npc && _cur_dialogue->next_dialogue_state != -1)
+					{
+						level->player->npc->_dialogue_state = _cur_dialogue->next_dialogue_state;
+					}
+
 					hide_text_box();
 				}
 				else
@@ -190,6 +239,12 @@ namespace jaw
 					if (_cur_dialogue->codes[_dialogue_index] == 1)
 					{
 						key_g.visible = true;
+						eye_g.visible = true;
+						eye_text.visible = true;
+					}
+					else if (_cur_dialogue->codes[_dialogue_index] == 2)
+					{
+						level->portal->sprite_g.visible = true;
 					}
 
 					text_box_text.set_text(_cur_dialogue->list[_dialogue_index]);
@@ -224,6 +279,15 @@ namespace jaw
 			text_box_text.visible = false;
 			button_presser_sprite.visible = false;
 			button_presser_text.visible = false;
+		}
+	}
+
+	void PlayerHud::set_eye_count(int i)
+	{
+		if (_eye_count != i)
+		{
+			_eye_count = i;
+			eye_text.set_text(std::to_string(_eye_count));
 		}
 	}
 }

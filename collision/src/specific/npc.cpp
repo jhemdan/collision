@@ -56,6 +56,8 @@ namespace jaw
 		type = "npc";
 
 		_set_up_dialogue();
+
+		_dialogue_state = 0;
 	}
 
 	NPC::~NPC()
@@ -168,7 +170,28 @@ namespace jaw
 		{
 			_in_idle = false;
 
-			level->player_hud.show_text_box(&_dialogue);
+			if (_dialogue_state == 0)
+			{
+				level->player_hud.show_text_box(&_dialogue[0]);
+			}
+			else
+			{
+				if (level->player_hud.get_eye_count() != 3)
+				{
+					level->player_hud.show_text_box(&_dialogue[1]);
+				}
+				else
+				{
+					if (_dialogue_state == 1)
+					{
+						level->player_hud.show_text_box(&_dialogue[2]);
+					}
+					else
+					{
+						level->player_hud.show_text_box(&_dialogue[3]);
+					}
+				}
+			}
 		}
 	}
 
@@ -182,9 +205,22 @@ namespace jaw
 
 	void NPC::_set_up_dialogue()
 	{
-		_dialogue.add("Jawdat: What's up Ibrahim? I need some help. Can you please help me?", 0);
-		_dialogue.add("Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there.", 1);
-		_dialogue.add("Jawdat: Press 'Z' to open the gate. Press 'X' to attack.", 0);
-		_dialogue.add("Jawdat: Be careful, Ibrahim. They shoot fireballs. Also, your health regenerates over time. Good luck.", 0);
+		_dialogue[0].add("Jawdat: What's up Ibrahim? I need some help. Can you please help me?", 0);
+		_dialogue[0].add("Jawdat: Awesome. I need three monster eyes for a potion. Here's the key to that gate up there.", 1);
+		_dialogue[0].add("Jawdat: Press 'Z' to open the gate. Press 'X' to attack.", 0);
+		_dialogue[0].add("Jawdat: Be careful, Ibrahim. They shoot fireballs. Also, your health regenerates over time. Good luck.", 0);
+
+		_dialogue[0].next_dialogue_state = 1;
+
+		_dialogue[1].add("Jawdat: Please come back to me when you get all three of the monster eyes.", 0);
+		_dialogue[1].add("Jawdat: Remember, press 'Z' to open the gate; press 'X' to attack.", 0);
+
+		_dialogue[2].add("Jawdat: You did it! Thanks a lot, Ibrahim! Now I can start making that potion right away.", 0);
+		_dialogue[2].add("Jawdat: I will forever be grateful to you for this, Ibrahim. I can't thank you enough.", 0);
+		_dialogue[2].add("Jawdat: Here's a portal to the next screen. Farewell for now, brother. I love you.", 2);
+
+		_dialogue[2].next_dialogue_state = 2;
+
+		_dialogue[3].add("Jawdat: Love you bye, Ibrahim.", 0);
 	}
 }

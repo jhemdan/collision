@@ -24,7 +24,9 @@ namespace jaw
 	
 		Level* level;
 
-		DialogueList _dialogue;
+		DialogueList _dialogue[4];
+
+		int _dialogue_state;
 
 		NPC(Texture2d* tex, Level* level);
 		~NPC();

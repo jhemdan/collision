@@ -5,7 +5,7 @@
 namespace jaw
 {
 	const float IdleWalking::MOVE_TIME_MIN = 0.2f;
-	const float IdleWalking::MOVE_TIME_MAX = 2.0f;
+	const float IdleWalking::MOVE_TIME_MAX = 1.5f;
 	const float IdleWalking::STAY_TIME_MIN = 0.2f;
 	const float IdleWalking::STAY_TIME_MAX = 2.0f;
 

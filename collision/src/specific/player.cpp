@@ -8,6 +8,7 @@
 #include "npc.h"
 #include "gate.h"
 #include "blood_squirt.h"
+#include "portal.h"
 
 namespace jaw
 {
@@ -388,6 +389,20 @@ namespace jaw
 			npc->stop_talking();
 		}
 
+		level->player_hud.hide_portal_text();
+
+		_ent_buff.clear();
+		if (sword_collider.check_intersection(sword_collider.position, "portal", _ent_buff))
+		{
+			if(level->portal->sprite_g.visible)
+				level->player_hud.show_portal_text();
+
+			if (game.input.key_pressed(SDL_SCANCODE_Z) && !level->player_hud.is_showing_text_box())
+			{
+				//to credits here
+			}
+		}
+
 		_ent_buff.clear();
 		if (sword_collider.check_intersection(sword_collider.position, "gate", _ent_buff))
 		{
@@ -423,12 +438,14 @@ namespace jaw
 
 	void Player::attack()
 	{
+		/*
 		_ent_buff.clear();
 		if (sword_collider.check_intersection(sword_collider.position, "tree", _ent_buff))
 		{
 			auto tree = _ent_buff[0]->parent;
 			world->remove_entity(tree);
 		}
+		*/
 
 		_ent_buff.clear();
 		if (sword_collider.check_intersection(sword_collider.position, "monster", _ent_buff))

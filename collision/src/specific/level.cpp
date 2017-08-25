@@ -9,11 +9,13 @@
 #include "npc.h"
 #include "gate.h"
 #include "bush.h"
+#include "portal.h"
 
 namespace jaw
 {
 	Level::Level()
 		: player(nullptr)
+		, portal(nullptr)
 	{
 
 	}
@@ -69,6 +71,10 @@ namespace jaw
 		Bitmap blood_squirt_bmp;
 		blood_squirt_bmp.create("../assets/blood.png");
 		blood_squirt_tex.create(blood_squirt_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+
+		Bitmap portal_bmp;
+		portal_bmp.create("../assets/portal.png");
+		portal_tex.create(portal_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
 		WavFile wav_file;
 		wav_file.create("../assets/real_song1.wav");
@@ -197,6 +203,19 @@ namespace jaw
 					ents.push_back(e);
 				};
 
+				auto add_portal = [this](int x, int y)
+				{
+					auto e = new Portal(&portal_tex);
+					e->position = { x, y };
+					e->set_layer(e->position.y + 128);
+
+					ents.push_back(e);
+
+					portal = e;
+
+					portal->sprite_g.visible = false;
+				};
+
 				auto first_entity = entities_node->FirstChild();
 				for (auto entity = first_entity; entity != nullptr; entity = entity->NextSibling())
 				{
@@ -239,6 +258,10 @@ namespace jaw
 					else if (name == "bush")
 					{
 						add_bush(x, y);
+					}
+					else if (name == "portal") 
+					{
+						add_portal(x, y);
 					}
 				}
 			}
@@ -319,6 +342,10 @@ namespace jaw
 		gate_tex.destroy();
 		bush_tex.destroy();
 		blood_squirt_tex.destroy();
+		portal_tex.destroy();
+
+		bg_music_buff.destroy();
+		bg_music_src.destroy();
 
 		font.destroy();
 

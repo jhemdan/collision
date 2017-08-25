@@ -243,6 +243,8 @@ namespace jaw
 
 	void Monster::die()
 	{
+		level->player_hud.set_eye_count(level->player_hud.get_eye_count() + 1);
+
 		world->remove_entity(this);
 	}
 

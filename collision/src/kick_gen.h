@@ -5,6 +5,10 @@
 #include <vector>
 #include <vecmath/pi.hpp>
 
+//THIS FILE IS OF NO USE TO GAME
+//I made this a while ago because I wanted to generate my own drum sounds
+//but I couldn't do it
+
 namespace jaw
 {
 	float square_wave(float t);

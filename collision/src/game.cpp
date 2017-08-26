@@ -45,78 +45,17 @@ namespace jaw
 
 	void Game::init()
 	{
+		//enable blending so transparent images appear transparent
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		SDL_GL_SetSwapInterval(0);
+		//vsycn (0 = no vsync, 1 = yes vsync)
+		SDL_GL_SetSwapInterval(1);
 
+		//orthographic camera projection matrix
 		cam_proj = vcm::orthographic(0.0f, 800.0f, 600.0f, 0.0f, -1.0f, 1.0f);
 
 		renderer.init();
-
-		/*
-		Bitmap test_rgba;
-		test_rgba.create("../assets/main_character.png");
-
-		sprite_texture.create(test_rgba, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_REPEAT);
-
-		sprite_graphic.create(&sprite_texture);
-
-		auto font = new Font();
-		font->create("../assets/main_font.fnt");
-
-		auto text = new TextGraphic();
-		text->create(font);
-		text->scale = 0.5f;
-		text->set_text(
-			"The quick brown fox jumps over the lazy dog.\n"
-			"Why did the quick brown fox jump over the lazy dog?\n"
-			"Because the lazy dog was too lazy.\n\n"
-		);
-
-		auto text_ent = new Entity();
-		text_ent->graphic = text;
-
-		text_ent->set_layer(10000000);
-
-		world.add_entity(text_ent);
-
-		Bitmap particle_bmp;
-		particle_bmp.create("../assets/test_particles.png");
-		Texture2d* particle_tex = new Texture2d();
-		particle_tex->create(particle_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
-
-		auto test_particles = new ParticleGraphic();
-		test_particles->create(particle_tex);
-
-		test_particles->frame_size = { 16, 16 };
-
-		ParticleAnim test_anim;
-		test_anim.name = "test";
-		test_anim.frames = { 0, 1, 2, 3 };
-		test_particles->add_anim(test_anim);
-		test_particles->method.anim = "test";
-
-		test_particles->method.spawn_radius_max = 100;
-
-		auto test_particle_ent = new Entity();
-		test_particle_ent->graphic = test_particles;
-		test_particle_ent->set_layer(text_ent->get_layer() + 1);
-		test_particle_ent->position = { 75, 75 };
-
-		world.add_entity(test_particle_ent);
-		*/
-
-		//move all this specific stuff (level, player, etc.) into an organized space (different files, etc.)
-		//make ibrahim the main character
-
-		/*
-		level = new Level();
-		level->load();
-		world.add_entity(level);
-		*/
-
-		//TODO get sound to stop playing after destroyed
 
 		_game_state.load(&world);
 		_game_state.set_state(GAME_STATE_MENU);
@@ -126,11 +65,6 @@ namespace jaw
 	{
 		world.clear();
 
-		/*
-		level->clean();
-		delete level;
-		*/
-
 		_game_state.clean();
 
 		renderer.clean();
@@ -138,6 +72,8 @@ namespace jaw
 
 	void Game::update(float dt)
 	{
+		//calculate frames per second averages every second
+		//and display FPS
 		timer += dt;
 		total_fps += (1.0f / dt);
 		fps_ticks++;

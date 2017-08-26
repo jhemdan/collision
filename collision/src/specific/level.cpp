@@ -333,6 +333,9 @@ namespace jaw
 		
 		ents.clear();
 
+		weeds1_g.destroy();
+		tilemap_graphic.destroy();
+
 		tilemap_tex.destroy();
 		weeds1_tex.destroy();
 		tree_tex.destroy();

@@ -31,23 +31,20 @@ namespace jaw
 		SDL_Window* window;
 		bool running;
 
+		//used for frames per second calculation
 		float timer;
 		float total_fps;
 		float fps_ticks;
 
 		Input input;
 
-		vcm::mat4 cam_proj;
-		vcm::mat4 cam_view;
-		vcm::mat4 inv_cam_view;
-
-		//Texture2d sprite_texture;
+		vcm::mat4 cam_proj; //camera projection matrix
+		vcm::mat4 cam_view; //camera view matrix
+		vcm::mat4 inv_cam_view; //inverse camera view matrix
 
 		Renderer renderer;
 
 		World world;
-
-		//Level* level;
 
 		GameState _game_state;
 	};

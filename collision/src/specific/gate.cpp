@@ -45,6 +45,8 @@ namespace jaw
 	{
 		for (auto b : boxes)
 			delete b;
+
+		sprite_g.destroy();
 	}
 
 	void Gate::on_added()

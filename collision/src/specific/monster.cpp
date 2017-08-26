@@ -76,7 +76,7 @@ namespace jaw
 
 	Monster::~Monster()
 	{
-		
+		sprite_g.destroy();
 	}
 
 	void Monster::update(float dt)

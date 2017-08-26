@@ -24,6 +24,7 @@ namespace jaw
 		FlameSmoke* smoke;
 
 		MonsterFlame(Texture2d* tex, Texture2d* particle_tex, const Point& pos, const vcm::vec2& movement);
+		~MonsterFlame();
 
 		void on_added() override;
 		void update(float dt) override;

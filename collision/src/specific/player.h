@@ -26,11 +26,11 @@ namespace jaw
 		SpriteGraphic sprite_g;
 
 		Entity sword_ent;
-		Texture2d* sword_tex;
+		Texture2d sword_tex;
 		SpriteGraphic sword_g;
 
 		Entity magenta_ent;
-		Texture2d* magenta_tex;
+		Texture2d magenta_tex;
 		SpriteGraphic magenta_g;
 
 		float _cool_down;

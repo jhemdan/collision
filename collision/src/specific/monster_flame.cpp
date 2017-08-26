@@ -46,6 +46,11 @@ namespace jaw
 		smoke = new FlameSmoke(particle_tex, move_dir);
 	}
 
+	MonsterFlame::~MonsterFlame()
+	{
+		sprite_g.destroy();
+	}
+
 	void MonsterFlame::on_added()
 	{
 		Entity::on_added();

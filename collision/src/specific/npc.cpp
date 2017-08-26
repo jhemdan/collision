@@ -63,7 +63,7 @@ namespace jaw
 
 	NPC::~NPC()
 	{
-		
+		sprite_g.destroy();
 	}
 
 	void NPC::update(float dt)

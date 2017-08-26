@@ -44,6 +44,11 @@ namespace jaw
 		graphic = &particle_g;
 	}
 
+	FlameSmoke::~FlameSmoke()
+	{
+		particle_g.destroy();
+	}
+
 	void FlameSmoke::update(float dt)
 	{
 		Entity::update(dt);

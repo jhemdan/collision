@@ -16,7 +16,7 @@ namespace jaw
 
 	Bush::~Bush()
 	{
-
+		sprite_g.destroy();
 	}
 
 	void Bush::on_added()

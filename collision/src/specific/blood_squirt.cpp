@@ -39,6 +39,11 @@ namespace jaw
 		graphic = &particle_g;
 	}
 
+	BloodSquirt::~BloodSquirt()
+	{
+		particle_g.destroy();
+	}
+
 	void BloodSquirt::update(float dt)
 	{
 		Entity::update(dt);

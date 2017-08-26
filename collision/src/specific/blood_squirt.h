@@ -9,6 +9,7 @@ namespace jaw
 		ParticleGraphic particle_g;
 
 		BloodSquirt(Texture2d* particle_tex);
+		~BloodSquirt();
 
 		bool alive;
 		Point emit_pos;

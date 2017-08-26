@@ -10,6 +10,7 @@ namespace jaw
 		ParticleGraphic particle_g;
 
 		FlameSmoke(Texture2d* particle_tex, const vcm::vec2& dir);
+		~FlameSmoke();
 
 		bool alive;
 		Point emit_pos;

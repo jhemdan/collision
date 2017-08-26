@@ -21,10 +21,7 @@ namespace jaw
 	const float Player::ATTACK_COOLDOWN = .69f;
 
 	Player::Player(Texture2d* tex, Level* level)
-		: sword_tex(nullptr)
-		, magenta_tex(nullptr)
-
-		, attack_timer(0.0f)
+		: attack_timer(0.0f)
 		, slash_moment(1 / 14.0f)
 		, has_attacked(false)
 
@@ -77,10 +74,9 @@ namespace jaw
 
 		Bitmap sword_bmp;
 		sword_bmp.create("../assets/sword.png");
-		sword_tex = new Texture2d();
-		sword_tex->create(sword_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		sword_tex.create(sword_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
 
-		sword_g.create(sword_tex);
+		sword_g.create(&sword_tex);
 
 		sword_g.frame_size = { 64, 64 };
 
@@ -104,9 +100,8 @@ namespace jaw
 
 		Bitmap magenta_bmp;
 		magenta_bmp.create("../assets/magenta_box.png");
-		magenta_tex = new Texture2d();
-		magenta_tex->create(magenta_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
-		magenta_g.create(magenta_tex);
+		magenta_tex.create(magenta_bmp, TEX_2D_FILTER_NEAREST, TEX_2D_WRAP_CLAMP);
+		magenta_g.create(&magenta_tex);
 		magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
 		magenta_g.scale.y = 0.75f;
 
@@ -128,9 +123,11 @@ namespace jaw
 	Player::~Player()
 	{
 		sprite_g.destroy();
-		
-		delete sword_tex;
-		delete magenta_tex;
+		sword_g.destroy();
+		magenta_g.destroy();
+
+		sword_tex.destroy();
+		magenta_tex.destroy();
 	}
 
 	Point Player::get_cam_dest_pos() const
@@ -247,7 +244,7 @@ namespace jaw
 		if (cur_dir == CUR_DIR_RIGHT)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
-			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+			sword_collider.size = Point(magenta_tex.w, magenta_tex.h) * magenta_g.scale;
 
 			sword_ent.position = position + Point(10, 0);
 			magenta_ent.position = position + Point(43, 32);
@@ -257,7 +254,7 @@ namespace jaw
 		else if (cur_dir == CUR_DIR_LEFT)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_LR;
-			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+			sword_collider.size = Point(magenta_tex.w, magenta_tex.h) * magenta_g.scale;
 
 			sword_ent.position = position + Point(-10, 0);
 			magenta_ent.position = position + Point(32 - sword_collider.size.x - 13, 32);
@@ -267,7 +264,7 @@ namespace jaw
 		else if (cur_dir == CUR_DIR_DOWN)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_UD;
-			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+			sword_collider.size = Point(magenta_tex.w, magenta_tex.h) * magenta_g.scale;
 
 			sword_ent.position = position + Point(0, 26);
 			magenta_ent.position = position + Point(32 - (int)(sword_collider.size.x * 0.5f), 60);
@@ -277,7 +274,7 @@ namespace jaw
 		else if (cur_dir == CUR_DIR_UP)
 		{
 			magenta_g.scale.x = SWORD_COLLIDER_SIZE_X_UD;
-			sword_collider.size = Point(magenta_tex->w, magenta_tex->h) * magenta_g.scale;
+			sword_collider.size = Point(magenta_tex.w, magenta_tex.h) * magenta_g.scale;
 
 			sword_ent.position = position + Point(0, -5);
 			magenta_ent.position = position + Point(32 - (int)(sword_collider.size.x * 0.5f), -3);

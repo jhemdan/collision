@@ -18,4 +18,9 @@ namespace jaw
 		size = { 81, 106 };
 		origin = { 24, 13 };
 	}
+
+	Portal::~Portal()
+	{
+		sprite_g.destroy();
+	}
 }

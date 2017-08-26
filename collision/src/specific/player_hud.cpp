@@ -140,6 +140,20 @@ namespace jaw
 
 	void PlayerHud::clean()
 	{
+		for(int i = 0; i < 3; ++i)
+			hearts_g[i].destroy();
+
+		heart_text_g.destroy();
+		to_talk_text.destroy();
+		text_box_sprite.destroy();
+		text_box_text.destroy();
+		button_presser_sprite.destroy();
+		button_presser_text.destroy();
+		key_g.destroy();
+		eye_g.destroy();
+		eye_text.destroy();
+		portal_text.destroy();
+
 		heart_tex.destroy();
 		text_box_tex.destroy();
 		button_presser_tex.destroy();

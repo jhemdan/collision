@@ -10,5 +10,6 @@ namespace jaw
 		SpriteGraphic sprite_g;
 
 		Portal(Texture2d* tex);
+		~Portal();
 	};
 }

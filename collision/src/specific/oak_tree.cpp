@@ -41,6 +41,8 @@ namespace jaw
 	{
 		for (auto b : boxes)
 			delete b;
+
+		tree_g.destroy();
 	}
 
 	void OakTree::on_added()

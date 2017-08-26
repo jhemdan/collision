@@ -174,6 +174,8 @@ namespace jaw
 					auto e = new NPC(&npc_tex, this);
 					e->position = { x, y };
 
+					e->spawn_point = e->get_center_pos();
+
 					ents.push_back(e);
 				};
 

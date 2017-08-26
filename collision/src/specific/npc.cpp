@@ -9,6 +9,7 @@ namespace jaw
 {
 	const float NPC::SPEED = 80.0f;
 	const float NPC::STOP_TALKING_DIST = 100.0f;
+	const float NPC::TO_SPAWN_POINT_DIST = 100.0f;
 
 	NPC::NPC(Texture2d* tex, Level* level)
 	{
@@ -128,6 +129,15 @@ namespace jaw
 	void NPC::_do_idle(float dt)
 	{
 		_idle_walking.update(dt);
+
+		vcm::vec2 to_spawn_point = vcm::vec2(spawn_point - get_center_pos());
+		if (_idle_walking.is_moving() && vcm::length(to_spawn_point) > TO_SPAWN_POINT_DIST)
+		{
+			_idle_walking._move_dir = vcm::normalize(to_spawn_point);
+			_idle_walking._move_angle = atan2(-_idle_walking._move_dir.y, _idle_walking._move_dir.x);
+			if (_idle_walking._move_angle < 0)
+				_idle_walking._move_angle += 2 * vcm::PI;
+		}
 
 		if (_idle_walking.is_moving())
 		{

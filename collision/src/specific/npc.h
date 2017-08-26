@@ -14,6 +14,7 @@ namespace jaw
 	{
 		static const float SPEED;
 		static const float STOP_TALKING_DIST;
+		static const float TO_SPAWN_POINT_DIST;
 
 		SpriteGraphic sprite_g;
 
@@ -27,6 +28,8 @@ namespace jaw
 		DialogueList _dialogue[4];
 
 		int _dialogue_state;
+
+		Point spawn_point;
 
 		NPC(Texture2d* tex, Level* level);
 		~NPC();

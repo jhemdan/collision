@@ -37,18 +37,23 @@ namespace jaw
 
 	void World::flush()
 	{
+		//go through pending added entities and add them to main list
+		//calling on_added() and giving them this world
 		if (!_to_add.empty())
 		{
 			for (int i = 0; i < (int)_to_add.size(); ++i)
 			{
 				auto e = _to_add[i];
 
+				//make sure the world for this entity is null or this world
+				//the reason I allow "this" to be the world of the entity is so if we add it multiple times it doesn't matter
 				JAW_ASSERT_MSG(e->world == nullptr || e->world == this, "Bad entity world value for World::flush()");
 				if (!e->world)
 				{
 					entities.push_back(e);
 					e->world = this;
 					
+					//need to sort by layers everytime a new entity is added
 					layer_flag = true;
 
 					_buffer.push_back(e);
@@ -63,6 +68,8 @@ namespace jaw
 			_buffer.clear();
 		}
 
+		//go through pending removed entities and remove them from the main list
+		//calling on_removed() and changing their world to nullptr
 		if (!_to_remove.empty())
 		{
 			for (int i = 0; i < (int)_to_remove.size(); ++i)
@@ -85,8 +92,11 @@ namespace jaw
 
 			for (auto e : _buffer)
 			{
+				//give them back this world real quick so they can work with it in on_removed()
 				e->world = this;
 				e->on_removed();
+				
+				//take away the world again
 				e->world = nullptr;
 
 				if (e->destroy_on_remove)
@@ -100,11 +110,13 @@ namespace jaw
 	{
 		flush();
 
+		//update all entities
 		for (auto e : entities)
 		{
 			e->update(dt);
 		}
 
+		//sort the entities by their layer number
 		if (layer_flag)
 		{
 			auto sorter = [](Entity* a, Entity* b)
@@ -130,6 +142,7 @@ namespace jaw
 
 	void World::clear()
 	{
+		//call on_removed() on all entities
 		for (auto e : entities)
 		{
 			e->on_removed();

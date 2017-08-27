@@ -29,6 +29,6 @@ namespace jaw
 		int tile_w, tile_h;
 		std::vector<int> tiles;
 		
-		bool _dirty;
+		bool _dirty; //whether or not we need to rebuild the mesh
 	};
 }

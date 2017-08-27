@@ -96,6 +96,8 @@ namespace jaw
 
 		int tex_cols = texture->w / tile_w;
 
+		//for each tile, add the vertices for the quad 
+		//and the two triangles that make up the quad
 		for (int y = 0; y < h; ++y)
 		{
 			for (int x = 0; x < w; ++x)

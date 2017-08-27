@@ -32,8 +32,11 @@ namespace jaw
 
 		//throws exception on failure
 		void create(const Bitmap& bitmap, Tex2dFilter filter, Tex2dWrap wrap);
-		//throws exception on failure
+
+		//throws exception on failure.
+		//calling recreate is more efficient than creating it again
 		void recreate(const Bitmap& bitmap);
+
 		void destroy();
 
 		unsigned id;
